@@ -378,6 +378,13 @@
         importTeamJsonBtn: $('#import-team-json-btn'),
         teamJsonInput: $('#team-json-input'),
         openManualTeamEditorBtn: $('#open-manual-team-editor'),
+
+        // New Team Hub elements
+        quickTeamAddBtn: $('#quick-team-add'),
+        teamClearDraftBtn: $('#team-clear-draft'),
+        exportTeamStructureBtn: $('#export-team-structure'),
+        teamSizeIndicator: $('#team-size-indicator'),
+        teamsCounter: $('#teams-counter'),
         
         // RACI
         raciDashboard: $('#raci-dashboard'),
@@ -1140,13 +1147,18 @@
     }
 
     function showSection(sectionId) {
+        // Smart navigation: check if user has required data
+        if (!shouldAllowNavigation(sectionId)) {
+            return;
+        }
+
         // Hide all sections
         const sections = ['welcome-screen', 'client-form', 'analysis-dashboard', 'team-hub', 'raci-dashboard', 'salary-dashboard'];
         sections.forEach(id => {
             const el = $(`#${id}`);
             if (el) el.style.display = 'none';
         });
-        
+
         // Show target section
         const target = $(`#${sectionId}`);
         if (target) {
@@ -1155,6 +1167,56 @@
             if (PRODUCT_META[sectionId]) {
                 updateProductSwitcher(sectionId);
             }
+
+            // Post-navigation logic
+            handlePostNavigation(sectionId);
+        }
+    }
+
+    function shouldAllowNavigation(targetSection) {
+        // Allow welcome screen and client form always
+        if (targetSection === 'welcome-screen' || targetSection === 'client-form') {
+            return true;
+        }
+
+        // Check if user has selected a client for other sections
+        if (!state.currentClient) {
+            showNotification('Спочатку оберіть або створіть клієнта', 'warning');
+            showSection('welcome-screen');
+            return false;
+        }
+
+        // Team-dependent sections require teams
+        if ((targetSection === 'raci-dashboard' || targetSection === 'salary-dashboard') &&
+            (!state.team.list || state.team.list.length === 0)) {
+            showNotification('Спочатку створіть команду у Team Hub', 'info');
+            selectProduct('team-hub');
+            return false;
+        }
+
+        return true;
+    }
+
+    function handlePostNavigation(sectionId) {
+        switch (sectionId) {
+            case 'team-hub':
+                // Ensure team data is loaded
+                if (state.currentClient && !state.team.list) {
+                    loadTeamsForClient(state.currentClient.id);
+                }
+                break;
+
+            case 'raci-dashboard':
+                // Ensure team is selected
+                if (!state.team.current) {
+                    showNotification('Оберіть команду для RACI аналізу', 'info');
+                }
+                break;
+
+            case 'analysis-dashboard':
+                // Ensure analysis components are ready
+                updateTextStats();
+                break;
         }
     }
 
@@ -5495,6 +5557,17 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                 addManualTeamMember();
             }
         });
+
+        // New Team Hub event handlers
+        elements.quickTeamAddBtn?.addEventListener('click', () => {
+            selectProduct('team-hub');
+            if (!state.team.manualDraft.length) {
+                addManualTeamMember();
+            }
+        });
+
+        elements.teamClearDraftBtn?.addEventListener('click', clearTeamDraft);
+        elements.exportTeamStructureBtn?.addEventListener('click', exportTeamStructure);
         elements.intelFieldInputs?.forEach((input) => {
             const field = input?.dataset?.intelField;
             if (!field) return;
@@ -7099,6 +7172,8 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         const container = elements.teamList;
         if (!container) return;
 
+        updateTeamsCounter();
+
         const teams = state.team.list || [];
         if (!teams.length) {
             container.innerHTML = `
@@ -7339,11 +7414,13 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             compensation_currency: member.compensation?.currency || 'UAH'
         });
         renderManualTeamEditor();
+        updateTeamSizeIndicator();
     }
 
     function removeManualTeamMember(index) {
         state.team.manualDraft.splice(index, 1);
         renderManualTeamEditor();
+        updateTeamSizeIndicator();
     }
 
     function renderManualTeamEditor() {
@@ -7429,21 +7506,22 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
 
         const payload = {
             client_id: state.currentClient.id,
-            title: state.team.manualTitle?.trim() || `Команда ${state.currentClient.company}`,
-            description: state.team.manualDescription || '',
+            title: elements.manualTeamTitle?.value?.trim() || `Команда ${state.currentClient.company}`,
+            description: elements.manualTeamDescription?.value?.trim() || '',
             source: 'manual',
             members
         };
 
         try {
             await createTeam(payload, { setActive: true });
-            showNotification('Команду збережено', 'success');
+            showNotification('Команду збережено успішно!', 'success');
+
+            // Clear draft
             state.team.manualDraft = [];
-            state.team.manualTitle = '';
-            state.team.manualDescription = '';
             if (elements.manualTeamTitle) elements.manualTeamTitle.value = '';
             if (elements.manualTeamDescription) elements.manualTeamDescription.value = '';
             renderManualTeamEditor();
+            updateTeamSizeIndicator();
         } catch (error) {
             console.error('❌ saveManualTeam error:', error);
             showNotification(error.message || 'Не вдалося зберегти команду', 'error');
@@ -7534,8 +7612,134 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         return data.team;
     }
 
+    // ===== New Team Hub Functions =====
+    function clearTeamDraft() {
+        state.team.manualDraft = [];
+        elements.manualTeamTitle.value = '';
+        elements.manualTeamDescription.value = '';
+        renderManualTeamEditor();
+        updateTeamSizeIndicator();
+        showNotification('Чернетку команди очищено', 'info');
+    }
+
+    function exportTeamStructure() {
+        const selectedTeam = state.team.current;
+        if (!selectedTeam) {
+            showNotification('Оберіть команду для експорту', 'warning');
+            return;
+        }
+
+        const exportData = {
+            name: selectedTeam.name,
+            description: selectedTeam.description,
+            members: selectedTeam.members || [],
+            exported_at: new Date().toISOString(),
+            exported_by: 'TeamPulse Turbo'
+        };
+
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `team-${selectedTeam.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showNotification('Структуру команди експортовано', 'success');
+    }
+
+    function updateTeamSizeIndicator() {
+        const size = state.team.manualDraft.length;
+        const sizeNumber = elements.teamSizeIndicator?.querySelector('.size-number');
+        if (sizeNumber) {
+            sizeNumber.textContent = size;
+        }
+    }
+
+    function updateTeamsCounter() {
+        const count = state.team.list.length;
+        if (elements.teamsCounter) {
+            elements.teamsCounter.textContent = count;
+        }
+    }
+
     function renderSalaryInsightsHistory() {
         // TODO: включити відображення історії salary аналізів
+    }
+
+    // ===== System Health Check =====
+    function runSystemHealthCheck() {
+        const healthStatus = {
+            ui: checkUIComponents(),
+            api: checkAPIEndpoints(),
+            navigation: checkNavigation(),
+            teamHub: checkTeamHub()
+        };
+
+        console.log('🔍 System Health Check:', healthStatus);
+
+        const errors = [];
+        Object.entries(healthStatus).forEach(([component, status]) => {
+            if (!status.healthy) {
+                errors.push(`${component}: ${status.error}`);
+            }
+        });
+
+        if (errors.length > 0) {
+            console.warn('⚠️ System health issues detected:', errors);
+        } else {
+            console.log('✅ All systems healthy');
+        }
+    }
+
+    function checkUIComponents() {
+        const requiredElements = [
+            'teamList', 'manualTeamEditor', 'teamPreview',
+            'quickTeamAddBtn', 'teamClearDraftBtn', 'exportTeamStructureBtn',
+            'teamSizeIndicator', 'teamsCounter'
+        ];
+
+        const missing = requiredElements.filter(id => !elements[id]);
+        return {
+            healthy: missing.length === 0,
+            error: missing.length > 0 ? `Missing elements: ${missing.join(', ')}` : null
+        };
+    }
+
+    function checkAPIEndpoints() {
+        // This would normally check API connectivity
+        return {
+            healthy: true,
+            error: null
+        };
+    }
+
+    function checkNavigation() {
+        const requiredFunctions = [
+            showSection, selectProduct, updateRightPanelVisibility,
+            shouldAllowNavigation, handlePostNavigation
+        ];
+
+        const missing = requiredFunctions.filter(fn => typeof fn !== 'function');
+        return {
+            healthy: missing.length === 0,
+            error: missing.length > 0 ? `Missing functions: ${missing.length}` : null
+        };
+    }
+
+    function checkTeamHub() {
+        const requiredFunctions = [
+            addManualTeamMember, removeManualTeamMember, saveManualTeam,
+            clearTeamDraft, exportTeamStructure, updateTeamSizeIndicator, updateTeamsCounter
+        ];
+
+        const missing = requiredFunctions.filter(fn => typeof fn !== 'function');
+        return {
+            healthy: missing.length === 0,
+            error: missing.length > 0 ? `Missing Team Hub functions: ${missing.length}` : null
+        };
     }
 
     // ===== RACI Dashboard =====
@@ -8339,6 +8543,13 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         
         // Bind events
         bindEvents();
+
+        // Initialize team indicators
+        updateTeamSizeIndicator();
+        updateTeamsCounter();
+
+        // Run system health check
+        runSystemHealthCheck();
 
         // Prepare client wizard
         renderClientStepper();

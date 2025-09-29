@@ -304,14 +304,26 @@ const ensureOpenAI = (res) => {
   return true;
 };
 
+// Enhanced team creation endpoint with better validation
 r.post('/', validateTeamCreate, async (req, res) => {
   const start = performance.now();
   try {
     const payload = req.body || {};
     const clientId = Number(payload.client_id);
+
+    // Enhanced validation
+    if (!clientId || clientId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Невірний ID клієнта',
+        code: 'INVALID_CLIENT_ID'
+      });
+    }
+
     const title = payload.title?.trim() || `Team #${Date.now()}`;
     const description = payload.description?.trim() || null;
     const members = Array.isArray(payload.members) ? payload.members : [];
+    const source = payload.source || 'manual';
 
     const created = await transaction(async (db) => {
       const teamResult = await db.query(
@@ -396,8 +408,109 @@ r.post('/', validateTeamCreate, async (req, res) => {
       }
     });
   } catch (error) {
-    logError(error, { endpoint: 'POST /api/teams', body: req.body, ip: req.ip });
-    res.status(500).json({ success: false, error: 'Не вдалося створити команду' });
+    const duration = performance.now() - start;
+    logError(error, {
+      endpoint: 'POST /api/teams',
+      body: req.body,
+      ip: req.ip,
+      responseTime: Math.round(duration)
+    });
+
+    // Better error responses
+    if (error.message.includes('клієнта не знайдено')) {
+      return res.status(404).json({
+        success: false,
+        error: 'Клієнта не знайдено',
+        code: 'CLIENT_NOT_FOUND'
+      });
+    }
+
+    if (error.constraint) {
+      return res.status(400).json({
+        success: false,
+        error: 'Порушення обмежень бази даних',
+        code: 'CONSTRAINT_VIOLATION'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: 'Не вдалося створити команду',
+      code: 'INTERNAL_ERROR'
+    });
+  }
+});
+
+// New endpoint for team statistics
+r.get('/:teamId/stats', validateTeamIdParam, async (req, res) => {
+  const start = performance.now();
+  try {
+    const teamId = Number(req.params.teamId);
+
+    const stats = await transaction(async (db) => {
+      // Get team basic info
+      const team = await db.query('SELECT * FROM teams WHERE id = $1', [teamId]);
+      if (!team.rows.length) {
+        throw new Error('Команду не знайдено');
+      }
+
+      // Get member stats
+      const memberStats = await db.query(`
+        SELECT
+          COUNT(*) as total_members,
+          AVG(workload_percent) as avg_workload,
+          COUNT(CASE WHEN compensation_amount > 0 THEN 1 END) as members_with_salary,
+          SUM(compensation_amount) as total_compensation
+        FROM team_members
+        WHERE team_id = $1
+      `, [teamId]);
+
+      // Get role distribution
+      const roleStats = await db.query(`
+        SELECT role, COUNT(*) as count
+        FROM team_members
+        WHERE team_id = $1 AND role IS NOT NULL
+        GROUP BY role
+        ORDER BY count DESC
+      `, [teamId]);
+
+      return {
+        team: team.rows[0],
+        members: memberStats.rows[0],
+        roles: roleStats.rows
+      };
+    });
+
+    const duration = performance.now() - start;
+
+    res.json({
+      success: true,
+      stats,
+      meta: {
+        responseTime: Math.round(duration)
+      }
+    });
+  } catch (error) {
+    const duration = performance.now() - start;
+    logError(error, {
+      endpoint: `GET /api/teams/${req.params.teamId}/stats`,
+      ip: req.ip,
+      responseTime: Math.round(duration)
+    });
+
+    if (error.message.includes('не знайдено')) {
+      return res.status(404).json({
+        success: false,
+        error: 'Команду не знайдено',
+        code: 'TEAM_NOT_FOUND'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: 'Не вдалося отримати статистику команди',
+      code: 'INTERNAL_ERROR'
+    });
   }
 });
 
