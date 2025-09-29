@@ -70,25 +70,6 @@
             steps: [],
             modules: {}
         },
-        archive: {
-            analyses: [],
-            filters: {
-                search: '',
-                person_filter: '',
-                analysis_type: '',
-                date_from: '',
-                date_to: ''
-            },
-            pagination: {
-                page: 1,
-                limit: 20,
-                total: 0,
-                totalPages: 1
-            },
-            available_persons: [],
-            available_types: [],
-            loading: false
-        },
         ui: {
             leftSidebarCollapsed: false,
             rightSidebarCollapsed: false,
@@ -397,13 +378,6 @@
         importTeamJsonBtn: $('#import-team-json-btn'),
         teamJsonInput: $('#team-json-input'),
         openManualTeamEditorBtn: $('#open-manual-team-editor'),
-
-        // New Team Hub elements
-        quickTeamAddBtn: $('#quick-team-add'),
-        teamClearDraftBtn: $('#team-clear-draft'),
-        exportTeamStructureBtn: $('#export-team-structure'),
-        teamSizeIndicator: $('#team-size-indicator'),
-        teamsCounter: $('#teams-counter'),
         
         // RACI
         raciDashboard: $('#raci-dashboard'),
@@ -1166,18 +1140,13 @@
     }
 
     function showSection(sectionId) {
-        // Smart navigation: check if user has required data
-        if (!shouldAllowNavigation(sectionId)) {
-            return;
-        }
-
         // Hide all sections
         const sections = ['welcome-screen', 'client-form', 'analysis-dashboard', 'team-hub', 'raci-dashboard', 'salary-dashboard'];
         sections.forEach(id => {
             const el = $(`#${id}`);
             if (el) el.style.display = 'none';
         });
-
+        
         // Show target section
         const target = $(`#${sectionId}`);
         if (target) {
@@ -1186,56 +1155,6 @@
             if (PRODUCT_META[sectionId]) {
                 updateProductSwitcher(sectionId);
             }
-
-            // Post-navigation logic
-            handlePostNavigation(sectionId);
-        }
-    }
-
-    function shouldAllowNavigation(targetSection) {
-        // Allow welcome screen and client form always
-        if (targetSection === 'welcome-screen' || targetSection === 'client-form') {
-            return true;
-        }
-
-        // Check if user has selected a client for other sections
-        if (!state.currentClient) {
-            showNotification('Спочатку оберіть або створіть клієнта', 'warning');
-            showSection('welcome-screen');
-            return false;
-        }
-
-        // Team-dependent sections require teams
-        if ((targetSection === 'raci-dashboard' || targetSection === 'salary-dashboard') &&
-            (!state.team.list || state.team.list.length === 0)) {
-            showNotification('Спочатку створіть команду у Team Hub', 'info');
-            selectProduct('team-hub');
-            return false;
-        }
-
-        return true;
-    }
-
-    function handlePostNavigation(sectionId) {
-        switch (sectionId) {
-            case 'team-hub':
-                // Ensure team data is loaded
-                if (state.currentClient && !state.team.list) {
-                    loadTeamsForClient(state.currentClient.id);
-                }
-                break;
-
-            case 'raci-dashboard':
-                // Ensure team is selected
-                if (!state.team.current) {
-                    showNotification('Оберіть команду для RACI аналізу', 'info');
-                }
-                break;
-
-            case 'analysis-dashboard':
-                // Ensure analysis components are ready
-                updateTextStats();
-                break;
         }
     }
 
@@ -5449,36 +5368,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         updateProductSwitcher(targetId);
         showSection(targetId);
         closeProductDropdown();
-
-        // Update right panel visibility based on selected tab
-        updateRightPanelVisibility(targetId);
-    }
-
-    function updateRightPanelVisibility(targetId) {
-        const rightPanel = elements.sidebarRight;
-        const mainContent = elements.mainContent;
-
-        // Show right panel only for analysis tab
-        const shouldShowRightPanel = targetId === 'negotiation-analysis';
-
-        if (shouldShowRightPanel) {
-            // Show right panel for analysis tab
-            rightPanel.classList.remove('hidden');
-            rightPanel.classList.remove('collapsed');
-            state.ui.rightSidebarCollapsed = false;
-
-            // Adjust main content margin for larger screens
-            if (window.innerWidth > 1024) {
-                mainContent.style.marginRight = 'var(--right-panel-width)';
-            }
-            mainContent.classList.remove('full-width');
-        } else {
-            // Hide right panel for other tabs and make content full width
-            rightPanel.classList.add('hidden');
-            mainContent.style.marginRight = '0';
-            mainContent.classList.add('full-width');
-            state.ui.rightSidebarCollapsed = true;
-        }
     }
 
     // Make functions globally accessible
@@ -5576,17 +5465,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                 addManualTeamMember();
             }
         });
-
-        // New Team Hub event handlers
-        elements.quickTeamAddBtn?.addEventListener('click', () => {
-            selectProduct('team-hub');
-            if (!state.team.manualDraft.length) {
-                addManualTeamMember();
-            }
-        });
-
-        elements.teamClearDraftBtn?.addEventListener('click', clearTeamDraft);
-        elements.exportTeamStructureBtn?.addEventListener('click', exportTeamStructure);
         elements.intelFieldInputs?.forEach((input) => {
             const field = input?.dataset?.intelField;
             if (!field) return;
@@ -6501,281 +6379,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         }
     }
 
-    // ===== Archive Management =====
-    async function loadArchive(clientId) {
-        if (!clientId) {
-            document.getElementById('archive-section').style.display = 'none';
-            return;
-        }
-
-        state.archive.loading = true;
-        updateArchiveUI();
-
-        try {
-            const params = new URLSearchParams({
-                limit: state.archive.pagination.limit,
-                offset: (state.archive.pagination.page - 1) * state.archive.pagination.limit,
-                ...state.archive.filters
-            });
-
-            const response = await fetch(`/api/negotiations/client/${clientId}/archive?${params}`);
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Помилка завантаження архіву');
-            }
-
-            state.archive.analyses = data.analyses || [];
-            state.archive.available_persons = data.filters?.available_persons || [];
-            state.archive.available_types = data.filters?.available_types || [];
-            state.archive.pagination.total = data.meta?.total || 0;
-            state.archive.pagination.totalPages = Math.ceil(state.archive.pagination.total / state.archive.pagination.limit);
-
-            updateArchiveFilters();
-            renderArchiveList();
-            updateArchivePagination();
-            document.getElementById('archive-section').style.display = 'block';
-
-        } catch (error) {
-            console.error('Archive loading error:', error);
-            showNotification(error.message || 'Помилка завантаження архіву', 'error');
-        } finally {
-            state.archive.loading = false;
-            updateArchiveUI();
-        }
-    }
-
-    function updateArchiveFilters() {
-        const personFilter = document.getElementById('archive-person-filter');
-        const typeFilter = document.getElementById('archive-type-filter');
-
-        // Update person filter options
-        personFilter.innerHTML = '<option value="">Всі особи</option>';
-        state.archive.available_persons.forEach(person => {
-            const option = document.createElement('option');
-            option.value = person;
-            option.textContent = person;
-            option.selected = person === state.archive.filters.person_filter;
-            personFilter.appendChild(option);
-        });
-
-        // Update type filter options
-        typeFilter.innerHTML = '<option value="">Всі типи</option>';
-        state.archive.available_types.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type === 'manual' ? 'Ручний ввід' : type;
-            option.selected = type === state.archive.filters.analysis_type;
-            typeFilter.appendChild(option);
-        });
-
-        // Set current filter values
-        document.getElementById('archive-search').value = state.archive.filters.search;
-        document.getElementById('archive-date-from').value = state.archive.filters.date_from;
-        document.getElementById('archive-date-to').value = state.archive.filters.date_to;
-    }
-
-    function renderArchiveList() {
-        const archiveList = document.getElementById('archive-list');
-        const archiveCount = document.getElementById('archive-count');
-
-        archiveCount.textContent = state.archive.pagination.total;
-
-        if (state.archive.analyses.length === 0) {
-            archiveList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="fas fa-archive"></i>
-                    </div>
-                    <p>Архів аналізів порожній</p>
-                </div>
-            `;
-            return;
-        }
-
-        archiveList.innerHTML = state.archive.analyses.map(analysis => {
-            const date = new Date(analysis.created_at).toLocaleDateString('uk-UA');
-            const time = new Date(analysis.created_at).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
-
-            return `
-                <div class="archive-item" data-analysis-id="${analysis.id}">
-                    <div class="archive-item-header">
-                        <div class="archive-item-title">
-                            <i class="fas fa-brain"></i>
-                            <span>${analysis.title}</span>
-                        </div>
-                        <div class="archive-item-actions">
-                            <button class="btn-icon" onclick="loadArchiveAnalysis(${analysis.id})" title="Завантажити">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" onclick="deleteArchiveAnalysis(${analysis.id})" title="Видалити">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="archive-item-meta">
-                        <span class="archive-date">
-                            <i class="fas fa-calendar"></i>
-                            ${date} о ${time}
-                        </span>
-                        ${analysis.person_focus ? `
-                            <span class="archive-person">
-                                <i class="fas fa-user"></i>
-                                ${analysis.person_focus}
-                            </span>
-                        ` : ''}
-                        ${analysis.tokens_estimated ? `
-                            <span class="archive-tokens">
-                                <i class="fas fa-coins"></i>
-                                ${analysis.tokens_estimated} токенів
-                            </span>
-                        ` : ''}
-                    </div>
-                    <div class="archive-item-preview">
-                        ${analysis.negotiation_title || 'Без назви переговорів'}
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function updateArchivePagination() {
-        const pagination = document.getElementById('archive-pagination');
-        const pageInfo = document.getElementById('archive-page-info');
-        const prevBtn = document.getElementById('archive-prev-page');
-        const nextBtn = document.getElementById('archive-next-page');
-
-        if (state.archive.pagination.totalPages <= 1) {
-            pagination.style.display = 'none';
-            return;
-        }
-
-        pagination.style.display = 'flex';
-        pageInfo.textContent = `${state.archive.pagination.page} / ${state.archive.pagination.totalPages}`;
-
-        prevBtn.disabled = state.archive.pagination.page === 1;
-        nextBtn.disabled = state.archive.pagination.page === state.archive.pagination.totalPages;
-    }
-
-    function updateArchiveUI() {
-        const archiveList = document.getElementById('archive-list');
-
-        if (state.archive.loading) {
-            archiveList.innerHTML = `
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <p>Завантаження архіву...</p>
-                </div>
-            `;
-        }
-    }
-
-    async function applyArchiveFilters() {
-        state.archive.filters = {
-            search: document.getElementById('archive-search').value.trim(),
-            person_filter: document.getElementById('archive-person-filter').value,
-            analysis_type: document.getElementById('archive-type-filter').value,
-            date_from: document.getElementById('archive-date-from').value,
-            date_to: document.getElementById('archive-date-to').value
-        };
-
-        state.archive.pagination.page = 1;
-        await loadArchive(state.currentClient?.id);
-    }
-
-    function clearArchiveFilters() {
-        state.archive.filters = {
-            search: '',
-            person_filter: '',
-            analysis_type: '',
-            date_from: '',
-            date_to: ''
-        };
-
-        document.getElementById('archive-search').value = '';
-        document.getElementById('archive-person-filter').value = '';
-        document.getElementById('archive-type-filter').value = '';
-        document.getElementById('archive-date-from').value = '';
-        document.getElementById('archive-date-to').value = '';
-
-        state.archive.pagination.page = 1;
-        loadArchive(state.currentClient?.id);
-    }
-
-    async function loadArchiveAnalysis(analysisId) {
-        try {
-            showNotification('Завантаження аналізу...', 'info');
-
-            // Find the analysis in archive
-            const analysis = state.archive.analyses.find(a => a.id === analysisId);
-            if (!analysis) {
-                throw new Error('Аналіз не знайдено');
-            }
-
-            // Set as current analysis and display
-            state.currentAnalysis = {
-                id: analysis.id,
-                title: analysis.title,
-                content: analysis.original_text,
-                highlights: analysis.highlights || [],
-                summary: analysis.summary || {},
-                barometer: analysis.barometer || {},
-                personas: analysis.personas || [],
-                insights: analysis.insights || {},
-                person_focus: analysis.person_focus
-            };
-
-            showAnalysisResults();
-            showNotification('Аналіз завантажено з архіву', 'success');
-
-        } catch (error) {
-            console.error('Archive analysis loading error:', error);
-            showNotification(error.message || 'Помилка завантаження аналізу', 'error');
-        }
-    }
-
-    async function deleteArchiveAnalysis(analysisId) {
-        if (!confirm('Видалити цей аналіз з архіву? Цю дію неможливо скасувати.')) {
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/negotiations/analysis/${analysisId}`, {
-                method: 'DELETE'
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Помилка видалення аналізу');
-            }
-
-            // Reload archive
-            await loadArchive(state.currentClient?.id);
-            showNotification('Аналіз видалено з архіву', 'success');
-
-        } catch (error) {
-            console.error('Archive analysis deletion error:', error);
-            showNotification(error.message || 'Помилка видалення аналізу', 'error');
-        }
-    }
-
-    function navigateArchive(direction) {
-        if (direction === 'prev' && state.archive.pagination.page > 1) {
-            state.archive.pagination.page--;
-        } else if (direction === 'next' && state.archive.pagination.page < state.archive.pagination.totalPages) {
-            state.archive.pagination.page++;
-        }
-
-        loadArchive(state.currentClient?.id);
-    }
-
-    function toggleArchiveFilters() {
-        const filters = document.getElementById('archive-filters');
-        const isVisible = filters.style.display !== 'none';
-        filters.style.display = isVisible ? 'none' : 'block';
-    }
-
     // ===== Global Functions =====
     window.showClientForm = showClientForm;
     window.selectClient = selectClient;
@@ -6805,10 +6408,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
     window.exportRecommendations = exportRecommendations;
     window.showCustomConfirmation = showCustomConfirmation;
     window.closeConfirmationModal = closeConfirmationModal;
-
-    // Archive functions
-    window.loadArchiveAnalysis = loadArchiveAnalysis;
-    window.deleteArchiveAnalysis = deleteArchiveAnalysis;
     
     // ===== Debug Testing Functions =====
     window.testClientFunctions = function() {
@@ -7470,8 +7069,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         const container = elements.teamList;
         if (!container) return;
 
-        updateTeamsCounter();
-
         const teams = state.team.list || [];
         if (!teams.length) {
             container.innerHTML = `
@@ -7712,13 +7309,11 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             compensation_currency: member.compensation?.currency || 'UAH'
         });
         renderManualTeamEditor();
-        updateTeamSizeIndicator();
     }
 
     function removeManualTeamMember(index) {
         state.team.manualDraft.splice(index, 1);
         renderManualTeamEditor();
-        updateTeamSizeIndicator();
     }
 
     function renderManualTeamEditor() {
@@ -7804,22 +7399,21 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
 
         const payload = {
             client_id: state.currentClient.id,
-            title: elements.manualTeamTitle?.value?.trim() || `Команда ${state.currentClient.company}`,
-            description: elements.manualTeamDescription?.value?.trim() || '',
+            title: state.team.manualTitle?.trim() || `Команда ${state.currentClient.company}`,
+            description: state.team.manualDescription || '',
             source: 'manual',
             members
         };
 
         try {
             await createTeam(payload, { setActive: true });
-            showNotification('Команду збережено успішно!', 'success');
-
-            // Clear draft
+            showNotification('Команду збережено', 'success');
             state.team.manualDraft = [];
+            state.team.manualTitle = '';
+            state.team.manualDescription = '';
             if (elements.manualTeamTitle) elements.manualTeamTitle.value = '';
             if (elements.manualTeamDescription) elements.manualTeamDescription.value = '';
             renderManualTeamEditor();
-            updateTeamSizeIndicator();
         } catch (error) {
             console.error('❌ saveManualTeam error:', error);
             showNotification(error.message || 'Не вдалося зберегти команду', 'error');
@@ -7910,134 +7504,8 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         return data.team;
     }
 
-    // ===== New Team Hub Functions =====
-    function clearTeamDraft() {
-        state.team.manualDraft = [];
-        elements.manualTeamTitle.value = '';
-        elements.manualTeamDescription.value = '';
-        renderManualTeamEditor();
-        updateTeamSizeIndicator();
-        showNotification('Чернетку команди очищено', 'info');
-    }
-
-    function exportTeamStructure() {
-        const selectedTeam = state.team.current;
-        if (!selectedTeam) {
-            showNotification('Оберіть команду для експорту', 'warning');
-            return;
-        }
-
-        const exportData = {
-            name: selectedTeam.name,
-            description: selectedTeam.description,
-            members: selectedTeam.members || [],
-            exported_at: new Date().toISOString(),
-            exported_by: 'TeamPulse Turbo'
-        };
-
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `team-${selectedTeam.name.toLowerCase().replace(/\s+/g, '-')}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        showNotification('Структуру команди експортовано', 'success');
-    }
-
-    function updateTeamSizeIndicator() {
-        const size = state.team.manualDraft.length;
-        const sizeNumber = elements.teamSizeIndicator?.querySelector('.size-number');
-        if (sizeNumber) {
-            sizeNumber.textContent = size;
-        }
-    }
-
-    function updateTeamsCounter() {
-        const count = state.team.list.length;
-        if (elements.teamsCounter) {
-            elements.teamsCounter.textContent = count;
-        }
-    }
-
     function renderSalaryInsightsHistory() {
         // TODO: включити відображення історії salary аналізів
-    }
-
-    // ===== System Health Check =====
-    function runSystemHealthCheck() {
-        const healthStatus = {
-            ui: checkUIComponents(),
-            api: checkAPIEndpoints(),
-            navigation: checkNavigation(),
-            teamHub: checkTeamHub()
-        };
-
-        console.log('🔍 System Health Check:', healthStatus);
-
-        const errors = [];
-        Object.entries(healthStatus).forEach(([component, status]) => {
-            if (!status.healthy) {
-                errors.push(`${component}: ${status.error}`);
-            }
-        });
-
-        if (errors.length > 0) {
-            console.warn('⚠️ System health issues detected:', errors);
-        } else {
-            console.log('✅ All systems healthy');
-        }
-    }
-
-    function checkUIComponents() {
-        const requiredElements = [
-            'teamList', 'manualTeamEditor', 'teamPreview',
-            'quickTeamAddBtn', 'teamClearDraftBtn', 'exportTeamStructureBtn',
-            'teamSizeIndicator', 'teamsCounter'
-        ];
-
-        const missing = requiredElements.filter(id => !elements[id]);
-        return {
-            healthy: missing.length === 0,
-            error: missing.length > 0 ? `Missing elements: ${missing.join(', ')}` : null
-        };
-    }
-
-    function checkAPIEndpoints() {
-        // This would normally check API connectivity
-        return {
-            healthy: true,
-            error: null
-        };
-    }
-
-    function checkNavigation() {
-        const requiredFunctions = [
-            showSection, selectProduct, updateRightPanelVisibility,
-            shouldAllowNavigation, handlePostNavigation
-        ];
-
-        const missing = requiredFunctions.filter(fn => typeof fn !== 'function');
-        return {
-            healthy: missing.length === 0,
-            error: missing.length > 0 ? `Missing functions: ${missing.length}` : null
-        };
-    }
-
-    function checkTeamHub() {
-        const requiredFunctions = [
-            addManualTeamMember, removeManualTeamMember, saveManualTeam,
-            clearTeamDraft, exportTeamStructure, updateTeamSizeIndicator, updateTeamsCounter
-        ];
-
-        const missing = requiredFunctions.filter(fn => typeof fn !== 'function');
-        return {
-            healthy: missing.length === 0,
-            error: missing.length > 0 ? `Missing Team Hub functions: ${missing.length}` : null
-        };
     }
 
     // ===== RACI Dashboard =====
@@ -8841,13 +8309,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         
         // Bind events
         bindEvents();
-
-        // Initialize team indicators
-        updateTeamSizeIndicator();
-        updateTeamsCounter();
-
-        // Run system health check
-        runSystemHealthCheck();
 
         // Prepare client wizard
         renderClientStepper();

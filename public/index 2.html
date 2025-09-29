@@ -18,7 +18,6 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="/styles-neon.css">
-    <link rel="stylesheet" href="/archive-styles.css">
     
     <!-- Meta tags for better SEO -->
     <meta name="description" content="Advanced AI-powered negotiation analysis tool for detecting manipulation and cognitive biases">
@@ -92,71 +91,7 @@
                         <!-- Dynamic content -->
                     </div>
                 </div>
-
-                <!-- Analysis Archive Section -->
-                <div class="archive-section" id="archive-section" style="display: none;">
-                    <div class="archive-header">
-                        <h4>
-                            <i class="fas fa-archive"></i>
-                            Архів аналізів
-                            <span class="fragment-counter" id="archive-count">0</span>
-                        </h4>
-                        <button class="btn-icon archive-toggle" id="archive-filters-toggle" title="Фільтри">
-                            <i class="fas fa-filter"></i>
-                        </button>
-                    </div>
-
-                    <!-- Archive Filters -->
-                    <div class="archive-filters" id="archive-filters" style="display: none;">
-                        <div class="filter-row">
-                            <input type="text" id="archive-search" placeholder="Пошук в архіві..." class="archive-search-input">
-                        </div>
-                        <div class="filter-row">
-                            <select id="archive-person-filter" class="archive-filter-select">
-                                <option value="">Всі особи</option>
-                            </select>
-                        </div>
-                        <div class="filter-row">
-                            <select id="archive-type-filter" class="archive-filter-select">
-                                <option value="">Всі типи</option>
-                            </select>
-                        </div>
-                        <div class="filter-row">
-                            <input type="date" id="archive-date-from" class="archive-date-input" placeholder="Від">
-                            <input type="date" id="archive-date-to" class="archive-date-input" placeholder="До">
-                        </div>
-                        <div class="filter-actions">
-                            <button class="btn-secondary btn-sm" id="clear-archive-filters">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <button class="btn-primary btn-sm" id="apply-archive-filters">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Archive List -->
-                    <div class="archive-list" id="archive-list">
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="fas fa-archive"></i>
-                            </div>
-                            <p>Архів аналізів з'явиться після вибору клієнта</p>
-                        </div>
-                    </div>
-
-                    <!-- Archive Pagination -->
-                    <div class="archive-pagination" id="archive-pagination" style="display: none;">
-                        <button class="btn-icon" id="archive-prev-page" title="Попередня сторінка">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <span class="pagination-info" id="archive-page-info">1 / 1</span>
-                        <button class="btn-icon" id="archive-next-page" title="Наступна сторінка">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-
+                
             </div>
         </aside>
 
@@ -263,62 +198,8 @@
                 <!-- Welcome Screen -->
                 <div id="welcome-screen" class="welcome-screen">
                     <div class="welcome-content">
-                        <div class="welcome-header">
-                            <h1>👋 Ласкаво просимо до TeamPulse Turbo</h1>
-                            <p class="welcome-subtitle">Потужний AI-інструмент для аналізу переговорів та виявлення маніпуляцій</p>
-                        </div>
-
-                        <div class="welcome-features">
-                            <div class="feature-card">
-                                <div class="feature-icon">
-                                    <i class="fas fa-brain"></i>
-                                </div>
-                                <h3>AI Аналіз переговорів</h3>
-                                <p>Виявлення маніпуляцій, когнітивних упереджень та софізмів у переговорах</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">
-                                    <i class="fas fa-user-focus"></i>
-                                </div>
-                                <h3>Персональний фокус</h3>
-                                <p>Аналіз репік конкретних осіб для глибшого розуміння їх мотивацій</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">
-                                    <i class="fas fa-archive"></i>
-                                </div>
-                                <h3>Архів аналізів</h3>
-                                <p>Зберігання всіх аналізів з зручним пошуком та фільтрацією</p>
-                            </div>
-                        </div>
-
-                        <div class="welcome-getting-started">
-                            <h3>Швидкий старт</h3>
-                            <div class="steps-list">
-                                <div class="step-item">
-                                    <span class="step-number">1</span>
-                                    <div class="step-content">
-                                        <h4>Створіть профіль клієнта</h4>
-                                        <p>Додайте інформацію про компанію та контекст переговорів</p>
-                                    </div>
-                                </div>
-                                <div class="step-item">
-                                    <span class="step-number">2</span>
-                                    <div class="step-content">
-                                        <h4>Завантажте текст переговорів</h4>
-                                        <p>Вставте текст або завантажте файл з розмовою</p>
-                                    </div>
-                                </div>
-                                <div class="step-item">
-                                    <span class="step-number">3</span>
-                                    <div class="step-content">
-                                        <h4>Отримайте AI аналіз</h4>
-                                        <p>Переглядайте виявлені проблеми та рекомендації</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                        <h1>👋 Ласкаво просимо до TeamPulse Turbo</h1>
+                        <p>Потужний AI-інструмент для аналізу переговорів та виявлення маніпуляцій. Створіть профіль клієнта та почніть аналіз.</p>
                         <div class="welcome-actions">
                             <button class="btn-primary btn-large" id="welcome-new-client">
                                 <i class="fas fa-user-plus"></i>
@@ -326,7 +207,7 @@
                             </button>
                             <button class="btn-secondary btn-large" id="welcome-help">
                                 <i class="fas fa-play-circle"></i>
-                                Переглянути демо
+                                Онбординг
                             </button>
                         </div>
                     </div>
@@ -676,26 +557,6 @@
                                 </div>
                             </div>
 
-                            <!-- Analysis Options -->
-                            <div class="analysis-options">
-                                <div class="option-group">
-                                    <label for="person-focus-input">
-                                        <i class="fas fa-user"></i>
-                                        Фокус на конкретній особі (опціонально):
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="person-focus-input"
-                                        placeholder="Ім'я особи для аналізу (наприклад: Олег, Директор, Клієнт)"
-                                        class="person-focus-input"
-                                    >
-                                    <small class="option-hint">
-                                        <i class="fas fa-info-circle"></i>
-                                        Залиште порожнім для аналізу всіх учасників
-                                    </small>
-                                </div>
-                            </div>
-
                             <!-- Analysis Action -->
                             <div class="analysis-action">
                                 <button class="btn-primary btn-large btn-full" id="start-analysis-btn" disabled>
@@ -963,147 +824,76 @@
 
                 
                 <!-- Team Hub -->
-                <div id="team-hub" class="tab-pane product-section" style="display: none;">
-                    <div class="full-width-header">
-                        <div class="header-content">
-                            <div class="header-primary">
-                                <div class="header-icon">
-                                    <i class="fas fa-people-group"></i>
-                                </div>
-                                <div class="header-text">
-                                    <h1>Team Hub</h1>
-                                    <p>Управління командами, ролями та структурою організації</p>
-                                </div>
+                <div id="team-hub" class="tab-pane" style="display: none;">
+                    <div class="content-header">
+                        <h1>
+                            <i class="fas fa-people-group"></i>
+                            Team Hub
+                        </h1>
+                        <div class="content-actions">
+                            <button class="btn-secondary" id="import-team-json-btn">
+                                <i class="fas fa-upload"></i>
+                                Імпорт JSON
+                            </button>
+                            <input type="file" id="team-json-input" accept=".json" style="display: none;">
+                            <button class="btn-primary" id="open-manual-team-editor">
+                                <i class="fas fa-user-edit"></i>
+                                Додати вручну
+                            </button>
+                        </div>
+                    </div>
+                    <div class="team-hub-grid">
+                        <div class="team-panel">
+                            <div class="panel-header">
+                                <i class="fas fa-list"></i>
+                                <h2>Команди клієнта</h2>
                             </div>
-                            <div class="header-actions">
-                                <div class="action-group">
-                                    <button class="btn-ghost" id="import-team-json-btn">
-                                        <i class="fas fa-upload"></i>
-                                        Імпорт JSON
-                                    </button>
-                                    <button class="btn-primary" id="open-manual-team-editor">
-                                        <i class="fas fa-user-plus"></i>
-                                        Створити команду
-                                    </button>
+                            <div id="team-list" class="team-list">
+                                <div class="empty-state">
+                                    <div class="empty-icon"><i class="fas fa-users"></i></div>
+                                    <p>Створіть або імпортуйте першу команду</p>
                                 </div>
                             </div>
                         </div>
-                        <input type="file" id="team-json-input" accept=".json" style="display: none;">
-                    </div>
-                    <div class="full-width-container">
-                        <div class="team-hub-layout">
-                            <!-- Left Sidebar - Teams List -->
-                            <div class="teams-sidebar">
-                                <div class="sidebar-section">
-                                    <div class="section-header">
-                                        <h3>
-                                            <i class="fas fa-users"></i>
-                                            Команди
-                                        </h3>
-                                        <span class="team-counter" id="teams-counter">0</span>
-                                    </div>
-                                    <div id="team-list" class="teams-list">
-                                        <div class="empty-state compact">
-                                            <div class="empty-icon"><i class="fas fa-users-gear"></i></div>
-                                            <p>Створіть першу команду</p>
-                                            <button class="btn-micro" id="quick-team-add">
-                                                <i class="fas fa-plus"></i>
-                                                Додати
-                                            </button>
-                                        </div>
-                                    </div>
+                        <div class="team-panel">
+                            <div class="panel-header">
+                                <i class="fas fa-pen-to-square"></i>
+                                <h2>Редактор команди</h2>
+                            </div>
+                            <div class="meta-block">
+                                <label for="manual-team-title">Назва команди</label>
+                                <input type="text" id="manual-team-title" placeholder="Наприклад: Product Growth">
+                            </div>
+                            <div class="meta-block">
+                                <label for="manual-team-description">Опис / фокус</label>
+                                <textarea id="manual-team-description" rows="2" placeholder="Основні цілі та область відповідальності"></textarea>
+                            </div>
+                            <div id="manual-team-editor" class="manual-team-editor">
+                                <div class="empty-state">
+                                    <div class="empty-icon"><i class="fas fa-user-gear"></i></div>
+                                    <p>Додайте ролі та обов'язки для створення команди</p>
                                 </div>
                             </div>
-
-                            <!-- Main Content Area -->
-                            <div class="team-main-content">
-                                <div class="content-grid">
-                                    <!-- Team Editor Panel -->
-                                    <div class="team-editor-panel">
-                                        <div class="panel-header modern">
-                                            <div class="header-title">
-                                                <i class="fas fa-pen-to-square"></i>
-                                                <h3>Конструктор команди</h3>
-                                            </div>
-                                            <div class="header-status">
-                                                <span class="status-indicator draft">Draft</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="panel-content">
-                                            <div class="form-section">
-                                                <div class="form-row">
-                                                    <div class="form-field">
-                                                        <label for="manual-team-title">Назва команди</label>
-                                                        <input type="text" id="manual-team-title" placeholder="Product Growth Team">
-                                                    </div>
-                                                    <div class="form-field">
-                                                        <label for="team-size-indicator">Розмір</label>
-                                                        <div class="size-indicator" id="team-size-indicator">
-                                                            <span class="size-number">0</span>
-                                                            <span class="size-label">членів</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-field">
-                                                    <label for="manual-team-description">Область відповідальності</label>
-                                                    <textarea id="manual-team-description" rows="2" placeholder="Основні цілі, проекти та KPI"></textarea>
-                                                </div>
-                                            </div>
-
-                                            <div class="members-section">
-                                                <div class="section-header">
-                                                    <h4>Ролі та учасники</h4>
-                                                    <button class="btn-micro" id="add-manual-member">
-                                                        <i class="fas fa-plus"></i>
-                                                        Додати роль
-                                                    </button>
-                                                </div>
-                                                <div id="manual-team-editor" class="team-editor-grid">
-                                                    <div class="empty-state">
-                                                        <div class="empty-icon"><i class="fas fa-user-gear"></i></div>
-                                                        <p>Додайте ролі та обов'язки</p>
-                                                        <button class="btn-ghost" onclick="document.getElementById('add-manual-member').click()">
-                                                            <i class="fas fa-plus"></i>
-                                                            Створити роль
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="panel-actions">
-                                                <button class="btn-ghost" id="team-clear-draft">
-                                                    <i class="fas fa-trash"></i>
-                                                    Очистити
-                                                </button>
-                                                <button class="btn-primary" id="team-save-manual">
-                                                    <i class="fas fa-save"></i>
-                                                    Зберегти команду
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Team Preview Panel -->
-                                    <div class="team-preview-panel">
-                                        <div class="panel-header modern">
-                                            <div class="header-title">
-                                                <i class="fas fa-diagram-project"></i>
-                                                <h3>Структура команди</h3>
-                                            </div>
-                                            <div class="header-actions">
-                                                <button class="btn-micro" id="export-team-structure" title="Експорт">
-                                                    <i class="fas fa-download"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div id="team-preview" class="team-preview-content">
-                                            <div class="empty-state">
-                                                <div class="empty-icon"><i class="fas fa-diagram-project"></i></div>
-                                                <p>Структура команди з'явиться тут</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="editor-actions">
+                                <button class="btn-secondary" id="add-manual-member">
+                                    <i class="fas fa-plus"></i>
+                                    Додати роль
+                                </button>
+                                <button class="btn-primary" id="team-save-manual">
+                                    <i class="fas fa-save"></i>
+                                    Зберегти команду
+                                </button>
+                            </div>
+                        </div>
+                        <div class="team-panel">
+                            <div class="panel-header">
+                                <i class="fas fa-eye"></i>
+                                <h2>Попередній перегляд</h2>
+                            </div>
+                            <div id="team-preview" class="team-preview">
+                                <div class="empty-state">
+                                    <div class="empty-icon"><i class="fas fa-diagram-project"></i></div>
+                                    <p>Оберіть команду щоб побачити структуру</p>
                                 </div>
                             </div>
                         </div>
@@ -1622,47 +1412,28 @@
                     <div class="onboarding-copy">
                         <div class="step-icon">🚀</div>
                         <h2>Ласкаво просимо до TeamPulse Turbo!</h2>
-                        <p>Революційний AI-інструмент для аналізу переговорів та виявлення маніпуляцій, побудований на основі <strong>Kaminskyi AI</strong> — синтетичної полімаршрутної нейромережі з адаптивним навчанням.</p>
-
+                        <p>Потужний AI-інструмент для аналізу переговорів та виявлення маніпуляцій, побудований на основі <strong>Kaminskyi AI</strong> &mdash; синтетичної полімаршрутної нейромережі, що адаптується під кожен кейс.</p>
                         <div class="step-feature-grid">
-                            <div class="feature-item enhanced">
-                                <i class="fas fa-brain neon-icon"></i>
+                            <div class="feature-item">
+                                <i class="fas fa-brain"></i>
                                 <div>
                                     <h4>AI-аналіз маніпуляцій</h4>
-                                    <p>Виявлення 47+ типів маніпуляцій з точністю 94.2%</p>
-                                    <span class="feature-badge">Real-time</span>
+                                    <p>Автоматичне виявлення понад 30 типів маніпуляцій.</p>
                                 </div>
                             </div>
-                            <div class="feature-item enhanced">
-                                <i class="fas fa-chart-line neon-icon"></i>
+                            <div class="feature-item">
+                                <i class="fas fa-chart-line"></i>
                                 <div>
                                     <h4>Барометр складності</h4>
-                                    <p>Теплові карти ризиків та прогнозування поведінки</p>
-                                    <span class="feature-badge">Predictive</span>
+                                    <p>Оцінка ризиків переговорів і теплові карти викривлень.</p>
                                 </div>
                             </div>
-                            <div class="feature-item enhanced">
-                                <i class="fas fa-lightbulb neon-icon"></i>
+                            <div class="feature-item">
+                                <i class="fas fa-lightbulb"></i>
                                 <div>
                                     <h4>Персоналізовані поради</h4>
-                                    <p>Контрстратегії на основі психопрофілю опонента</p>
-                                    <span class="feature-badge">Smart</span>
+                                    <p>Професійні відповіді і контртактики для вашої команди.</p>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="success-metrics">
-                            <div class="metric-showcase">
-                                <span class="metric-value glow">+87%</span>
-                                <span class="metric-label">Успішність переговорів</span>
-                            </div>
-                            <div class="metric-showcase">
-                                <span class="metric-value glow">12min</span>
-                                <span class="metric-label">Час аналізу</span>
-                            </div>
-                            <div class="metric-showcase">
-                                <span class="metric-value glow">50K+</span>
-                                <span class="metric-label">Проаналізовано</span>
                             </div>
                         </div>
                     </div>
@@ -2168,6 +1939,5 @@
     <!-- Scripts -->
     <script src="/auth.js"></script>
     <script src="/app-neon.js"></script>
-    <script src="/archive-extension.js"></script>
 </body>
 </html>

@@ -204,6 +204,42 @@ export async function initializeDatabase() {
       );
     `);
 
+    // New tables for independent negotiation system
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS negotiations (
+        id BIGSERIAL PRIMARY KEY,
+        client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        negotiation_type TEXT DEFAULT 'sales',
+        status TEXT DEFAULT 'active',
+        outcome TEXT,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS negotiation_analyses (
+        id BIGSERIAL PRIMARY KEY,
+        negotiation_id BIGINT REFERENCES negotiations(id) ON DELETE CASCADE,
+        title TEXT,
+        source TEXT,
+        original_filename TEXT,
+        original_text TEXT,
+        tokens_estimated INTEGER,
+        highlights JSONB DEFAULT '[]'::jsonb,
+        summary JSONB DEFAULT '{}'::jsonb,
+        barometer JSONB DEFAULT '{}'::jsonb,
+        personas JSONB DEFAULT '[]'::jsonb,
+        insights JSONB DEFAULT '{}'::jsonb,
+        highlighted_text TEXT,
+        person_focus TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_analyses_client ON analyses(client_id);
     `);
@@ -224,6 +260,23 @@ export async function initializeDatabase() {
     `);
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_audit_events_entity ON audit_events(entity_type, entity_id);
+    `);
+
+    // Indices for new negotiation tables
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_negotiations_client ON negotiations(client_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_negotiations_status ON negotiations(status);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_negotiations_created_at ON negotiations(created_at DESC);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_negotiation_analyses_negotiation ON negotiation_analyses(negotiation_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_negotiation_analyses_created_at ON negotiation_analyses(created_at DESC);
     `);
 
     await client.query('COMMIT');

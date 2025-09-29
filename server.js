@@ -23,6 +23,7 @@ import analyzeRoutes from './routes/analyze.js';
 import clientsRoutes from './routes/clients.js';
 import adviceRoutes from './routes/advice.js';
 import teamsRoutes from './routes/teams.js';
+import negotiationsRoutes from './routes/negotiations.js';
 import auditRoutes from './routes/audit.js';
 import { requestContext } from './middleware/requestContext.js';
 import { initializeDatabase, get as dbGet, run as dbRun } from './utils/db.js';
@@ -208,6 +209,7 @@ app.get(`/api/${API_VERSION}/info`, (req, res) => {
       analysis: true,
       teams: true,
       clients: true,
+      negotiations: true,
       advice: true,
       audit: true
     }
@@ -410,6 +412,7 @@ app.post('/api/admin/cleanup-database', authMiddleware, async (req, res) => {
 app.use(`/api/${API_VERSION}/analyze`, authMiddleware, analysisLimiter, analyzeRoutes);
 app.use(`/api/${API_VERSION}/clients`, authMiddleware, clientsRoutes);
 app.use(`/api/${API_VERSION}/teams`, authMiddleware, teamsRoutes);
+app.use(`/api/${API_VERSION}/negotiations`, authMiddleware, negotiationsRoutes);
 app.use(`/api/${API_VERSION}/advice`, authMiddleware, adviceRoutes);
 app.use(`/api/${API_VERSION}/audit`, authMiddleware, auditRoutes);
 
@@ -417,6 +420,7 @@ app.use(`/api/${API_VERSION}/audit`, authMiddleware, auditRoutes);
 app.use('/api/analyze', authMiddleware, analysisLimiter, analyzeRoutes);
 app.use('/api/clients', authMiddleware, clientsRoutes);
 app.use('/api/teams', authMiddleware, teamsRoutes);
+app.use('/api/negotiations', authMiddleware, negotiationsRoutes);
 app.use('/api/advice', authMiddleware, adviceRoutes);
 app.use('/api/audit', authMiddleware, auditRoutes);
 
