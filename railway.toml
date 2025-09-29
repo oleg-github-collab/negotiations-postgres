@@ -1,6 +1,6 @@
 # Railway Configuration for TeamPulse Turbo
 [build]
-builder = "docker"
+builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
