@@ -66,6 +66,10 @@
         salary: {
             latest: null
         },
+        guide: {
+            steps: [],
+            modules: {}
+        },
         ui: {
             leftSidebarCollapsed: false,
             rightSidebarCollapsed: false,
@@ -80,7 +84,8 @@
                 maxSeverity: 3,
                 searchText: ''
             },
-            filtersVisible: false
+            filtersVisible: false,
+            clientFormStep: 'basics'
         }
     };
 
@@ -149,6 +154,81 @@
         'salary-dashboard': { label: 'Аналітика зарплат', icon: 'fas fa-sack-dollar' }
     };
 
+    const DEFAULT_CLIENT_GUIDE = {
+        steps: [
+            {
+                id: 'basics',
+                title: 'Базові реквізити',
+                description: 'Назва компанії та контактний контекст для збереження в CRM.',
+                fields: ['company', 'negotiator', 'sector', 'company_size'],
+                required: ['company']
+            },
+            {
+                id: 'negotiation-scope',
+                title: 'Контекст переговорів',
+                description: 'Тип угоди, вартість та часові рамки для правильного підбору тактик.',
+                fields: ['negotiation_type', 'deal_value', 'timeline', 'weekly_hours'],
+                required: ['negotiation_type']
+            },
+            {
+                id: 'goals',
+                title: 'Цілі та критерії',
+                description: 'Формалізуйте очікування, KPI і обмеження обох сторін.',
+                fields: ['goal', 'decision_criteria', 'constraints', 'deadlines', 'user_goals', 'client_goals'],
+                required: ['goal']
+            },
+            {
+                id: 'intelligence',
+                title: 'Ринковий інтелект',
+                description: 'Зафіксуйте конкурентів, переваги та історію взаємодій.',
+                fields: ['competitors', 'competitive_advantage', 'market_position', 'previous_interactions', 'offered_services', 'notes'],
+                required: []
+            }
+        ],
+        modules: {
+            'analysis-dashboard': {
+                title: 'Аналіз переговорів',
+                goal: 'Швидко виявляйте маніпуляції, ризики та ключові фрагменти з переговорів.',
+                steps: [
+                    'Оберіть клієнта або створіть новий профіль.',
+                    'Вставте транскрипт або завантажте документ для аналізу.',
+                    'Перегляньте знайдені маніпуляції та збережіть важливі фрагменти.',
+                    'Сформуйте робочу область для підготовки до відповіді.'
+                ]
+            },
+            'team-hub': {
+                title: 'Team Hub',
+                goal: 'Структуруйте команду клієнта для подальшого аналізу відповідальності та компенсацій.',
+                steps: [
+                    'Імпортуйте дані з JSON або додайте учасників вручну.',
+                    'Вкажіть ролі, завантаженість, KPI та ключові нотатки по команді.',
+                    'Збережіть команду, щоб синхронізувати її з RACI та Salary Insights.',
+                    'Оновлюйте профілі учасників після кожної сесії переговорів.'
+                ]
+            },
+            'raci-dashboard': {
+                title: 'RACI Matrix',
+                goal: 'Порівняйте поточний стан відповідальності з цільовою моделлю та визначте прогалини.',
+                steps: [
+                    'Обирайте команду, синхронізовану з Team Hub.',
+                    'Перегляньте поточний та ідеальний розподіл відповідальності.',
+                    'Вивчіть блоки "Ключові розриви" та "Швидкі перемоги" для плану дій.',
+                    'Збережіть матрицю для аудиту змін та наступних сесій.'
+                ]
+            },
+            'salary-dashboard': {
+                title: 'Salary Insights',
+                goal: 'Оцініть компенсації, ринкові діапазони та завантаженість для кожної ролі.',
+                steps: [
+                    'Синхронізуйте дані з Team Hub або додайте учасників вручну.',
+                    'Заповніть компенсаційні параметри та валюту для кожної ролі.',
+                    'Перегляньте рекомендації щодо оптимізації балансу та рентабельності.',
+                    'Експортуйте інсайти для фінансових переговорів з клієнтом.'
+                ]
+            }
+        }
+    };
+
     const elements = {
         // Layout
         sidebarLeft: $('#sidebar-left'),
@@ -200,7 +280,14 @@
         clientFormTitle: $('#client-form-title'),
         saveClientBtn: $('#save-client-btn'),
         cancelClientBtn: $('#cancel-client-btn'),
-        
+        clientWizard: $('#client-wizard'),
+        clientStepper: $('#client-stepper'),
+        clientStepTitle: $('#client-step-title'),
+        clientStepDescription: $('#client-step-description'),
+        clientStepCount: $('#client-step-count'),
+        clientNextStep: $('#client-next-step'),
+        clientPrevStep: $('#client-prev-step'),
+
         // Analysis
         textMethod: $('#text-method'),
         fileMethod: $('#file-method'),
@@ -1126,18 +1213,18 @@
     }
 
     function updateOnboardingStep() {
-        const maxSteps = 4;
-        const progress = (state.onboardingStep / maxSteps) * 100;
+        const totalSteps = $$('.onboarding-step').length || 1;
+        const progress = (state.onboardingStep / totalSteps) * 100;
         
         if (elements.onboardingProgress) {
             elements.onboardingProgress.style.width = `${progress}%`;
         }
         if (elements.progressText) {
-            elements.progressText.textContent = `Крок ${state.onboardingStep} з ${maxSteps}`;
+            elements.progressText.textContent = `Крок ${state.onboardingStep} з ${totalSteps}`;
         }
 
         // Show/hide steps
-        for (let i = 1; i <= maxSteps; i++) {
+        for (let i = 1; i <= totalSteps; i++) {
             const step = $(`#onboarding-step-${i}`);
             if (step) {
                 step.classList.toggle('active', i === state.onboardingStep);
@@ -1150,7 +1237,7 @@
             elements.prevStep.style.display = state.onboardingStep > 1 ? 'inline-flex' : 'none';
         }
         if (elements.nextStep) {
-            if (state.onboardingStep < maxSteps) {
+            if (state.onboardingStep < totalSteps) {
                 elements.nextStep.innerHTML = 'Далі <i class="fas fa-arrow-right"></i>';
             } else {
                 elements.nextStep.innerHTML = '<i class="fas fa-rocket"></i> Розпочати роботу';
@@ -1159,12 +1246,13 @@
     }
 
     function nextOnboardingStep() {
-        if (state.onboardingStep < 5) {
+        const totalSteps = $$('.onboarding-step').length || 1;
+        if (state.onboardingStep < totalSteps) {
             state.onboardingStep++;
             updateOnboardingStep();
-        } else {
-            completeOnboarding();
+            return;
         }
+        completeOnboarding();
     }
 
     function prevOnboardingStep() {
@@ -1341,6 +1429,9 @@
             const isActive = state.currentClient && idsMatch(state.currentClient.id, client.id);
             const avatar = (client.company || 'C')[0].toUpperCase();
             const analysisCount = client.analyses_count || 0;
+            const progressHtml = Array.isArray(client.progress) && client.progress.length
+                ? `<div class="client-progress">${client.progress.map(step => `<span class="client-progress-dot ${step.completed ? 'completed' : ''}" title="${escapeHtml(step.title)}"></span>`).join('')}</div>`
+                : '';
             
             console.log('🎨 Rendering client:', client.company, 'active:', isActive);
             
@@ -1354,6 +1445,7 @@
                             ${client.sector ? escapeHtml(client.sector) + ' • ' : ''}
                             ${analysisCount} аналізів
                         </div>
+                        ${progressHtml}
                     </div>
                     <div class="client-actions">
                         <button class="btn-icon history-client-btn" data-client-id="${client.id}" title="Історія аналізів">
@@ -1431,6 +1523,291 @@
         }
     }
 
+    function getGuideSteps() {
+        const steps = state.guide?.steps;
+        return Array.isArray(steps) && steps.length ? steps : DEFAULT_CLIENT_GUIDE.steps;
+    }
+
+    function getGuideModules() {
+        const modules = state.guide?.modules;
+        return modules && Object.keys(modules).length ? modules : DEFAULT_CLIENT_GUIDE.modules;
+    }
+
+    function collectClientFormData() {
+        const data = {};
+        const raw = {};
+        const inputs = $$('#client-form input, #client-form select, #client-form textarea');
+
+        inputs.forEach((input) => {
+            const fieldKey = getFieldKey(input);
+            if (!fieldKey) return;
+
+            const trimmedValue = typeof input.value === 'string' ? input.value.trim() : input.value;
+            raw[fieldKey] = trimmedValue;
+
+            if (trimmedValue === '' || trimmedValue === null || trimmedValue === undefined) {
+                return;
+            }
+
+            if (input.type === 'number') {
+                const numericValue = Number(trimmedValue);
+                if (!Number.isNaN(numericValue)) {
+                    data[fieldKey] = numericValue;
+                }
+            } else {
+                data[fieldKey] = trimmedValue;
+            }
+        });
+
+        return { data, raw };
+    }
+
+    function hasFormValue(field, formBundle) {
+        const rawValue = formBundle?.raw?.[field];
+        if (rawValue === null || rawValue === undefined) return false;
+        if (typeof rawValue === 'number') return !Number.isNaN(rawValue);
+        if (typeof rawValue === 'string') return rawValue.trim().length > 0;
+        return Boolean(rawValue);
+    }
+
+    function getFieldLabel(field) {
+        const selector = `label[for="${field.replace(/_/g, '-')}"]`;
+        const labelEl = document.querySelector(selector);
+        if (labelEl) {
+            return labelEl.textContent.replace('*', '').trim();
+        }
+        return field;
+    }
+
+    function highlightClientFields(fields) {
+        fields.forEach((field) => {
+            const selectorId = `#${field.replace(/_/g, '-')}`;
+            const selectorData = `[data-field="${field}"]`;
+            const input = document.querySelector(selectorId) || document.querySelector(selectorData);
+            if (input) {
+                input.classList.add('input-error');
+            }
+        });
+    }
+
+    function validateClientStep(stepId, formBundle) {
+        const steps = getGuideSteps();
+        const step = steps.find((item) => item.id === stepId);
+        if (!step) return [];
+
+        const requiredFields = step.required && step.required.length ? step.required : (step.fields || []);
+        if (!requiredFields.length) return [];
+
+        return requiredFields.filter((field) => !hasFormValue(field, formBundle));
+    }
+
+    function updateClientWizardProgress() {
+        if (!elements.clientStepper) return;
+        const steps = getGuideSteps();
+        const formBundle = collectClientFormData();
+        const buttons = elements.clientStepper.querySelectorAll('[data-step-id]');
+
+        steps.forEach((step, index) => {
+            const requiredFields = step.required && step.required.length ? step.required : (step.fields || []);
+            const completed = requiredFields.length ? requiredFields.every((field) => hasFormValue(field, formBundle)) : false;
+            const button = buttons[index];
+            if (button) {
+                button.classList.toggle('completed', completed);
+            }
+        });
+    }
+
+    function setClientFormStep(stepId) {
+        const steps = getGuideSteps();
+        if (!steps.length) {
+            state.ui.clientFormStep = 'basics';
+            return;
+        }
+
+        const fallbackId = steps[0].id;
+        const targetStepId = steps.some((step) => step.id === stepId) ? stepId : fallbackId;
+        state.ui.clientFormStep = targetStepId;
+
+        const stepIndex = steps.findIndex((step) => step.id === targetStepId);
+        const totalSteps = steps.length;
+
+        if (elements.clientStepper) {
+            const buttons = elements.clientStepper.querySelectorAll('[data-step-id]');
+            buttons.forEach((button) => {
+                button.classList.toggle('active', button.dataset.stepId === targetStepId);
+            });
+        }
+
+        const panels = $$('.client-step-panel');
+        panels.forEach((panel) => {
+            panel.classList.toggle('active', panel.dataset.step === targetStepId);
+        });
+
+        const stepMeta = steps[stepIndex] || steps[0];
+        if (elements.clientStepTitle) {
+            elements.clientStepTitle.textContent = `Крок ${stepIndex + 1}. ${stepMeta.title}`;
+        }
+        if (elements.clientStepDescription) {
+            elements.clientStepDescription.textContent = stepMeta.description || '';
+        }
+        if (elements.clientStepCount) {
+            elements.clientStepCount.textContent = `Крок ${stepIndex + 1} / ${totalSteps}`;
+        }
+
+        if (elements.clientPrevStep) {
+            elements.clientPrevStep.style.display = stepIndex === 0 ? 'none' : 'inline-flex';
+        }
+        if (elements.clientNextStep) {
+            elements.clientNextStep.style.display = stepIndex === totalSteps - 1 ? 'none' : 'inline-flex';
+        }
+        if (elements.saveClientBtn) {
+            elements.saveClientBtn.style.display = stepIndex === totalSteps - 1 ? 'inline-flex' : 'none';
+        }
+
+        updateClientWizardProgress();
+    }
+
+    function goToNextClientStep() {
+        const steps = getGuideSteps();
+        if (!steps.length) return;
+
+        const currentId = state.ui.clientFormStep || steps[0].id;
+        const currentIndex = steps.findIndex((step) => step.id === currentId);
+        if (currentIndex === -1 || currentIndex >= steps.length - 1) return;
+
+        const formBundle = collectClientFormData();
+        const missing = validateClientStep(currentId, formBundle);
+
+        if (missing.length) {
+            highlightClientFields(missing);
+            const missingLabels = missing.map(getFieldLabel).join(', ');
+            showNotification(`Заповніть обов’язкові поля: ${missingLabels}`, 'warning');
+            return;
+        }
+
+        setClientFormStep(steps[currentIndex + 1].id);
+    }
+
+    function goToPrevClientStep() {
+        const steps = getGuideSteps();
+        if (!steps.length) return;
+
+        const currentId = state.ui.clientFormStep || steps[0].id;
+        const currentIndex = steps.findIndex((step) => step.id === currentId);
+        if (currentIndex <= 0) return;
+
+        setClientFormStep(steps[currentIndex - 1].id);
+    }
+
+    function handleClientStepClick(event) {
+        const button = event.target.closest('[data-step-id]');
+        if (!button) return;
+
+        const targetStepId = button.dataset.stepId;
+        const steps = getGuideSteps();
+        const currentId = state.ui.clientFormStep || steps[0]?.id;
+        const targetIndex = steps.findIndex((step) => step.id === targetStepId);
+        const currentIndex = steps.findIndex((step) => step.id === currentId);
+
+        if (targetIndex === -1 || targetStepId === currentId) return;
+
+        if (targetIndex > currentIndex) {
+            const formBundle = collectClientFormData();
+            for (let i = 0; i <= targetIndex - 1; i++) {
+                const missing = validateClientStep(steps[i].id, formBundle);
+                if (missing.length) {
+                    highlightClientFields(missing);
+                    const missingLabels = missing.map(getFieldLabel).join(', ');
+                    showNotification(`Заповніть обов’язкові поля: ${missingLabels}`, 'warning');
+                    setClientFormStep(steps[i].id);
+                    return;
+                }
+            }
+        }
+
+        setClientFormStep(targetStepId);
+    }
+
+    function renderClientStepper() {
+        if (!elements.clientStepper) return;
+        const steps = getGuideSteps();
+
+        elements.clientStepper.innerHTML = steps.map((step, index) => `
+            <button type="button" class="client-step" data-step-id="${step.id}">
+                <span class="step-index">${index + 1}</span>
+                <span class="step-title">${escapeHtml(step.title)}</span>
+            </button>
+        `).join('');
+
+        setClientFormStep(state.ui.clientFormStep || (steps[0]?.id || 'basics'));
+        renderClientOnboardingSteps();
+    }
+
+    async function loadClientWorkflowGuide() {
+        try {
+            const response = await fetch('/api/clients/workflow');
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                state.guide.steps = Array.isArray(data.guide?.steps) ? data.guide.steps : [];
+                state.guide.modules = data.guide?.modules || {};
+            } else {
+                state.guide.steps = [];
+                state.guide.modules = {};
+            }
+        } catch (error) {
+            console.warn('Не вдалося завантажити гайд клієнтського флоу:', error);
+            state.guide.steps = [];
+            state.guide.modules = {};
+        } finally {
+            renderClientStepper();
+            updateClientWizardProgress();
+            renderModuleGuide();
+            renderClientOnboardingSteps();
+        }
+    }
+
+    function renderClientOnboardingSteps() {
+        const container = document.getElementById('client-onboarding-steps');
+        if (!container) return;
+        const steps = getGuideSteps();
+
+        container.innerHTML = steps.map((step, index) => `
+            <div class="step-row">
+                <div class="step-index">${index + 1}</div>
+                <div class="step-body">
+                    <h4>${escapeHtml(step.title)}</h4>
+                    <p>${escapeHtml(step.description || '')}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderModuleGuide() {
+        const container = document.getElementById('module-guide');
+        if (!container) return;
+        const modules = getGuideModules();
+        const entries = Object.entries(modules);
+
+        if (!entries.length) {
+            container.innerHTML = '<p class="module-placeholder">Докладні інструкції будуть доступні після синхронізації довідника.</p>';
+            return;
+        }
+
+        container.innerHTML = entries.map(([, module]) => {
+            const stepsList = Array.isArray(module.steps) && module.steps.length
+                ? `<ul>${module.steps.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+                : '';
+            return `
+                <div class="module-card">
+                    <h4>${escapeHtml(module.title || '')}</h4>
+                    <p>${escapeHtml(module.goal || '')}</p>
+                    ${stepsList}
+                </div>
+            `;
+        }).join('');
+    }
+
     function showClientForm(clientId = null) {
         const isEdit = clientId !== null;
         
@@ -1446,6 +1823,18 @@
         } else {
             clearClientForm();
         }
+
+        const steps = getGuideSteps();
+        const formBundle = collectClientFormData();
+        const incomplete = steps.find((step) => {
+            const required = step.required && step.required.length ? step.required : (step.fields || []);
+            if (!required.length) return false;
+            return required.some((field) => !hasFormValue(field, formBundle));
+        });
+
+        const targetStepId = incomplete ? incomplete.id : (steps[steps.length - 1]?.id || (steps[0]?.id ?? 'basics'));
+        setClientFormStep(targetStepId);
+        updateClientWizardProgress();
         
         showSection('client-form');
     }
@@ -1458,7 +1847,11 @@
             } else {
                 input.value = '';
             }
+            input.classList.remove('input-error');
         });
+        const steps = getGuideSteps();
+        setClientFormStep(steps[0]?.id || 'basics');
+        updateClientWizardProgress();
     }
 
     function populateClientForm(client) {
@@ -1476,7 +1869,9 @@
             } else {
                 input.value = '';
             }
+            input.classList.remove('input-error');
         });
+        updateClientWizardProgress();
     }
 
     async function selectClient(clientId) {
@@ -2270,31 +2665,25 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
 
     async function saveClient() {
         try {
-            const clientData = {};
-            const inputs = $$('#client-form input, #client-form select, #client-form textarea');
+            const formBundle = collectClientFormData();
+            const steps = getGuideSteps();
 
-            let hasRequired = false;
-            inputs.forEach(input => {
-                const fieldKey = getFieldKey(input);
-                if (!fieldKey) return;
-
-                const value = input.value.trim();
-                if (value !== '') {
-                    if (input.type === 'number') {
-                        const numericValue = Number(value);
-                        if (!Number.isNaN(numericValue)) {
-                            clientData[fieldKey] = numericValue;
-                        }
-                    } else {
-                        clientData[fieldKey] = value;
-                    }
-                    if (fieldKey === 'company') hasRequired = true;
-                }
-            });
-
-            if (!hasRequired) {
+            if (!hasFormValue('company', formBundle)) {
+                highlightClientFields(['company']);
+                setClientFormStep('basics');
                 showNotification('Назва компанії є обов\'язковою', 'warning');
                 return;
+            }
+
+            for (const step of steps) {
+                const missing = validateClientStep(step.id, formBundle);
+                if (missing.length) {
+                    highlightClientFields(missing);
+                    setClientFormStep(step.id);
+                    const missingLabels = missing.map(getFieldLabel).join(', ');
+                    showNotification(`Заповніть обов’язкові поля: ${missingLabels}`, 'warning');
+                    return;
+                }
             }
 
             // Add loading state
@@ -2308,7 +2697,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(clientData)
+                body: JSON.stringify(formBundle.data)
             });
 
             const data = await response.json();
@@ -4341,30 +4730,34 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
     function showOnboarding() {
         if (elements.onboardingModal) {
             elements.onboardingModal.style.display = 'flex';
+            updateOnboardingStep();
         }
     }
 
     function completeOnboarding() {
         state.onboardingCompleted = true;
+        localStorage.setItem('teampulse-onboarding-completed', 'true');
         if (elements.onboardingModal) {
             elements.onboardingModal.style.display = 'none';
         }
-        
+        showNotification('Ласкаво просимо до TeamPulse Turbo! 🚀', 'success');
+
         // Load initial data
         loadClients();
         debouncedLoadTokenUsage();
-        
+
         // Auto-refresh token usage (less frequent to avoid rate limiting)
-        setInterval(debouncedLoadTokenUsage, 120000); // 2 minutes instead of 30 seconds
+        setInterval(debouncedLoadTokenUsage, 120000); // 2 minutes замість 30 секунд
     }
 
     function nextOnboardingStep() {
-        if (state.onboardingStep < 4) {
+        const totalSteps = $$('.onboarding-step').length || 1;
+        if (state.onboardingStep < totalSteps) {
             state.onboardingStep++;
             updateOnboardingStep();
-        } else {
-            completeOnboarding();
+            return;
         }
+        completeOnboarding();
     }
 
     function prevOnboardingStep() {
@@ -4375,17 +4768,22 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
     }
 
     function updateOnboardingStep() {
+        const totalSteps = $$('.onboarding-step').length || 1;
+
         // Hide all steps
-        $$('.onboarding-step').forEach(step => step.classList.remove('active'));
-        
+        $$('.onboarding-step').forEach(step => {
+            step.classList.remove('active');
+            step.style.display = 'none';
+        });
+
         // Show current step
         const currentStep = $(`#onboarding-step-${state.onboardingStep}`);
         if (currentStep) {
             currentStep.classList.add('active');
+            currentStep.style.display = 'block';
         }
-        
+
         // Update progress
-        const totalSteps = 5;
         const progress = (state.onboardingStep / totalSteps) * 100;
         if (elements.onboardingProgress) {
             elements.onboardingProgress.style.width = `${progress}%`;
@@ -4399,8 +4797,8 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             elements.prevStep.style.display = state.onboardingStep > 1 ? 'block' : 'none';
         }
         if (elements.nextStep) {
-            elements.nextStep.innerHTML = state.onboardingStep < totalSteps ? 
-                'Далі <i class="fas fa-arrow-right"></i>' : 
+            elements.nextStep.innerHTML = state.onboardingStep < totalSteps ?
+                'Далі <i class="fas fa-arrow-right"></i>' :
                 'Завершити <i class="fas fa-check"></i>';
         }
     }
@@ -4992,6 +5390,20 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             });
         });
         elements.manageTeamBtn?.addEventListener('click', () => selectProduct('team-hub'));
+
+        const updateWizardProgressDebounced = debounce(updateClientWizardProgress, 150);
+        elements.clientNextStep?.addEventListener('click', goToNextClientStep);
+        elements.clientPrevStep?.addEventListener('click', goToPrevClientStep);
+        elements.clientStepper?.addEventListener('click', handleClientStepClick);
+        $$('#client-form input, #client-form select, #client-form textarea').forEach((input) => {
+            ['input', 'change'].forEach((eventName) => {
+                input.addEventListener(eventName, () => {
+                    input.classList.remove('input-error');
+                    updateWizardProgressDebounced();
+                });
+            });
+        });
+
         elements.analysisTeamSelect?.addEventListener('change', (event) => {
             const teamId = Number(event.target.value);
             if (teamId) {
@@ -5197,7 +5609,11 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         elements.cancelClientBtn?.addEventListener('click', () => showSection('welcome-screen'));
 
         // Navigation actions
-        $('#help-toggle')?.addEventListener('click', showOnboarding);
+        $('#help-toggle')?.addEventListener('click', () => {
+            const totalSteps = $$('.onboarding-step').length || 1;
+            state.onboardingStep = totalSteps;
+            showOnboarding();
+        });
         $('#logout-btn')?.addEventListener('click', () => {
             showCustomConfirmation(
                 'Вихід з системи',
@@ -5220,7 +5636,10 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         });
 
         // Onboarding
-        elements.welcomeHelp?.addEventListener('click', showOnboarding);
+        elements.welcomeHelp?.addEventListener('click', () => {
+            state.onboardingStep = 1;
+            showOnboarding();
+        });
         elements.skipOnboarding?.addEventListener('click', completeOnboarding);
         elements.nextStep?.addEventListener('click', nextOnboardingStep);
         elements.prevStep?.addEventListener('click', prevOnboardingStep);
@@ -7890,6 +8309,11 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         
         // Bind events
         bindEvents();
+
+        // Prepare client wizard
+        renderClientStepper();
+        renderModuleGuide();
+        loadClientWorkflowGuide();
         
         // Initialize displays
         updateTextStats();

@@ -789,6 +789,36 @@ body::before {
     text-overflow: ellipsis;
 }
 
+.client-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+}
+
+.client-progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: var(--transition-fast);
+}
+
+.client-progress-dot.completed {
+    background: var(--neon-green);
+    border-color: rgba(0, 255, 136, 0.7);
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.45);
+}
+
+.client-item.active .client-progress-dot {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.client-item.active .client-progress-dot.completed {
+    background: var(--bg);
+}
+
 .client-actions {
     display: flex;
     gap: var(--spacing-xs);
@@ -1478,6 +1508,118 @@ mark.cognitive {
     margin-bottom: var(--spacing-xl);
 }
 
+.client-wizard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(20px);
+}
+
+.client-stepper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.client-stepper button,
+.client-stepper .client-step {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.client-stepper button .step-index,
+.client-step .step-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: rgba(168, 85, 247, 0.2);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.client-stepper button.active,
+.client-stepper .client-step.active {
+    background: rgba(168, 85, 247, 0.2);
+    color: var(--text);
+    border-color: rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+}
+
+.client-stepper button.completed:not(.active),
+.client-stepper .client-step.completed:not(.active) {
+    border-color: rgba(34, 197, 94, 0.4);
+    color: rgba(34, 197, 94, 0.85);
+}
+
+.client-step-info {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.client-step-info h3 {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.client-step-info p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.client-step-panels {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.client-step-panel {
+    display: none;
+}
+
+.client-step-panel.active {
+    display: block;
+}
+
+.client-wizard-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+}
+
+.client-wizard-actions .btn-secondary {
+    margin-right: auto;
+}
+
+.step-progress-indicator {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
 .form-section {
     background: var(--card);
     border: 1px solid var(--border);
@@ -1519,6 +1661,11 @@ mark.cognitive {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}
+
+.input-error {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(255, 0, 128, 0.2) !important;
 }
 
 .form-field small {
@@ -1865,6 +2012,97 @@ mark.cognitive {
     color: var(--accent);
     font-size: 1.5rem;
     margin-bottom: var(--spacing-sm);
+}
+
+.client-onboarding-steps {
+    text-align: left;
+    margin-top: var(--spacing-lg);
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.client-onboarding-steps .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+}
+
+.client-onboarding-steps .step-index {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(168, 85, 247, 0.25);
+    color: var(--text);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.client-onboarding-steps h4 {
+    font-size: 0.95rem;
+    margin: 0 0 0.2rem 0;
+}
+
+.client-onboarding-steps p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+.module-guide {
+    margin-top: var(--spacing-xl);
+    display: grid;
+    gap: var(--spacing-md);
+    text-align: left;
+}
+
+.module-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    display: grid;
+    gap: var(--spacing-sm);
+    transition: var(--transition-fast);
+}
+
+.module-card:hover {
+    background: var(--border-hover);
+    transform: translateY(-2px);
+}
+
+.module-card h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.module-card p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+}
+
+.module-card ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.module-placeholder {
+    margin-top: var(--spacing-md);
+    font-size: 0.9rem;
+    color: var(--muted);
 }
 
 .onboarding-actions {
