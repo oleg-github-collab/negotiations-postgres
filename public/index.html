@@ -824,76 +824,147 @@
 
                 
                 <!-- Team Hub -->
-                <div id="team-hub" class="tab-pane" style="display: none;">
-                    <div class="content-header">
-                        <h1>
-                            <i class="fas fa-people-group"></i>
-                            Team Hub
-                        </h1>
-                        <div class="content-actions">
-                            <button class="btn-secondary" id="import-team-json-btn">
-                                <i class="fas fa-upload"></i>
-                                Імпорт JSON
-                            </button>
-                            <input type="file" id="team-json-input" accept=".json" style="display: none;">
-                            <button class="btn-primary" id="open-manual-team-editor">
-                                <i class="fas fa-user-edit"></i>
-                                Додати вручну
-                            </button>
+                <div id="team-hub" class="tab-pane product-section" style="display: none;">
+                    <div class="full-width-header">
+                        <div class="header-content">
+                            <div class="header-primary">
+                                <div class="header-icon">
+                                    <i class="fas fa-people-group"></i>
+                                </div>
+                                <div class="header-text">
+                                    <h1>Team Hub</h1>
+                                    <p>Управління командами, ролями та структурою організації</p>
+                                </div>
+                            </div>
+                            <div class="header-actions">
+                                <div class="action-group">
+                                    <button class="btn-ghost" id="import-team-json-btn">
+                                        <i class="fas fa-upload"></i>
+                                        Імпорт JSON
+                                    </button>
+                                    <button class="btn-primary" id="open-manual-team-editor">
+                                        <i class="fas fa-user-plus"></i>
+                                        Створити команду
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                        <input type="file" id="team-json-input" accept=".json" style="display: none;">
                     </div>
-                    <div class="team-hub-grid">
-                        <div class="team-panel">
-                            <div class="panel-header">
-                                <i class="fas fa-list"></i>
-                                <h2>Команди клієнта</h2>
-                            </div>
-                            <div id="team-list" class="team-list">
-                                <div class="empty-state">
-                                    <div class="empty-icon"><i class="fas fa-users"></i></div>
-                                    <p>Створіть або імпортуйте першу команду</p>
+                    <div class="full-width-container">
+                        <div class="team-hub-layout">
+                            <!-- Left Sidebar - Teams List -->
+                            <div class="teams-sidebar">
+                                <div class="sidebar-section">
+                                    <div class="section-header">
+                                        <h3>
+                                            <i class="fas fa-users"></i>
+                                            Команди
+                                        </h3>
+                                        <span class="team-counter" id="teams-counter">0</span>
+                                    </div>
+                                    <div id="team-list" class="teams-list">
+                                        <div class="empty-state compact">
+                                            <div class="empty-icon"><i class="fas fa-users-gear"></i></div>
+                                            <p>Створіть першу команду</p>
+                                            <button class="btn-micro" id="quick-team-add">
+                                                <i class="fas fa-plus"></i>
+                                                Додати
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="team-panel">
-                            <div class="panel-header">
-                                <i class="fas fa-pen-to-square"></i>
-                                <h2>Редактор команди</h2>
-                            </div>
-                            <div class="meta-block">
-                                <label for="manual-team-title">Назва команди</label>
-                                <input type="text" id="manual-team-title" placeholder="Наприклад: Product Growth">
-                            </div>
-                            <div class="meta-block">
-                                <label for="manual-team-description">Опис / фокус</label>
-                                <textarea id="manual-team-description" rows="2" placeholder="Основні цілі та область відповідальності"></textarea>
-                            </div>
-                            <div id="manual-team-editor" class="manual-team-editor">
-                                <div class="empty-state">
-                                    <div class="empty-icon"><i class="fas fa-user-gear"></i></div>
-                                    <p>Додайте ролі та обов'язки для створення команди</p>
-                                </div>
-                            </div>
-                            <div class="editor-actions">
-                                <button class="btn-secondary" id="add-manual-member">
-                                    <i class="fas fa-plus"></i>
-                                    Додати роль
-                                </button>
-                                <button class="btn-primary" id="team-save-manual">
-                                    <i class="fas fa-save"></i>
-                                    Зберегти команду
-                                </button>
-                            </div>
-                        </div>
-                        <div class="team-panel">
-                            <div class="panel-header">
-                                <i class="fas fa-eye"></i>
-                                <h2>Попередній перегляд</h2>
-                            </div>
-                            <div id="team-preview" class="team-preview">
-                                <div class="empty-state">
-                                    <div class="empty-icon"><i class="fas fa-diagram-project"></i></div>
-                                    <p>Оберіть команду щоб побачити структуру</p>
+
+                            <!-- Main Content Area -->
+                            <div class="team-main-content">
+                                <div class="content-grid">
+                                    <!-- Team Editor Panel -->
+                                    <div class="team-editor-panel">
+                                        <div class="panel-header modern">
+                                            <div class="header-title">
+                                                <i class="fas fa-pen-to-square"></i>
+                                                <h3>Конструктор команди</h3>
+                                            </div>
+                                            <div class="header-status">
+                                                <span class="status-indicator draft">Draft</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel-content">
+                                            <div class="form-section">
+                                                <div class="form-row">
+                                                    <div class="form-field">
+                                                        <label for="manual-team-title">Назва команди</label>
+                                                        <input type="text" id="manual-team-title" placeholder="Product Growth Team">
+                                                    </div>
+                                                    <div class="form-field">
+                                                        <label for="team-size-indicator">Розмір</label>
+                                                        <div class="size-indicator" id="team-size-indicator">
+                                                            <span class="size-number">0</span>
+                                                            <span class="size-label">членів</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-field">
+                                                    <label for="manual-team-description">Область відповідальності</label>
+                                                    <textarea id="manual-team-description" rows="2" placeholder="Основні цілі, проекти та KPI"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="members-section">
+                                                <div class="section-header">
+                                                    <h4>Ролі та учасники</h4>
+                                                    <button class="btn-micro" id="add-manual-member">
+                                                        <i class="fas fa-plus"></i>
+                                                        Додати роль
+                                                    </button>
+                                                </div>
+                                                <div id="manual-team-editor" class="team-editor-grid">
+                                                    <div class="empty-state">
+                                                        <div class="empty-icon"><i class="fas fa-user-gear"></i></div>
+                                                        <p>Додайте ролі та обов'язки</p>
+                                                        <button class="btn-ghost" onclick="document.getElementById('add-manual-member').click()">
+                                                            <i class="fas fa-plus"></i>
+                                                            Створити роль
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="panel-actions">
+                                                <button class="btn-ghost" id="team-clear-draft">
+                                                    <i class="fas fa-trash"></i>
+                                                    Очистити
+                                                </button>
+                                                <button class="btn-primary" id="team-save-manual">
+                                                    <i class="fas fa-save"></i>
+                                                    Зберегти команду
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Team Preview Panel -->
+                                    <div class="team-preview-panel">
+                                        <div class="panel-header modern">
+                                            <div class="header-title">
+                                                <i class="fas fa-diagram-project"></i>
+                                                <h3>Структура команди</h3>
+                                            </div>
+                                            <div class="header-actions">
+                                                <button class="btn-micro" id="export-team-structure" title="Експорт">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="team-preview" class="team-preview-content">
+                                            <div class="empty-state">
+                                                <div class="empty-icon"><i class="fas fa-diagram-project"></i></div>
+                                                <p>Структура команди з'явиться тут</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1387,133 +1458,305 @@
     <!-- Onboarding Modal -->
     <div id="onboarding-modal" class="onboarding-modal" style="display: none;">
         <div class="onboarding-content">
-            
+            <header class="onboarding-head">
+                <div class="onboarding-brand">
+                    <span class="brand-icon">⚡</span>
+                    <div class="brand-copy">
+                        <h3>TeamPulse Turbo</h3>
+                        <p>Kaminskyi AI Negotiation Suite</p>
+                    </div>
+                </div>
+                <button class="onboarding-close" id="onboarding-close" title="Закрити">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </header>
+
             <div class="onboarding-progress">
                 <div class="progress-bar">
                     <div class="progress-fill" id="onboarding-progress"></div>
                 </div>
-                <span class="progress-text" id="progress-text">Крок 1 з 4</span>
+                <span class="progress-text" id="progress-text">Крок 1 з 5</span>
             </div>
-            
-            <!-- Step 1 -->
+
             <div class="onboarding-step active" id="onboarding-step-1">
-                <div class="step-icon">🚀</div>
-                <h2>Ласкаво просимо до TeamPulse Turbo!</h2>
-                <p>Потужний AI-інструмент для аналізу переговорів та виявлення маніпуляцій, побудований на основі <strong>Kaminskyi AI</strong> - полімаршрутної синтетичної нейромережі, яка генерує віртуальну персону під кожен запит для найвищої точності без втрати швидкості.</p>
-                <div class="step-features">
-                    <div class="feature-item">
-                        <i class="fas fa-brain"></i>
-                        <div>
-                            <h4>AI-аналіз маніпуляцій</h4>
-                            <p>Автоматичне виявлення понад 30 типів маніпуляцій</p>
+                <div class="onboarding-grid">
+                    <div class="onboarding-copy">
+                        <div class="step-icon">🚀</div>
+                        <h2>Ласкаво просимо до TeamPulse Turbo!</h2>
+                        <p>Революційний AI-інструмент для аналізу переговорів та виявлення маніпуляцій, побудований на основі <strong>Kaminskyi AI</strong> — синтетичної полімаршрутної нейромережі з адаптивним навчанням.</p>
+
+                        <div class="step-feature-grid">
+                            <div class="feature-item enhanced">
+                                <i class="fas fa-brain neon-icon"></i>
+                                <div>
+                                    <h4>AI-аналіз маніпуляцій</h4>
+                                    <p>Виявлення 47+ типів маніпуляцій з точністю 94.2%</p>
+                                    <span class="feature-badge">Real-time</span>
+                                </div>
+                            </div>
+                            <div class="feature-item enhanced">
+                                <i class="fas fa-chart-line neon-icon"></i>
+                                <div>
+                                    <h4>Барометр складності</h4>
+                                    <p>Теплові карти ризиків та прогнозування поведінки</p>
+                                    <span class="feature-badge">Predictive</span>
+                                </div>
+                            </div>
+                            <div class="feature-item enhanced">
+                                <i class="fas fa-lightbulb neon-icon"></i>
+                                <div>
+                                    <h4>Персоналізовані поради</h4>
+                                    <p>Контрстратегії на основі психопрофілю опонента</p>
+                                    <span class="feature-badge">Smart</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="success-metrics">
+                            <div class="metric-showcase">
+                                <span class="metric-value glow">+87%</span>
+                                <span class="metric-label">Успішність переговорів</span>
+                            </div>
+                            <div class="metric-showcase">
+                                <span class="metric-value glow">12min</span>
+                                <span class="metric-label">Час аналізу</span>
+                            </div>
+                            <div class="metric-showcase">
+                                <span class="metric-value glow">50K+</span>
+                                <span class="metric-label">Проаналізовано</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="feature-item">
-                        <i class="fas fa-chart-line"></i>
-                        <div>
-                            <h4>Барометр складності</h4>
-                            <p>Оцінка рівня складності переговорів</p>
+                    <div class="onboarding-preview">
+                        <div class="preview-card metrics-card">
+                            <header>
+                                <span class="preview-label">Neon Pulse</span>
+                                <span class="preview-badge">Live</span>
+                            </header>
+                            <div class="preview-metrics">
+                                <div>
+                                    <span class="metric-label">Маніпуляції</span>
+                                    <span class="metric-value">7</span>
+                                </div>
+                                <div>
+                                    <span class="metric-label">Bias Heat</span>
+                                    <span class="metric-value">42%</span>
+                                </div>
+                                <div>
+                                    <span class="metric-label">Ризики</span>
+                                    <span class="metric-value">3</span>
+                                </div>
+                            </div>
+                            <footer>
+                                <span class="metric-trend up">
+                                    <i class="fas fa-arrow-trend-up"></i>
+                                    +12% сигналів точності
+                                </span>
+                            </footer>
                         </div>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-lightbulb"></i>
-                        <div>
-                            <h4>Персоналізовані поради</h4>
-                            <p>Рекомендації на основі профілю клієнта</p>
+                        <div class="preview-card highlight-card">
+                            <h3>Фокус переговорів</h3>
+                            <p class="preview-text">"Ця пропозиція доступна лише сьогодні" <span class="tag tag-warning">Штучний дефіцит</span></p>
+                            <p class="preview-text">"Всі так роблять" <span class="tag tag-info">Апеляція до більшості</span></p>
+                            <div class="preview-pills">
+                                <span class="preview-pill">Тактичні поради</span>
+                                <span class="preview-pill">Контроль тиску</span>
+                                <span class="preview-pill">Дипломатичні відповіді</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Step 2 -->
-            <div class="onboarding-step" id="onboarding-step-2">
-                <div class="step-icon">👥</div>
-                <h2>Керування клієнтами</h2>
-                <p>Створюйте детальні профілі клієнтів для більш точного аналізу переговорів та персоналізованих рекомендацій.</p>
-                <div class="demo-client-list">
-                    <div class="demo-client active">
-                        <div class="client-avatar">A</div>
-                        <div class="client-info">
-                            <div class="client-name">Apple Inc.</div>
-                            <div class="client-meta">Технології • 5 аналізів</div>
-                        </div>
-                    </div>
-                    <div class="demo-client">
-                        <div class="client-avatar">G</div>
-                        <div class="client-info">
-                            <div class="client-name">Google LLC</div>
-                            <div class="client-meta">IT-послуги • 2 аналізи</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="client-onboarding-steps" id="client-onboarding-steps"></div>
-            </div>
-            
-            <!-- Step 3 -->
-            <div class="onboarding-step" id="onboarding-step-3">
-                <div class="step-icon">🔍</div>
-                <h2>Аналіз переговорів</h2>
-                <p>Завантажуйте тексти переговорів або вставляйте їх прямо в систему. ШІ проаналізує та виділить проблемні моменти.</p>
-                <div class="demo-analysis">
-                    <div class="demo-text">
-                        <mark class="manip">"Ця пропозиція доступна лише сьогодні"</mark> - створення штучного дефіциту
-                    </div>
-                    <div class="demo-text">
-                        <mark class="cognitive">"Всі так роблять"</mark> - апеляція до більшості
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Step 4 -->
-            <div class="onboarding-step" id="onboarding-step-4">
-                <div class="step-icon">🎯</div>
-                <h2>Готові до початку!</h2>
-                <p>Тепер ви знаєте основи роботи з TeamPulse Turbo. Створіть свого першого клієнта і почніть аналіз.</p>
-                <div class="step-features">
-                    <div class="feature-item">
-                        <div class="stat-number">95%</div>
-                        <div class="stat-label">Точність виявлення</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="stat-number">30+</div>
-                        <div class="stat-label">Типів маніпуляцій</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="stat-number">&lt;30с</div>
-                        <div class="stat-label">Час аналізу</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 5 -->
-            <div class="onboarding-step" id="onboarding-step-5">
-                <div class="step-icon">⚙️</div>
-                <h2>Team Hub &amp; RACI</h2>
-                <p>Імпортуйте команду, аналізуйте поточну та ідеальну відповідальність, відстежуйте компенсації і замовляйте поради в один клік.</p>
-                <div class="step-features step-columns">
-                    <div class="feature-item">
-                        <i class="fas fa-people-group"></i>
-                        <div>
-                            <h4>Team Hub</h4>
-                            <p>Імпорт JSON або ручне конструювання команди з обов'язками</p>
-                        </div>
+            <div class="onboarding-step" id="onboarding-step-2">
+                <div class="onboarding-grid">
+                    <div class="onboarding-copy">
+                        <div class="step-icon">👥</div>
+                        <h2>Керування клієнтами</h2>
+                        <p>Створюйте детальні профілі клієнтів для точного AI-аналізу та персоналізованих рекомендацій.</p>
+                        <ul class="step-checklist">
+                            <li><i class="fas fa-circle-check"></i> Повний паспорт компанії та контактні особи.</li>
+                            <li><i class="fas fa-circle-check"></i> Контекст угоди, KPI та ключові дедлайни.</li>
+                            <li><i class="fas fa-circle-check"></i> Ринковий інтелект, попередні взаємодії та нотатки.</li>
+                        </ul>
                     </div>
-                    <div class="feature-item">
-                        <i class="fas fa-network-wired"></i>
-                        <div>
-                            <h4>RACI Matrix</h4>
-                            <p>Actual vs Ideal, gap-аналіз та дорожня карта змін</p>
+                    <div class="onboarding-preview">
+                        <div class="preview-card lane-card">
+                            <h3>Pipeline клієнта</h3>
+                            <ul class="lane-list">
+                                <li class="lane-item active">
+                                    <span class="lane-title">Apple Inc.</span>
+                                    <span class="lane-meta">Технології · 5 аналізів</span>
+                                </li>
+                                <li class="lane-item">
+                                    <span class="lane-title">Google LLC</span>
+                                    <span class="lane-meta">IT-послуги · 2 аналізи</span>
+                                </li>
+                                <li class="lane-item">
+                                    <span class="lane-title">Nova Retail</span>
+                                    <span class="lane-meta">Ритейл · Onboarding</span>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-sack-dollar"></i>
-                        <div>
-                            <h4>Salary Insights</h4>
-                            <p>Баланс завантаженості, ринкові діапазони та рекомендації</p>
+                        <div class="preview-card dynamic-card">
+                            <h3>AI-гайд заповнення</h3>
+                            <div class="dynamic-placeholder" id="client-onboarding-steps"></div>
+                            <p class="dynamic-hint">Гайд оновлюється динамічно, щойно ви вводите нові дані.</p>
                         </div>
                     </div>
                 </div>
-                <div class="module-guide" id="module-guide"></div>
+            </div>
+
+            <div class="onboarding-step" id="onboarding-step-3">
+                <div class="onboarding-grid">
+                    <div class="onboarding-copy">
+                        <div class="step-icon">🔍</div>
+                        <h2>Аналіз переговорів</h2>
+                        <p>Завантажуйте транскрипти або вставляйте текст напряму. ШІ прокладає карту маніпуляцій і пропонує контрстратегії.</p>
+                        <div class="step-feature-grid two-cols">
+                            <div class="feature-item">
+                                <i class="fas fa-highlighter"></i>
+                                <div>
+                                    <h4>Smart Highlights</h4>
+                                    <p>Контекстні підсвічування з ваговими коефіцієнтами ризику.</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-shield-heart"></i>
+                                <div>
+                                    <h4>Persona Radar</h4>
+                                    <p>AI-аналіз стилю опонента та його тригерів.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="onboarding-preview">
+                        <div class="preview-card highlight-stream">
+                            <div class="stream-item">
+                                <span class="stream-badge danger">Маніпуляція</span>
+                                <p>"Якщо не погодитеся зараз, угода згорить"</p>
+                                <span class="stream-meta"><i class="fas fa-gauge-high"></i> Сила: 4/5 · Тиск часу</span>
+                            </div>
+                            <div class="stream-item">
+                                <span class="stream-badge info">Когнітивне викривлення</span>
+                                <p>"Наші конкуренти вже оплатили вдвічі більше"</p>
+                                <span class="stream-meta"><i class="fas fa-brain"></i> Ефект якоря · Рекомендовано: банкінг фактами</span>
+                            </div>
+                        </div>
+                        <div class="preview-card timeline-card">
+                            <h3>AI Playbook</h3>
+                            <ol class="timeline-list">
+                                <li><span>1</span><div>Оцінка тону та емоцій</div></li>
+                                <li><span>2</span><div>Побудова карти маніпуляцій</div></li>
+                                <li><span>3</span><div>Формування персоналізованих відповідей</div></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="onboarding-step" id="onboarding-step-4">
+                <div class="onboarding-grid">
+                    <div class="onboarding-copy">
+                        <div class="step-icon">🎯</div>
+                        <h2>Готові до старту!</h2>
+                        <p>Почніть з першого клієнта, і TeamPulse Turbo згенерує чітку дорожню карту вашої переговорної стратегії.</p>
+                        <div class="stat-row">
+                            <div class="stat-bubble">
+                                <span class="stat-number">95%</span>
+                                <span class="stat-label">Точність виявлення</span>
+                            </div>
+                            <div class="stat-bubble">
+                                <span class="stat-number">30+</span>
+                                <span class="stat-label">Типів маніпуляцій</span>
+                            </div>
+                            <div class="stat-bubble">
+                                <span class="stat-number">&lt;30с</span>
+                                <span class="stat-label">Час аналізу</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="onboarding-preview">
+                        <div class="preview-card module-grid">
+                            <div class="module-card">
+                                <i class="fas fa-brain"></i>
+                                <div>
+                                    <h4>Negotiation Insights</h4>
+                                    <p>Фокус на ризиках, опонентах та персональних тригерах.</p>
+                                </div>
+                            </div>
+                            <div class="module-card">
+                                <i class="fas fa-people-group"></i>
+                                <div>
+                                    <h4>Team Hub</h4>
+                                    <p>Організуйте команду, ролі та завантаженість у єдиній панелі.</p>
+                                </div>
+                            </div>
+                            <div class="module-card">
+                                <i class="fas fa-network-wired"></i>
+                                <div>
+                                    <h4>RACI Studio</h4>
+                                    <p>Автоматична побудова RACI з gap-аналізом.</p>
+                                </div>
+                            </div>
+                            <div class="module-card">
+                                <i class="fas fa-sack-dollar"></i>
+                                <div>
+                                    <h4>Salary Insights</h4>
+                                    <p>Аналіз компенсацій та рекомендації щодо балансу.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="onboarding-step" id="onboarding-step-5">
+                <div class="onboarding-grid">
+                    <div class="onboarding-copy">
+                        <div class="step-icon">⚙️</div>
+                        <h2>Team Hub &amp; RACI</h2>
+                        <p>Імпортуйте команду, аналізуйте фактичну та ідеальну відповідальність, відстежуйте компенсації і замовляйте поради в один клік.</p>
+                        <div class="step-feature-grid">
+                            <div class="feature-item">
+                                <i class="fas fa-people-group"></i>
+                                <div>
+                                    <h4>Team Hub</h4>
+                                    <p>Імпорт JSON або ручне збирання структури команди.</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-network-wired"></i>
+                                <div>
+                                    <h4>RACI Matrix</h4>
+                                    <p>Actual vs Ideal, gap-аналіз та дорожня карта змін.</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-sack-dollar"></i>
+                                <div>
+                                    <h4>Salary Insights</h4>
+                                    <p>Збалансуйте навантаження та компенсації з AI-порадою.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="onboarding-preview">
+                        <div class="preview-card dynamic-card">
+                            <h3>Модульні підказки</h3>
+                            <div class="dynamic-placeholder" id="module-guide"></div>
+                            <p class="dynamic-hint">AI формує рекомендації для кожного модуля платформи.</p>
+                        </div>
+                        <div class="preview-card summary-card">
+                            <h3>Раціоналізація ресурсів</h3>
+                            <ul class="summary-list">
+                                <li><i class="fas fa-hourglass-half"></i> Баланс завантаженості по ролях.</li>
+                                <li><i class="fas fa-user-shield"></i> Виявлення критичних зон відповідальності.</li>
+                                <li><i class="fas fa-bolt"></i> Автоматичні дії: поради, експорт, історія рішень.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="onboarding-actions">

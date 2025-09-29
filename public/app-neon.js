@@ -5368,6 +5368,36 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         updateProductSwitcher(targetId);
         showSection(targetId);
         closeProductDropdown();
+
+        // Update right panel visibility based on selected tab
+        updateRightPanelVisibility(targetId);
+    }
+
+    function updateRightPanelVisibility(targetId) {
+        const rightPanel = elements.sidebarRight;
+        const mainContent = elements.mainContent;
+
+        // Show right panel only for analysis tab
+        const shouldShowRightPanel = targetId === 'negotiation-analysis';
+
+        if (shouldShowRightPanel) {
+            // Show right panel for analysis tab
+            rightPanel.classList.remove('hidden');
+            rightPanel.classList.remove('collapsed');
+            state.ui.rightSidebarCollapsed = false;
+
+            // Adjust main content margin for larger screens
+            if (window.innerWidth > 1024) {
+                mainContent.style.marginRight = 'var(--right-panel-width)';
+            }
+            mainContent.classList.remove('full-width');
+        } else {
+            // Hide right panel for other tabs and make content full width
+            rightPanel.classList.add('hidden');
+            mainContent.style.marginRight = '0';
+            mainContent.classList.add('full-width');
+            state.ui.rightSidebarCollapsed = true;
+        }
     }
 
     // Make functions globally accessible

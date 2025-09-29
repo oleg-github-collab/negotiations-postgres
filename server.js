@@ -192,30 +192,128 @@ const authMiddleware = (req, res, next) => {
 };
 
 // Apply rate limiting to all API routes
+// Enhanced API with versioning
+const API_VERSION = 'v1';
 app.use('/api/', apiLimiter);
 
-// Auth routes with enhanced security
-app.post('/api/login', loginLimiter, (req, res) => {
+// API health and info endpoints
+app.get(`/api/${API_VERSION}/info`, (req, res) => {
+  res.json({
+    name: 'TeamPulse Turbo API',
+    version: API_VERSION,
+    status: 'operational',
+    timestamp: new Date().toISOString(),
+    features: {
+      auth: true,
+      analysis: true,
+      teams: true,
+      clients: true,
+      advice: true,
+      audit: true
+    }
+  });
+});
+
+// Enhanced auth routes
+app.post(`/api/${API_VERSION}/auth/login`, loginLimiter, (req, res) => {
   const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Username and password are required',
+      code: 'MISSING_CREDENTIALS'
+    });
+  }
+
   if (username === 'janeDVDops' && password === 'jane2210') {
+    const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
     res.cookie('auth', 'authorized', {
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: isProduction,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
     res.cookie('auth_user', username, {
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: isProduction,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
-    res.json({ success: true });
+    res.cookie('session_token', sessionToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    logSecurity('User login successful', { username, ip: req.ip, sessionToken });
+    res.json({
+      success: true,
+      message: 'Login successful',
+      user: { username },
+      sessionId: sessionToken.substring(0, 8) + '...'
+    });
   } else {
-    res.status(401).json({ error: 'Invalid credentials' });
+    logSecurity('Login attempt failed', { username, ip: req.ip });
+    res.status(401).json({
+      success: false,
+      message: 'Invalid credentials',
+      code: 'INVALID_CREDENTIALS'
+    });
   }
 });
 
-app.post('/api/logout', (req, res) => {
+app.post(`/api/${API_VERSION}/auth/logout`, (req, res) => {
+  const sessionToken = req.cookies?.session_token;
   res.clearCookie('auth');
   res.clearCookie('auth_user');
-  res.json({ success: true });
+  res.clearCookie('session_token');
+
+  logSecurity('User logout', { ip: req.ip, sessionToken });
+  res.json({ success: true, message: 'Logged out successfully' });
+});
+
+app.get(`/api/${API_VERSION}/auth/verify`, authMiddleware, (req, res) => {
+  res.json({
+    success: true,
+    authenticated: true,
+    user: { username: req.cookies?.auth_user || 'user' }
+  });
+});
+
+// Enhanced API statistics and metrics
+app.get(`/api/${API_VERSION}/stats`, authMiddleware, async (req, res) => {
+  try {
+    const stats = {
+      timestamp: new Date().toISOString(),
+      server: {
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        platform: process.platform,
+        nodeVersion: process.version
+      },
+      api: {
+        version: API_VERSION,
+        endpoints: {
+          analyze: true,
+          clients: true,
+          teams: true,
+          advice: true,
+          audit: true
+        }
+      }
+    };
+
+    res.json(stats);
+  } catch (error) {
+    logError('Stats endpoint error', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve statistics'
+    });
+  }
 });
 
 // Token usage endpoint
@@ -308,6 +406,14 @@ app.post('/api/admin/cleanup-database', authMiddleware, async (req, res) => {
 });
 
 // API routes (protected) with specific rate limiting
+// Versioned API Routes with authentication middleware
+app.use(`/api/${API_VERSION}/analyze`, authMiddleware, analysisLimiter, analyzeRoutes);
+app.use(`/api/${API_VERSION}/clients`, authMiddleware, clientsRoutes);
+app.use(`/api/${API_VERSION}/teams`, authMiddleware, teamsRoutes);
+app.use(`/api/${API_VERSION}/advice`, authMiddleware, adviceRoutes);
+app.use(`/api/${API_VERSION}/audit`, authMiddleware, auditRoutes);
+
+// Legacy API support (backwards compatibility)
 app.use('/api/analyze', authMiddleware, analysisLimiter, analyzeRoutes);
 app.use('/api/clients', authMiddleware, clientsRoutes);
 app.use('/api/teams', authMiddleware, teamsRoutes);
