@@ -824,7 +824,7 @@
         const responsibilities = Array.isArray(member?.responsibilities) ? member.responsibilities : [];
         const summaryBlock = responsibilities.length
             ? `<ul>${responsibilities.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
-            : '<p class="intel-modal-empty">Додайте обов'язки для детального опису ролі.</p>';
+            : `<p class="intel-modal-empty">Додайте обов'язки для детального опису ролі.</p>`;
 
         if (elements.employeeIntelName) {
             elements.employeeIntelName.textContent = name;

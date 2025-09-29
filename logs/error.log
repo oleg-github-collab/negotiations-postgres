@@ -513,3 +513,32 @@
   message: 'Application Error',
   timestamp: '2025-08-14 00:00:19'
 }
+{
+  service: 'teampulse-turbo',
+  error: error: database "teampulse" does not exist
+      at /Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/pg-pool/index.js:45:11
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async initializeDatabase (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:72:18)
+      at async startServer (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/server.js:628:5) {
+    length: 94,
+    severity: 'FATAL',
+    code: '3D000',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'postinit.c',
+    line: '950',
+    routine: 'InitPostgres'
+  },
+  level: 'error',
+  message: '❌ Failed to start TeamPulse Turbo server',
+  timestamp: '2025-09-29 07:49:23'
+}
