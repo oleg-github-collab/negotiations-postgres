@@ -38,13 +38,30 @@
             current: null,
             members: [],
             latestRaci: null,
+            latestRaciView: 'actual',
             salaryInsights: [],
             manualDraft: [],
             manualTitle: '',
             manualDescription: '',
             pendingTeamId: null,
             lastRaciMeta: null,
-            lastSalaryMeta: null
+            lastSalaryMeta: null,
+            profile: {
+                company_name: '',
+                company_industry: '',
+                company_location: '',
+                company_focus: '',
+                team_name: '',
+                team_mission: '',
+                team_tags: ''
+            },
+            intake: {
+                files: [],
+                status: 'idle',
+                lastRunAt: null,
+                summary: '',
+                highlights: []
+            }
         },
         salary: {
             latest: null
@@ -65,6 +82,60 @@
             },
             filtersVisible: false
         }
+    };
+
+    // ===== Normalization Helpers =====
+    const normalizeId = (value) => {
+        if (value === null || value === undefined) return null;
+        const numeric = Number(value);
+        return Number.isNaN(numeric) ? value : numeric;
+    };
+
+    const toNumberOrFallback = (value, fallback = null) => {
+        if (value === null || value === undefined || value === '') return fallback;
+        const numeric = Number(value);
+        return Number.isNaN(numeric) ? fallback : numeric;
+    };
+
+    const normalizeClient = (raw = {}) => {
+        if (!raw || typeof raw !== 'object') return raw;
+        return {
+            ...raw,
+            id: normalizeId(raw.id),
+            weekly_hours: toNumberOrFallback(raw.weekly_hours, 0),
+            analyses_count: toNumberOrFallback(raw.analyses_count, 0),
+            avg_complexity_score: raw.avg_complexity_score == null
+                ? null
+                : toNumberOrFallback(raw.avg_complexity_score, null)
+        };
+    };
+
+    const normalizeAnalysis = (raw = {}) => {
+        if (!raw || typeof raw !== 'object') return raw;
+        return {
+            ...raw,
+            id: normalizeId(raw.id),
+            client_id: normalizeId(raw.client_id),
+            complexity_score: raw.complexity_score == null
+                ? null
+                : toNumberOrFallback(raw.complexity_score, null)
+        };
+    };
+
+    const getFieldKey = (input) => {
+        if (!input) return '';
+        const source = input.dataset?.field || input.name || input.id;
+        if (!source) return '';
+        return source.replace(/-/g, '_');
+    };
+
+    const idsMatch = (a, b) => {
+        const first = Number(a);
+        const second = Number(b);
+        if (Number.isNaN(first) || Number.isNaN(second)) {
+            return a === b;
+        }
+        return first === second;
     };
 
     // ===== DOM Elements Cache =====
@@ -231,7 +302,22 @@
         raciQuickWins: $('#raci-quick-wins'),
         raciRoadmap: $('#raci-roadmap'),
         raciMetaInfo: $('#raci-meta-info'),
-        
+        intelFieldInputs: $$("[data-intel-field]"),
+        intelDropzone: $('[data-intel-dropzone]'),
+        intelFileInput: $('[data-intel-file-input]'),
+        intelAssetList: $('#intel-asset-list'),
+        intelProcessAssets: $('#intel-process-assets'),
+        intelClearAssets: $('#intel-clear-assets'),
+        intelProcessingState: $('#intel-processing-state'),
+        intelProcessingMeta: $('#intel-processing-meta'),
+        intelRosterList: $('#intel-roster-list'),
+        employeeIntelModal: $('#employee-intel-modal'),
+        employeeIntelSummary: $('#employee-intel-summary'),
+        employeeIntelSignals: $('#employee-intel-signals'),
+        employeeIntelActions: $('#employee-intel-actions'),
+        employeeIntelMeta: $('#employee-intel-meta'),
+        employeeIntelName: $('#employee-intel-name'),
+
         // Salary
         salaryDashboard: $('#salary-dashboard'),
         salaryMemberSelect: $('#salary-member-select'),
@@ -244,6 +330,9 @@
         salaryUtilizationDetails: $('#salary-utilization-details'),
         salaryCompensation: $('#salary-compensation'),
         salaryRecommendations: $('#salary-recommendations'),
+        salaryLaunchMeta: $('#salary-launch-meta'),
+        salarySignals: $('#salary-signals'),
+        salaryMarketWindow: $('#salary-market-window'),
         
         // Notifications
         notifications: $('#notifications'),
@@ -316,6 +405,468 @@
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
+    }
+
+    const INTEL_FIELD_KEYS = ['company_name', 'company_industry', 'company_location', 'company_focus', 'team_name', 'team_mission', 'team_tags'];
+    const MAX_INTEL_FILES = 10;
+    const MAX_INTEL_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
+
+    function ensureIntelIntake() {
+        if (!state.team.intake) {
+            state.team.intake = {
+                files: [],
+                status: 'idle',
+                lastRunAt: null,
+                summary: '',
+                highlights: []
+            };
+        }
+        if (!Array.isArray(state.team.intake.files)) {
+            state.team.intake.files = [];
+        }
+        return state.team.intake;
+    }
+
+    function ensureIntelProfile() {
+        if (!state.team.profile) {
+            state.team.profile = {};
+        }
+        INTEL_FIELD_KEYS.forEach((key) => {
+            if (state.team.profile[key] == null) {
+                state.team.profile[key] = '';
+            }
+        });
+        return state.team.profile;
+    }
+
+    function syncIntelInputsFromState() {
+        ensureIntelProfile();
+        if (!elements.intelFieldInputs || !elements.intelFieldInputs.length) return;
+        elements.intelFieldInputs.forEach((input) => {
+            const field = input?.dataset?.intelField;
+            if (!field) return;
+            const current = state.team.profile[field] ?? '';
+            if (input.value !== current) {
+                input.value = current;
+            }
+        });
+    }
+
+    function updateIntelProfileField(field, value, sourceEl = null) {
+        if (!field) return;
+        ensureIntelProfile();
+        state.team.profile[field] = value;
+        if (!elements.intelFieldInputs || !elements.intelFieldInputs.length) return;
+        elements.intelFieldInputs.forEach((input) => {
+            if (input === sourceEl) return;
+            if (input?.dataset?.intelField === field && input.value !== value) {
+                input.value = value;
+            }
+        });
+    }
+
+    function formatFileSize(bytes) {
+        if (!bytes) return '0 B';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let size = bytes;
+        let unitIndex = 0;
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex += 1;
+        }
+        return `${size % 1 === 0 ? size : size.toFixed(1)} ${units[unitIndex]}`;
+    }
+
+    function renderIntelAssets() {
+        ensureIntelIntake();
+        const container = elements.intelAssetList;
+        if (!container) return;
+
+        const files = state.team.intake.files;
+        if (!files.length) {
+            container.innerHTML = `
+                <li class="asset-empty">
+                    <div class="asset-empty-inner">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Додайте матеріали команди для AI-структурування</span>
+                    </div>
+                </li>
+            `;
+            return;
+        }
+
+        container.innerHTML = files.map((asset) => `
+            <li class="asset-item">
+                <div class="asset-meta">
+                    <strong>${escapeHtml(asset.name)}</strong>
+                    <span>${formatFileSize(asset.size)} • ${escapeHtml(asset.type || 'невідомий формат')}</span>
+                </div>
+                <button type="button" class="asset-remove" data-action="remove-asset" data-asset-id="${asset.id}">
+                    <i class="fas fa-times"></i>
+                </button>
+            </li>
+        `).join('');
+    }
+
+    function addIntelAssets(fileList) {
+        ensureIntelIntake();
+        const incoming = Array.from(fileList || []);
+        if (!incoming.length) return;
+
+        if (!state.team.intake.files) {
+            state.team.intake.files = [];
+        }
+
+        const availableSlots = MAX_INTEL_FILES - state.team.intake.files.length;
+        if (availableSlots <= 0) {
+            showNotification('Максимум 10 файлів у черзі', 'warning');
+            return;
+        }
+
+        const accepted = incoming.slice(0, availableSlots);
+        let added = 0;
+
+        accepted.forEach((file) => {
+            if (file.size > MAX_INTEL_FILE_SIZE) {
+                showNotification(`${file.name} перевищує 25MB`, 'warning');
+                return;
+            }
+
+            const duplicate = state.team.intake.files.find((asset) => asset.name === file.name && asset.size === file.size);
+            if (duplicate) {
+                showNotification(`${file.name} вже додано`, 'info');
+                return;
+            }
+
+            const asset = {
+                id: `asset-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                file,
+                name: file.name || 'Файл без назви',
+                size: file.size,
+                type: file.type || 'application/octet-stream',
+                addedAt: new Date().toISOString()
+            };
+            state.team.intake.files.push(asset);
+            added += 1;
+        });
+
+        if (added > 0) {
+            renderIntelAssets();
+            setIntelProcessingStatus('ready');
+        }
+    }
+
+    function removeIntelAsset(assetId) {
+        ensureIntelIntake();
+        state.team.intake.files = state.team.intake.files.filter((asset) => asset.id !== assetId);
+        renderIntelAssets();
+        if (!state.team.intake.files.length) {
+            setIntelProcessingStatus('idle');
+        }
+    }
+
+    function clearIntelAssets() {
+        ensureIntelIntake();
+        state.team.intake.files = [];
+        renderIntelAssets();
+        setIntelProcessingStatus('idle');
+    }
+
+    function setIntelProcessingStatus(status, meta = {}) {
+        ensureIntelIntake();
+        state.team.intake.status = status;
+        const indicator = elements.intelProcessingState;
+        if (indicator) {
+            const dot = indicator.querySelector('.dot');
+            const label = indicator.querySelector('.status-label');
+            if (dot) {
+                dot.classList.remove('active', 'error');
+                if (status === 'processing' || status === 'success') {
+                    dot.classList.add('active');
+                } else if (status === 'error') {
+                    dot.classList.add('error');
+                }
+            }
+            if (label) {
+                const textMap = {
+                    idle: 'Очікує дані',
+                    ready: 'Готово до запуску',
+                    processing: 'GPT структурує дані',
+                    success: 'Результат оновлено',
+                    error: 'Помилка обробки'
+                };
+                label.textContent = textMap[status] || 'Статус невідомий';
+            }
+        }
+
+        const metaContainer = elements.intelProcessingMeta;
+        const summary = meta.summary || state.team.intake.summary || '';
+        const highlights = Array.isArray(meta.highlights) ? meta.highlights : (state.team.intake.highlights || []);
+
+        if (summary) {
+            state.team.intake.summary = summary;
+        }
+        if (highlights.length) {
+            state.team.intake.highlights = highlights;
+        }
+        if (meta.processedAt) {
+            state.team.intake.lastRunAt = meta.processedAt;
+        }
+
+        if (metaContainer) {
+            if (!summary && !highlights.length && !meta.tokensUsed) {
+                metaContainer.innerHTML = '';
+            } else {
+                metaContainer.innerHTML = `
+                    ${summary ? `<p class="intel-meta-summary">${escapeHtml(summary)}</p>` : ''}
+                    ${highlights.length ? `<ul class="intel-meta-highlights">${highlights.map((item) => `<li><i class="fas fa-sparkles"></i>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+                    ${meta.tokensUsed ? `<div class="intel-meta-inline"><i class="fas fa-bolt"></i> ${meta.tokensUsed} токенів</div>` : ''}
+                    ${meta.responseTime ? `<div class="intel-meta-inline"><i class="fas fa-stopwatch"></i> ${Math.round(meta.responseTime)} мс</div>` : ''}
+                `;
+            }
+        }
+    }
+
+    async function runIntelIngestion() {
+        ensureIntelProfile();
+        ensureIntelIntake();
+
+        if (!state.currentClient) {
+            showNotification('Оберіть клієнта перед обробкою команди', 'warning');
+            return;
+        }
+
+        const files = state.team.intake.files || [];
+        const hasProfileData = INTEL_FIELD_KEYS.some((key) => (state.team.profile[key] || '').trim().length > 0);
+        if (!files.length && !hasProfileData) {
+            showNotification('Заповніть профіль або додайте файли для обробки', 'warning');
+            return;
+        }
+
+        if (elements.intelProcessAssets) {
+            elements.intelProcessAssets.disabled = true;
+            elements.intelProcessAssets.classList.add('btn-loading');
+        }
+
+        setIntelProcessingStatus('processing');
+
+        try {
+            const formData = new FormData();
+            formData.append('client_id', state.currentClient.id);
+            if (state.team.current?.id) {
+                formData.append('team_id', state.team.current.id);
+            }
+            formData.append('profile', JSON.stringify(state.team.profile));
+
+            files.forEach((asset) => {
+                formData.append('assets', asset.file, asset.name);
+            });
+
+            const response = await fetch('/api/teams/intelligence/ingest', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Не вдалося обробити дані команди');
+            }
+
+            if (data.profile) {
+                ensureIntelProfile();
+                if (data.profile.company) {
+                    state.team.profile.company_name = data.profile.company.name || state.team.profile.company_name;
+                    state.team.profile.company_industry = data.profile.company.industry || state.team.profile.company_industry;
+                    state.team.profile.company_location = data.profile.company.location || state.team.profile.company_location;
+                    state.team.profile.company_focus = data.profile.company.focus || state.team.profile.company_focus;
+                }
+                if (data.profile.team) {
+                    state.team.profile.team_name = data.profile.team.title || state.team.profile.team_name;
+                    state.team.profile.team_mission = data.profile.team.mission || state.team.profile.team_mission;
+                    if (Array.isArray(data.profile.team.tags)) {
+                        state.team.profile.team_tags = data.profile.team.tags.join(', ');
+                    }
+                }
+                syncIntelInputsFromState();
+            }
+
+            const metaPayload = {
+                summary: data.insights?.summary || data.profile?.team?.mission || '',
+                highlights: data.insights?.highlights || [],
+                processedAt: data.meta?.processedAt || new Date().toISOString(),
+                tokensUsed: data.meta?.tokensUsed,
+                responseTime: data.meta?.responseTime
+            };
+
+            setIntelProcessingStatus('success', metaPayload);
+            clearIntelAssets();
+
+            if (data.team?.id) {
+                state.team.pendingTeamId = data.team.id;
+                await loadTeamsForClient(state.currentClient.id, { preserveSelection: true });
+                await selectTeam(data.team.id, { silent: true });
+            } else {
+                if (Array.isArray(data.members) && data.members.length) {
+                    state.team.members = data.members.map((member) => ({
+                        ...member,
+                        responsibilities: Array.isArray(member.responsibilities) ? member.responsibilities : (member.responsibilities ? [member.responsibilities] : [])
+                    }));
+                }
+                renderIntelRoster();
+            }
+
+            showNotification('AI успішно структурував дані команди', 'success');
+        } catch (error) {
+            console.error('❌ runIntelIngestion error:', error);
+            setIntelProcessingStatus('error', { summary: error.message });
+            showNotification(error.message || 'Не вдалося обробити дані команди', 'error');
+        } finally {
+            if (elements.intelProcessAssets) {
+                elements.intelProcessAssets.disabled = false;
+                elements.intelProcessAssets.classList.remove('btn-loading');
+            }
+        }
+    }
+
+    function extractRosterStatusLabel(status) {
+        if (!status) return null;
+        const map = {
+            overloaded: 'Перевантаження',
+            balanced: 'Баланс',
+            underutilized: 'Недовантаження'
+        };
+        return map[status.toLowerCase()] || status;
+    }
+
+    function renderIntelRoster() {
+        const container = elements.intelRosterList;
+        if (!container) return;
+
+        const members = Array.isArray(state.team.members) ? state.team.members : [];
+        const alignment = Array.isArray(state.team.latestRaci?.role_alignment) ? state.team.latestRaci.role_alignment : [];
+        const alignmentMap = new Map();
+        alignment.forEach((item) => {
+            const nameKey = (item.name || '').toLowerCase();
+            if (!alignmentMap.has(nameKey)) {
+                alignmentMap.set(nameKey, item);
+            }
+        });
+
+        const rosterItems = [];
+        members.forEach((member) => {
+            const name = member.name || member.full_name || member.role || 'Співробітник';
+            const alignmentData = alignmentMap.get(name.toLowerCase()) || null;
+            rosterItems.push({ member, alignment: alignmentData, source: 'team' });
+            if (alignmentData) {
+                alignmentMap.delete(name.toLowerCase());
+            }
+        });
+
+        alignmentMap.forEach((alignmentData) => {
+            rosterItems.push({ member: null, alignment: alignmentData, source: 'alignment' });
+        });
+
+        if (!rosterItems.length) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-user-astronaut"></i></div>
+                    <p>Додайте учасників команди або запустіть AI-інтейк, щоб побачити карту ролей.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = rosterItems.map(({ member, alignment }) => {
+            const name = member?.name || member?.full_name || alignment?.name || 'Співробітник';
+            const role = member?.role || alignment?.role || 'Роль не визначена';
+            const responsibilities = Array.isArray(member?.responsibilities) ? member.responsibilities : [];
+            const summaryLines = responsibilities.length ? responsibilities.slice(0, 2) : (Array.isArray(alignment?.signals) ? alignment.signals.slice(0, 2) : []);
+            const statusLabel = extractRosterStatusLabel(alignment?.status);
+            const tags = [];
+            if (statusLabel) {
+                tags.push(`<span class="roster-tag status-${(alignment.status || '').toLowerCase()}">${escapeHtml(statusLabel)}</span>`);
+            }
+            if (member?.seniority) {
+                tags.push(`<span class="roster-tag">${escapeHtml(member.seniority)}</span>`);
+            }
+            if (member?.location) {
+                tags.push(`<span class="roster-tag">${escapeHtml(member.location)}</span>`);
+            }
+
+            return `
+                <div class="roster-card" data-member-id="${member?.id ?? ''}" data-member-name="${escapeHtml(name)}">
+                    <div class="roster-role">${escapeHtml(role)}</div>
+                    <h4>${escapeHtml(name)}</h4>
+                    ${summaryLines.length ? `<p>${escapeHtml(summaryLines.join('; '))}</p>` : ''}
+                    ${tags.length ? `<div class="roster-tags">${tags.join('')}</div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function openEmployeeIntel(memberId, fallbackName = '') {
+        const modal = elements.employeeIntelModal;
+        if (!modal) return;
+
+        const members = Array.isArray(state.team.members) ? state.team.members : [];
+        let member = null;
+        if (memberId) {
+            member = members.find((item) => String(item.id) === String(memberId)) || null;
+        }
+
+        const targetName = member?.name || member?.full_name || fallbackName;
+        const alignment = Array.isArray(state.team.latestRaci?.role_alignment)
+            ? state.team.latestRaci.role_alignment.find((item) => (item.name || '').toLowerCase() === (targetName || '').toLowerCase())
+            : null;
+
+        const name = targetName || alignment?.name || 'Співробітник';
+        const role = member?.role || alignment?.role || 'Роль не визначена';
+        const responsibilities = Array.isArray(member?.responsibilities) ? member.responsibilities : [];
+        const summaryBlock = responsibilities.length
+            ? `<ul>${responsibilities.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+            : '<p class="intel-modal-empty">Додайте обов'язки для детального опису ролі.</p>';
+
+        if (elements.employeeIntelName) {
+            elements.employeeIntelName.textContent = name;
+        }
+        if (elements.employeeIntelSummary) {
+            elements.employeeIntelSummary.innerHTML = summaryBlock;
+        }
+        if (elements.employeeIntelSignals) {
+            const signals = Array.isArray(alignment?.signals) ? alignment.signals : [];
+            elements.employeeIntelSignals.innerHTML = signals.length
+                ? signals.map((item) => `<li>${escapeHtml(item)}</li>`).join('')
+                : '<li class="intel-modal-empty">Сигнали будуть доступні після аналізу RACI</li>';
+        }
+        if (elements.employeeIntelActions) {
+            const actions = Array.isArray(alignment?.suggested_actions) ? alignment.suggested_actions : (Array.isArray(alignment?.recommendations) ? alignment.recommendations : []);
+            elements.employeeIntelActions.innerHTML = actions.length
+                ? actions.map((item) => `<li>${escapeHtml(item)}</li>`).join('')
+                : '<li class="intel-modal-empty">AI ще не запропонував кроки для цієї ролі</li>';
+        }
+        if (elements.employeeIntelMeta) {
+            const items = [];
+            if (role) {
+                items.push(`<span><i class="fas fa-briefcase"></i> ${escapeHtml(role)}</span>`);
+            }
+            if (member?.seniority) {
+                items.push(`<span><i class="fas fa-layer-group"></i> ${escapeHtml(member.seniority)}</span>`);
+            }
+            if (alignment?.status) {
+                items.push(`<span><i class="fas fa-balance-scale"></i> ${escapeHtml(extractRosterStatusLabel(alignment.status))}</span>`);
+            }
+            elements.employeeIntelMeta.innerHTML = items.length ? items.join('') : '';
+        }
+
+        modal.style.display = 'flex';
+        modal.dataset.open = 'true';
+    }
+
+    function closeEmployeeIntel() {
+        const modal = elements.employeeIntelModal;
+        if (!modal) return;
+        modal.style.display = 'none';
+        delete modal.dataset.open;
     }
 
     // ===== Token Management =====
@@ -661,9 +1212,20 @@
             }
             
             const previousCount = state.clients?.length || 0;
-            state.clients = data.clients || [];
+            const previousClientId = state.currentClient ? normalizeId(state.currentClient.id) : null;
+
+            state.clients = (data.clients || []).map(normalizeClient);
+
+            if (previousClientId !== null) {
+                const matchedClient = state.clients.find(client => idsMatch(client.id, previousClientId));
+                if (matchedClient) {
+                    state.currentClient = matchedClient;
+                    updateNavClientInfo(state.currentClient);
+                    updateWorkspaceClientInfo(state.currentClient);
+                }
+            }
             console.log('✅ Set state.clients:', state.clients.length, 'clients', { previousCount, newCount: state.clients.length });
-            
+
             // Force immediate UI update with animation
             setTimeout(() => {
                 renderClientsList();
@@ -693,7 +1255,7 @@
             }
             
             // Check if current client still exists in clients array
-            if (state.currentClient && !state.clients.find(c => c.id === state.currentClient.id)) {
+            if (state.currentClient && !state.clients.some(c => idsMatch(c.id, state.currentClient.id))) {
                 console.log('🔄 Current client no longer exists, clearing state');
                 state.currentClient = null;
                 state.currentAnalysis = null;
@@ -776,7 +1338,7 @@
 
         // Render client items
         elements.clientList.innerHTML = filtered.map(client => {
-            const isActive = state.currentClient?.id === client.id;
+            const isActive = state.currentClient && idsMatch(state.currentClient.id, client.id);
             const avatar = (client.company || 'C')[0].toUpperCase();
             const analysisCount = client.analyses_count || 0;
             
@@ -840,7 +1402,7 @@
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('📊 History button clicked for client:', clientId);
-                    const client = state.clients.find(c => c.id === clientId);
+                    const client = state.clients.find(c => idsMatch(c.id, clientId));
                     if (client) {
                         openAnalysisHistoryModal(client);
                     }
@@ -877,7 +1439,7 @@
         }
         
         if (isEdit) {
-            const client = state.clients.find(c => c.id === clientId);
+            const client = state.clients.find(c => idsMatch(c.id, clientId));
             if (client) {
                 populateClientForm(client);
             }
@@ -900,10 +1462,19 @@
     }
 
     function populateClientForm(client) {
-        Object.keys(client).forEach(key => {
-            const input = $(`#${key}`);
-            if (input && client[key]) {
-                input.value = client[key];
+        if (!client) return;
+        const inputs = $$('#client-form input, #client-form select, #client-form textarea');
+        inputs.forEach(input => {
+            const fieldKey = getFieldKey(input);
+            if (!fieldKey) return;
+
+            const value = client[fieldKey];
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                input.checked = Boolean(value);
+            } else if (value !== undefined && value !== null) {
+                input.value = value;
+            } else {
+                input.value = '';
             }
         });
     }
@@ -911,10 +1482,17 @@
     async function selectClient(clientId) {
         console.log('🎯 selectClient called with ID:', clientId);
         console.log('🎯 Current state.clients:', state.clients.length, 'clients');
-        
-        const client = state.clients.find(c => c.id === clientId);
+
+        const numericClientId = Number(clientId);
+        if (Number.isNaN(numericClientId)) {
+            console.error('❌ Invalid client id provided:', clientId);
+            showNotification('Невірний ідентифікатор клієнта', 'error');
+            return;
+        }
+
+        const client = state.clients.find(c => idsMatch(c.id, numericClientId));
         console.log('🎯 Found client:', client ? client.company : 'NOT FOUND');
-        
+
         if (!client) {
             console.error('❌ Client not found with ID:', clientId);
             showNotification('Клієнт не знайдений', 'error');
@@ -938,8 +1516,8 @@
         
         // Load analysis history for this client and try to load the latest analysis
         console.log('🎯 Loading analysis history...');
-        await loadAnalysisHistoryAndLatest(clientId);
-        await loadTeamsForClient(clientId);
+        await loadAnalysisHistoryAndLatest(client.id);
+        await loadTeamsForClient(client.id);
 
         // Save state
         console.log('🎯 Saving state...');
@@ -1694,12 +2272,23 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         try {
             const clientData = {};
             const inputs = $$('#client-form input, #client-form select, #client-form textarea');
-            
+
             let hasRequired = false;
             inputs.forEach(input => {
-                if (input.value.trim()) {
-                    clientData[input.id] = input.value.trim();
-                    if (input.id === 'company') hasRequired = true;
+                const fieldKey = getFieldKey(input);
+                if (!fieldKey) return;
+
+                const value = input.value.trim();
+                if (value !== '') {
+                    if (input.type === 'number') {
+                        const numericValue = Number(value);
+                        if (!Number.isNaN(numericValue)) {
+                            clientData[fieldKey] = numericValue;
+                        }
+                    } else {
+                        clientData[fieldKey] = value;
+                    }
+                    if (fieldKey === 'company') hasRequired = true;
                 }
             });
 
@@ -1731,7 +2320,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             showNotification('Клієнта збережено успішно! 🎉', 'success');
             
             // Set the new client as current and show analysis dashboard
-            state.currentClient = data.client;
+            state.currentClient = normalizeClient(data.client);
             
             // Force refresh the clients list to ensure it appears
             await loadClients(true); // Force refresh with cache busting
@@ -2061,7 +2650,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                                 // Increment client analysis count
                                 if (state.currentClient) {
                                     // Update in state.clients array
-                                    const clientIndex = state.clients.findIndex(c => c.id === state.currentClient.id);
+                                    const clientIndex = state.clients.findIndex(c => idsMatch(c.id, state.currentClient.id));
                                     if (clientIndex !== -1) {
                                         state.clients[clientIndex].analyses_count = (state.clients[clientIndex].analyses_count || 0) + 1;
                                     }
@@ -2115,7 +2704,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                                 
                                 // Update current client data with refreshed info
                                 if (state.currentClient) {
-                                    const updatedClient = state.clients.find(c => c.id === state.currentClient.id);
+                                    const updatedClient = state.clients.find(c => idsMatch(c.id, state.currentClient.id));
                                     if (updatedClient) {
                                         state.currentClient = updatedClient;
                                     }
@@ -4464,6 +5053,76 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                 addManualTeamMember();
             }
         });
+        elements.intelFieldInputs?.forEach((input) => {
+            const field = input?.dataset?.intelField;
+            if (!field) return;
+            input.addEventListener('input', (event) => {
+                updateIntelProfileField(field, event.target.value, event.target);
+            });
+            input.addEventListener('blur', (event) => {
+                updateIntelProfileField(field, event.target.value.trim(), event.target);
+            });
+        });
+        elements.intelFileInput?.addEventListener('change', (event) => {
+            addIntelAssets(event.target.files);
+            event.target.value = '';
+        });
+        elements.intelClearAssets?.addEventListener('click', (event) => {
+            event.preventDefault();
+            clearIntelAssets();
+        });
+        elements.intelProcessAssets?.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (elements.intelProcessAssets.disabled) return;
+            runIntelIngestion();
+        });
+        elements.intelAssetList?.addEventListener('click', (event) => {
+            const removeBtn = event.target.closest('[data-action="remove-asset"]');
+            if (!removeBtn) return;
+            const assetId = removeBtn.dataset.assetId;
+            if (assetId) removeIntelAsset(assetId);
+        });
+        if (elements.intelDropzone) {
+            ['dragenter', 'dragover'].forEach((type) => {
+                elements.intelDropzone.addEventListener(type, (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    elements.intelDropzone.classList.add('drag-active');
+                });
+            });
+            ['dragleave', 'drop'].forEach((type) => {
+                elements.intelDropzone.addEventListener(type, (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    elements.intelDropzone.classList.remove('drag-active');
+                    if (type === 'drop') {
+                        const droppedFiles = event.dataTransfer?.files;
+                        if (droppedFiles && droppedFiles.length) {
+                            addIntelAssets(droppedFiles);
+                        }
+                    }
+                });
+            });
+        }
+        elements.intelRosterList?.addEventListener('click', (event) => {
+            const card = event.target.closest('.roster-card');
+            if (!card) return;
+            const memberId = card.dataset.memberId || '';
+            const memberName = card.dataset.memberName || '';
+            openEmployeeIntel(memberId, memberName);
+        });
+        if (elements.employeeIntelModal) {
+            elements.employeeIntelModal.addEventListener('click', (event) => {
+                if (event.target === elements.employeeIntelModal || event.target.closest('[data-action="close-employee-intel"]')) {
+                    closeEmployeeIntel();
+                }
+            });
+        }
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && elements.employeeIntelModal?.dataset.open) {
+                closeEmployeeIntel();
+            }
+        });
         elements.teamList?.addEventListener('click', (event) => {
             const card = event.target.closest('[data-team-id]');
             if (!card) return;
@@ -4517,6 +5176,12 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
 
         // Close product dropdown when clicking outside
         document.addEventListener('click', (e) => {
+            const teamHubTrigger = e.target.closest('[data-action="open-team-hub"]');
+            if (teamHubTrigger) {
+                e.preventDefault();
+                selectProduct('team-hub');
+                return;
+            }
             if (!e.target.closest('.product-switcher')) {
                 closeProductDropdown();
             }
@@ -4670,6 +5335,17 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         document.addEventListener('click', handleRecommendationActions);
         
         // Keyboard shortcuts
+        ensureIntelProfile();
+        ensureIntelIntake();
+        syncIntelInputsFromState();
+        renderIntelAssets();
+        setIntelProcessingStatus(state.team.intake.status || 'idle', {
+            summary: state.team.intake.summary,
+            highlights: state.team.intake.highlights || [],
+            processedAt: state.team.intake.lastRunAt
+        });
+        renderIntelRoster();
+
         document.addEventListener('keydown', handleKeyboardShortcuts);
         
         // Window resize
@@ -4804,11 +5480,19 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             console.log('🔄 Loading analysis history for client:', clientId);
             const response = await fetch(`/api/clients/${clientId}`);
             const data = await response.json();
-            
-            if (data.success && data.analyses) {
-                console.log('📊 Received', data.analyses.length, 'analyses from server');
-                state.analyses = data.analyses; // Store in state
-                renderAnalysisHistory(data.analyses);
+
+            if (data.success) {
+                const normalizedClient = normalizeClient(data.client);
+                if (normalizedClient && state.currentClient && idsMatch(state.currentClient.id, normalizedClient.id)) {
+                    state.currentClient = { ...state.currentClient, ...normalizedClient };
+                    updateNavClientInfo(state.currentClient);
+                    updateWorkspaceClientInfo(state.currentClient);
+                }
+
+                const normalizedAnalyses = (data.analyses || []).map(normalizeAnalysis);
+                console.log('📊 Received', normalizedAnalyses.length, 'analyses from server');
+                state.analyses = normalizedAnalyses; // Store in state
+                renderAnalysisHistory(normalizedAnalyses);
             }
         } catch (error) {
             console.error('Failed to load analysis history:', error);
@@ -4819,15 +5503,24 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         try {
             const response = await fetch(`/api/clients/${clientId}`);
             const data = await response.json();
-            
-            if (data.success && data.analyses) {
-                console.log('📊 Loading history and latest - received', data.analyses.length, 'analyses');
-                state.analyses = data.analyses; // Store in state
-                renderAnalysisHistory(data.analyses);
-                
+
+            if (data.success) {
+                const normalizedClient = normalizeClient(data.client);
+                const normalizedAnalyses = (data.analyses || []).map(normalizeAnalysis);
+
+                if (normalizedClient && state.currentClient && idsMatch(state.currentClient.id, normalizedClient.id)) {
+                    state.currentClient = { ...state.currentClient, ...normalizedClient };
+                    updateNavClientInfo(state.currentClient);
+                    updateWorkspaceClientInfo(state.currentClient);
+                }
+
+                console.log('📊 Loading history and latest - received', normalizedAnalyses.length, 'analyses');
+                state.analyses = normalizedAnalyses; // Store in state
+                renderAnalysisHistory(normalizedAnalyses);
+
                 // If there are analyses, automatically load the latest one
-                if (data.analyses.length > 0) {
-                    const latestAnalysis = data.analyses[0]; // Analyses should be sorted by date descending
+                if (normalizedAnalyses.length > 0) {
+                    const latestAnalysis = normalizedAnalyses[0]; // Analyses should be sorted by date descending
                     await loadAnalysis(latestAnalysis.id);
                 } else {
                     // No analyses for this client - show clean dashboard state but preserve UI
@@ -5007,14 +5700,16 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         try {
             const response = await fetch(`/api/clients/${state.currentClient.id}/analysis/${analysisId}`);
             const data = await response.json();
-            
+
             if (!response.ok) {
                 throw new Error(data.error || 'Помилка завантаження аналізу');
             }
-            
+
+            const normalizedAnalysis = normalizeAnalysis(data.analysis);
+
             // Set the loaded analysis as current
-            state.currentAnalysis = data.analysis;
-            state.originalText = data.analysis.original_text || '';
+            state.currentAnalysis = normalizedAnalysis;
+            state.originalText = normalizedAnalysis.original_text || '';
             
             // Clear current text and show the analysis text
             if (elements.negotiationText) {
@@ -5028,10 +5723,10 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             }
             
             // Update displays with loaded analysis using displayAnalysisResults
-            displayAnalysisResults(data.analysis);
+            displayAnalysisResults(normalizedAnalysis);
             
             // Update full text view with highlighting
-            if (data.analysis.highlighted_text) {
+            if (normalizedAnalysis.highlighted_text) {
                 console.log('🔍 Loading analysis with pre-generated highlighted text');
                 updateFullTextView(data.analysis.highlighted_text);
             } else if (data.analysis.highlights && state.originalText) {
@@ -5114,7 +5809,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         }
         
         try {
-            const client = state.clients.find(c => c.id === clientId);
+            const client = state.clients.find(c => idsMatch(c.id, clientId));
             console.log('✏️ Found client for editing:', client ? client.company : 'NOT FOUND');
             
             if (!client) {
@@ -5134,7 +5829,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
     function showDeleteClientModal(clientId) {
         console.log('🗑️ showDeleteClientModal called with ID:', clientId);
         
-        const client = state.clients.find(c => c.id === clientId);
+        const client = state.clients.find(c => idsMatch(c.id, clientId));
         if (!client) {
             console.error('❌ Client not found for deletion with ID:', clientId);
             showNotification('Клієнт не знайдений', 'error');
@@ -5208,7 +5903,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
     async function performDeleteClient(clientId) {
         console.log('🗑️ performDeleteClient called with ID:', clientId);
         try {
-            const client = state.clients.find(c => c.id === clientId);
+            const client = state.clients.find(c => idsMatch(c.id, clientId));
             console.log('🗑️ Found client for deletion:', client ? client.company : 'NOT FOUND');
 
             console.log('🗑️ Sending delete request...');
@@ -5243,7 +5938,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             }
             
             // If deleted client was current, clear selection
-            if (state.currentClient?.id === clientId) {
+            if (state.currentClient?.id != null && idsMatch(state.currentClient.id, clientId)) {
                 state.currentClient = null;
                 state.currentAnalysis = null;
                 state.selectedFragments = [];
@@ -5442,7 +6137,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             
             // Restore client info
             if (appState.currentClient && typeof appState.currentClient === 'object') {
-                state.currentClient = appState.currentClient;
+                state.currentClient = normalizeClient(appState.currentClient);
                 try {
                     updateNavClientInfo(state.currentClient);
                     updateWorkspaceClientInfo(state.currentClient);
@@ -5450,10 +6145,16 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                     console.warn('Error updating client info:', e);
                 }
             }
-            
+
             // Restore clients list if available
             if (appState.clients && Array.isArray(appState.clients)) {
-                state.clients = appState.clients;
+                state.clients = appState.clients.map(normalizeClient);
+                try {
+                    renderClientsList();
+                    updateClientCount();
+                } catch (e) {
+                    console.warn('Error rendering clients list on restore:', e);
+                }
             }
             
             // Restore token usage if available
@@ -5598,9 +6299,11 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             
             const data = await response.json();
             console.log('🔍 Loaded client analysis history:', data);
-            
+
             if (data.success) {
-                displayAnalysisHistoryInModal(data.client, data.analyses);
+                const normalizedClient = normalizeClient(data.client);
+                const normalizedAnalyses = (data.analyses || []).map(normalizeAnalysis);
+                displayAnalysisHistoryInModal(normalizedClient, normalizedAnalyses);
             } else {
                 throw new Error(data.error || 'Failed to load analysis history');
             }
@@ -5886,6 +6589,11 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             updateTeamSelects();
             renderTeamPreview();
             renderFocusChips();
+            ensureIntelProfile();
+            ensureIntelIntake();
+            syncIntelInputsFromState();
+            setIntelProcessingStatus('idle');
+            renderIntelRoster();
             return;
         }
 
@@ -5923,6 +6631,14 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             } else {
                 renderTeamPreview();
                 renderFocusChips();
+                ensureIntelIntake();
+                syncIntelInputsFromState();
+                setIntelProcessingStatus(state.team.intake.status || 'idle', {
+                    summary: state.team.intake.summary,
+                    highlights: state.team.intake.highlights || [],
+                    processedAt: state.team.intake.lastRunAt
+                });
+                renderIntelRoster();
             }
         } catch (error) {
             console.error('❌ loadTeamsForClient error:', error);
@@ -6015,6 +6731,36 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             state.team.latestRaci = data.latest_raci || null;
             state.team.salaryInsights = Array.isArray(data.salary_insights) ? data.salary_insights : [];
 
+            const intakePayload = team.raw_payload?.intelligence_intake || {};
+            ensureIntelProfile();
+            ensureIntelIntake();
+
+            if (intakePayload.profile && typeof intakePayload.profile === 'object') {
+                const profile = intakePayload.profile;
+                if (profile.company) {
+                    state.team.profile.company_name = profile.company.name || state.team.profile.company_name;
+                    state.team.profile.company_industry = profile.company.industry || state.team.profile.company_industry;
+                    state.team.profile.company_location = profile.company.location || state.team.profile.company_location;
+                    state.team.profile.company_focus = profile.company.focus || state.team.profile.company_focus;
+                }
+                if (profile.team) {
+                    state.team.profile.team_name = profile.team.title || state.team.profile.team_name;
+                    state.team.profile.team_mission = profile.team.mission || state.team.profile.team_mission;
+                    if (Array.isArray(profile.team.tags)) {
+                        state.team.profile.team_tags = profile.team.tags.join(', ');
+                    }
+                }
+            }
+
+            state.team.intake.summary = intakePayload.summary || state.team.intake.summary || '';
+            state.team.intake.highlights = Array.isArray(intakePayload.highlights)
+                ? intakePayload.highlights
+                : (state.team.intake.highlights || []);
+            state.team.intake.lastRunAt = intakePayload.processed_at || intakePayload.processedAt || state.team.intake.lastRunAt;
+            state.team.intake.status = intakePayload.summary ? 'success' : (state.team.intake.status || 'idle');
+
+            syncIntelInputsFromState();
+
             renderTeamList();
             updateTeamSelects();
             prefillSalaryForm(elements.salaryMemberSelect?.value);
@@ -6036,6 +6782,12 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             } else {
                 clearRaciOutput();
             }
+            setIntelProcessingStatus(state.team.intake.status || 'idle', {
+                summary: state.team.intake.summary,
+                highlights: state.team.intake.highlights,
+                processedAt: state.team.intake.lastRunAt
+            });
+            renderIntelRoster();
 
             renderSalaryInsightsHistory();
             const latestSalary = state.team.salaryInsights?.[0];
@@ -6347,25 +7099,51 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         state.team.latestRaci = snapshot;
         const view = state.team.latestRaciView || 'actual';
         setRaciView(view);
+        renderRaciMeta(snapshot);
+        const gapItems = snapshot.gaps?.gap_analysis || (Array.isArray(snapshot.gaps) ? snapshot.gaps : []);
+        renderRaciGaps(Array.isArray(gapItems) ? gapItems : []);
+        renderRaciQuickWins(snapshot.quick_wins || snapshot.gaps?.quick_wins || []);
+        renderRaciRoadmap(snapshot.roadmap || snapshot.gaps?.roadmap || []);
+        renderIntelRoster();
+    }
 
-        if (elements.raciMetaInfo) {
-            const summary = snapshot.gaps?.summary || snapshot.gaps?.gap_summary || '';
-            const generatedAt = snapshot.generated_at ? new Date(snapshot.generated_at).toLocaleString('uk-UA') : '';
-            const tokens = state.team.lastRaciMeta?.tokensUsed;
-            const duration = state.team.lastRaciMeta?.responseTime;
-            elements.raciMetaInfo.innerHTML = `
-                ${summary ? `<p>${escapeHtml(summary)}</p>` : ''}
-                <div class="meta-inline">
-                    ${generatedAt ? `<span class="meta-time"><i class=\"fas fa-history\"></i> ${generatedAt}</span>` : ''}
-                    ${tokens != null ? `<span class="meta-tokens"><i class=\"fas fa-bolt\"></i> ${tokens} токенів</span>` : ''}
-                    ${duration != null ? `<span class="meta-time"><i class=\"fas fa-stopwatch\"></i> ${Math.round(duration)} мс</span>` : ''}
-                </div>
-            `;
-        }
+    function renderRaciMeta(snapshot) {
+        if (!elements.raciMetaInfo) return;
 
-        renderRaciGaps(snapshot.gaps?.gap_analysis || []);
-        renderRaciQuickWins(snapshot.gaps?.quick_wins || []);
-        renderRaciRoadmap(snapshot.gaps?.roadmap || []);
+        const summary = snapshot.summary || snapshot.gaps?.summary || snapshot.gaps?.gap_summary || '';
+        const alignment = Array.isArray(snapshot.role_alignment) ? snapshot.role_alignment : [];
+        const overloaded = alignment.filter(item => (item.status || '').toLowerCase() === 'overloaded').length;
+        const balanced = alignment.filter(item => (item.status || '').toLowerCase() === 'balanced').length;
+        const underutilized = alignment.filter(item => (item.status || '').toLowerCase() === 'underutilized').length;
+
+        const metaCards = [
+            { label: 'Перевантажені', value: overloaded, icon: 'fa-fire' },
+            { label: 'Баланс', value: balanced, icon: 'fa-circle-notch' },
+            { label: 'Недовантажені', value: underutilized, icon: 'fa-feather' }
+        ];
+
+        const generatedAt = snapshot.generated_at ? new Date(snapshot.generated_at).toLocaleString('uk-UA') : '';
+        const tokens = state.team.lastRaciMeta?.tokensUsed;
+        const duration = state.team.lastRaciMeta?.responseTime;
+
+        const metaFooter = [];
+        if (generatedAt) metaFooter.push(`<span><i class="fas fa-history"></i> ${generatedAt}</span>`);
+        if (tokens != null) metaFooter.push(`<span><i class="fas fa-bolt"></i> ${tokens} токенів</span>`);
+        if (duration != null) metaFooter.push(`<span><i class="fas fa-stopwatch"></i> ${Math.round(duration)} мс</span>`);
+
+        elements.raciMetaInfo.innerHTML = `
+            ${summary ? `<div class="matrix-meta-summary">${escapeHtml(summary)}</div>` : ''}
+            <div class="matrix-meta-cards">
+                ${metaCards.map(card => `
+                    <div class="meta-card">
+                        <div class="meta-icon"><i class="fas ${card.icon}"></i></div>
+                        <div class="meta-value">${card.value}</div>
+                        <div class="meta-label">${card.label}</div>
+                    </div>
+                `).join('')}
+            </div>
+            ${metaFooter.length ? `<div class="meta-inline">${metaFooter.join('')}</div>` : ''}
+        `;
     }
 
     function setRaciView(view) {
@@ -6557,7 +7335,10 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                 matrix_actual: output.matrix_actual || data.raci?.matrix_actual || [],
                 matrix_ideal: output.matrix_ideal || data.raci?.matrix_ideal || [],
                 gaps: output.gap_analysis || data.raci?.gaps || {},
-                summary: output.summary || data.raci?.summary || ''
+                summary: output.summary || data.raci?.summary || '',
+                role_alignment: output.role_alignment || data.raci?.role_alignment || [],
+                quick_wins: output.quick_wins || data.raci?.quick_wins || [],
+                roadmap: output.roadmap || data.raci?.roadmap || []
             };
 
             state.team.lastRaciMeta = data.meta || null;
@@ -6606,8 +7387,11 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             `;
         }
         if (elements.raciMetaInfo) {
-            elements.raciMetaInfo.innerHTML = '';
+            elements.raciMetaInfo.innerHTML = `
+                <div class="matrix-meta-summary">Запустіть RACI аналіз, щоб побачити ключові інсайти по ролях.</div>
+            `;
         }
+        renderIntelRoster();
     }
 
     // ===== Salary Analytics =====
@@ -6686,7 +7470,10 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             }
 
             state.salary.latest = data.salary;
-            state.team.lastSalaryMeta = data.meta || null;
+            state.team.lastSalaryMeta = {
+                ...(data.meta || {}),
+                processedAt: data.meta?.processedAt || new Date().toISOString()
+            };
             renderSalaryAnalysis(data.salary.analysis || data.salary);
             await loadTeamsForClient(state.currentClient.id, { preserveSelection: true });
             showNotification('Аналіз зарплати готовий', 'success');
@@ -6706,11 +7493,17 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             renderSalaryUtilization({});
             renderSalaryCompensation({});
             renderSalaryRecommendations({});
+            renderSalaryLaunchMeta(null);
+            renderSalarySignals({});
+            renderSalaryMarketWindow({});
             return;
         }
         renderSalaryUtilization(analysis.utilization || {});
         renderSalaryCompensation(analysis.compensation || {});
         renderSalaryRecommendations(analysis.recommendations || {});
+        renderSalaryLaunchMeta(analysis);
+        renderSalarySignals(analysis.signals || {});
+        renderSalaryMarketWindow(analysis.compensation || {});
     }
 
     function renderSalaryUtilization(utilization) {
@@ -6801,10 +7594,89 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             <div class="meta-inline salary-meta">
                 ${meta.tokensUsed != null ? `<span><i class="fas fa-bolt"></i> ${meta.tokensUsed} токенів</span>` : ''}
                 ${meta.responseTime != null ? `<span><i class="fas fa-stopwatch"></i> ${meta.responseTime} мс</span>` : ''}
+                ${meta.processedAt ? `<span><i class="fas fa-history"></i> ${new Date(meta.processedAt).toLocaleString('uk-UA')}</span>` : ''}
             </div>
         ` : '';
 
         elements.salaryRecommendations.innerHTML = `${content}${metaHtml}` || metaHtml;
+    }
+
+    function renderSalaryLaunchMeta(analysis) {
+        if (!elements.salaryLaunchMeta) return;
+        const meta = state.team.lastSalaryMeta || {};
+        const items = [];
+        if (state.team.current?.title) {
+            items.push(`<li><i class="fas fa-diagram-project"></i> ${escapeHtml(state.team.current.title)}</li>`);
+        }
+        if (analysis?.compensation?.alignment) {
+            items.push(`<li><i class="fas fa-scale-balanced"></i> Баланс: ${escapeHtml(analysis.compensation.alignment)}</li>`);
+        }
+        if (meta.tokensUsed != null) {
+            items.push(`<li><i class="fas fa-bolt"></i> ${meta.tokensUsed} токенів</li>`);
+        }
+        if (meta.responseTime != null) {
+            items.push(`<li><i class="fas fa-stopwatch"></i> ${Math.round(meta.responseTime)} мс</li>`);
+        }
+        if (meta.processedAt) {
+            try {
+                items.push(`<li><i class="fas fa-history"></i> ${new Date(meta.processedAt).toLocaleString('uk-UA')}</li>`);
+            } catch (e) {
+                items.push(`<li><i class="fas fa-history"></i> ${escapeHtml(String(meta.processedAt))}</li>`);
+            }
+        }
+
+        if (!items.length) {
+            elements.salaryLaunchMeta.innerHTML = '<li><i class="fas fa-circle-info"></i> Запустіть аналіз, щоб побачити метрики</li>';
+        } else {
+            elements.salaryLaunchMeta.innerHTML = items.join('');
+        }
+    }
+
+    function renderSalarySignals(signals) {
+        if (!elements.salarySignals) return;
+        const sections = [
+            { key: 'strengths', title: 'Сильні сторони', icon: 'fa-shield-heart', className: 'positive' },
+            { key: 'risks', title: 'Ризики', icon: 'fa-triangle-exclamation', className: 'negative' },
+            { key: 'watchouts', title: 'Сигнали уваги', icon: 'fa-eye', className: 'warning' }
+        ];
+
+        const content = sections.map(({ key, title, icon, className }) => {
+            const list = Array.isArray(signals[key]) ? signals[key] : [];
+            if (!list.length) return '';
+            return `
+                <div class="signal-group ${className}">
+                    <h4><i class="fas ${icon}"></i>${title}</h4>
+                    <ul>${list.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+                </div>
+            `;
+        }).join('');
+
+        elements.salarySignals.innerHTML = content || `
+            <div class="signal-group">
+                <p>Сигнали з'являться після AI аналізу навантаження та компенсації.</p>
+            </div>
+        `;
+    }
+
+    function renderSalaryMarketWindow(compensation) {
+        if (!elements.salaryMarketWindow) return;
+        const market = compensation.market_range || {};
+        const alignment = (compensation.alignment || 'aligned').toLowerCase();
+        elements.salaryMarketWindow.innerHTML = `
+            <div class="market-line">
+                <span>Поточна компенсація</span>
+                <strong>${compensation.current_amount != null ? `${compensation.current_amount} ${compensation.currency || ''}` : 'Н/д'}</strong>
+            </div>
+            <div class="market-line">
+                <span>Ринковий діапазон</span>
+                <strong>${market.min != null ? `${market.min} - ${market.max} ${market.currency || ''}` : 'Н/д'}</strong>
+            </div>
+            <div class="market-line alignment-${alignment}">
+                <span>Висновок</span>
+                <strong>${escapeHtml(compensation.alignment || 'aligned')}</strong>
+            </div>
+            ${compensation.explanation ? `<p class="market-explanation">${escapeHtml(compensation.explanation)}</p>` : ''}
+        `;
     }
 
     // ===== Persona & Negotiation Insights =====

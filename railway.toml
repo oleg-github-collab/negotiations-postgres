@@ -1,6 +1,7 @@
 # Railway Configuration for TeamPulse Turbo
 [build]
-builder = "nixpacks"
+builder = "docker"
+dockerfilePath = "Dockerfile"
 
 [deploy]
 healthcheckPath = "/health"

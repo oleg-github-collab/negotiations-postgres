@@ -53,6 +53,16 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const isProduction = process.env.NODE_ENV === 'production';
 
+process.on('warning', (warning) => {
+  if (warning?.code === 'DEP0040') {
+    if (typeof logger.debug === 'function') {
+      logger.debug('Suppressed deprecated punycode warning');
+    }
+    return;
+  }
+  console.warn(warning);
+});
+
 // Trust proxy for production deployments
 if (isProduction) {
   app.set('trust proxy', 1);
@@ -303,6 +313,11 @@ app.use('/api/clients', authMiddleware, clientsRoutes);
 app.use('/api/teams', authMiddleware, teamsRoutes);
 app.use('/api/advice', authMiddleware, adviceRoutes);
 app.use('/api/audit', authMiddleware, auditRoutes);
+
+app.get('/favicon.ico', (_req, res) => {
+  res.type('image/svg+xml');
+  res.sendFile(join(__dirname, 'public', 'favicon.svg'));
+});
 
 // Enhanced health check for Railway
 app.get('/health', async (req, res) => {

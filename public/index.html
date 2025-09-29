@@ -14,6 +14,7 @@
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     
     <!-- Styles -->
     <link rel="stylesheet" href="/styles-neon.css">
@@ -794,158 +795,369 @@
                     </div>
                 </div>
 
-                <!-- RACI Dashboard -->
-                <div id="raci-dashboard" class="tab-pane" style="display: none;">
-                    <div class="content-header">
-                        <h1>
-                            <i class="fas fa-network-wired"></i>
-                            RACI Matrix
-                        </h1>
-                        <div class="content-actions">
+                <!-- RACI Intelligence Suite -->
+                <div id="raci-dashboard" class="tab-pane module-intelligence" style="display: none;">
+                    <div class="intel-header">
+                        <div class="intel-headline">
+                            <span class="glow-badge">Ops Intelligence</span>
+                            <h1>RACI Orchestration Studio</h1>
+                            <p>
+                                Побудуйте <span class="hint-pin" data-hint="Фокус на тому, як ролі розподілені серед людей з урахуванням обмежень">пульс-команду</span> з повним контекстом компанії та отримайте інфографіку, що пояснює, хто реально відповідає за ключові функції.
+                            </p>
+                        </div>
+                        <div class="intel-actions">
+                            <button class="btn-tertiary" data-action="open-team-hub">
+                                <i class="fas fa-pen-to-square"></i>
+                                Управління ролями
+                            </button>
                             <button class="btn-primary" id="generate-raci-btn">
                                 <i class="fas fa-magic"></i>
-                                Згенерувати RACI
+                                Створити RACI інфографіку
                             </button>
                         </div>
                     </div>
-                    <div class="raci-toolbar">
-                        <div class="meta-block">
-                            <label for="raci-team-select">Команда</label>
-                            <select id="raci-team-select">
-                                <option value="">Оберіть команду</option>
-                            </select>
-                        </div>
-                        <div class="raci-view-toggle" id="raci-view-toggle">
-                            <button class="toggle-btn active" data-view="actual">Поточна</button>
-                            <button class="toggle-btn" data-view="ideal">Ідеальна</button>
-                            <button class="toggle-btn" data-view="diff">Gap</button>
-                        </div>
-                        <div class="raci-meta" id="raci-meta-info"></div>
-                    </div>
-                    <div class="raci-content">
-                        <div class="raci-matrix">
-                            <table id="raci-matrix-table" class="raci-table">
-                                <thead>
-                                    <tr>
-                                        <th>Функція</th>
-                                        <th>R</th>
-                                        <th>A</th>
-                                        <th>C</th>
-                                        <th>I</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                        <div class="raci-insights">
-                            <div class="insight-card">
-                                <div class="section-header">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                    <h2>Ключові розриви</h2>
+
+                    <div class="intel-workbench">
+                        <aside class="intel-sidebar" data-pane="profile">
+                            <section class="sidebar-card profile-card">
+                                <header class="card-heading">
+                                    <div class="icon-bubble"><i class="fas fa-building"></i></div>
+                                    <div>
+                                        <h3>Паспорт компанії</h3>
+                                        <p>AI розуміє амбіції організації та відповідним чином структурує матрицю.</p>
+                                    </div>
+                                    <span class="hint-pin" data-hint="Вказуйте ключові корпоративні орієнтири: продукт, ринки, стратегічні ініціативи.">&#9432;</span>
+                                </header>
+                                <div class="card-content">
+                                    <div class="input-stack">
+                                        <label>Компанія</label>
+                                        <input type="text" data-intel-field="company_name" placeholder="Наприклад: Hypernova Retail Group">
+                                    </div>
+                                    <div class="input duo">
+                                        <div class="input-stack">
+                                            <label>Індустрія</label>
+                                            <input type="text" data-intel-field="company_industry" placeholder="Retail / SaaS / Manufacturing">
+                                        </div>
+                                        <div class="input-stack">
+                                            <label>HQ</label>
+                                            <input type="text" data-intel-field="company_location" placeholder="Київ, Україна">
+                                        </div>
+                                    </div>
+                                    <div class="input-stack">
+                                        <label>Стратегічний фокус</label>
+                                        <textarea data-intel-field="company_focus" rows="2" placeholder="Коротко: вихід на нові ринки, оптимізація supply-chain..."></textarea>
+                                    </div>
                                 </div>
-                                <div id="raci-gaps-list" class="gap-list">
-                                    <div class="empty-state">
-                                        <div class="empty-icon"><i class="fas fa-mountain"></i></div>
-                                        <p>Запустіть генерацію, щоб побачити розриви</p>
+                            </section>
+
+                            <section class="sidebar-card team-card">
+                                <header class="card-heading">
+                                    <div class="icon-bubble"><i class="fas fa-people-group"></i></div>
+                                    <div>
+                                        <h3>Командний профіль</h3>
+                                        <p>Задайте контекст задач, цілі та ключові ритуали команди.</p>
+                                    </div>
+                                    <span class="hint-pin" data-hint="Обов'язково зазначте залежності від інших функцій та очікуваний результат.">&#9432;</span>
+                                </header>
+                                <div class="card-content">
+                                    <div class="input-stack">
+                                        <label>Команда</label>
+                                        <input type="text" data-intel-field="team_name" placeholder="Growth Acceleration Squad">
+                                    </div>
+                                    <div class="input-stack">
+                                        <label>Місія</label>
+                                        <textarea data-intel-field="team_mission" rows="2" placeholder="Наприклад: масштабувати ARR x3 через GTM експерименти"></textarea>
+                                    </div>
+                                    <div class="input-stack">
+                                        <label>Теги / Наголоси</label>
+                                        <input type="text" data-intel-field="team_tags" placeholder="GTM, automation, CLTV, OKR Q3">
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="sidebar-card intake-card">
+                                <header class="card-heading">
+                                    <div class="icon-bubble"><i class="fas fa-cloud-upload"></i></div>
+                                    <div>
+                                        <h3>AI-інтейк даних</h3>
+                                        <p>Додавайте текст, презентації, фото дошок чи макети з Figma &mdash; GPT структурує їх у дані.</p>
+                                    </div>
+                                </header>
+                                <div class="card-content">
+                                    <div class="dropzone" id="intel-dropzone" data-intel-dropzone>
+                                        <input type="file" id="intel-file-input" data-intel-file-input multiple accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg,.webp,.svg,.fig,.figma,.csv">
+                                        <div class="dropzone-inner">
+                                            <i class="fas fa-cloud-arrow-down"></i>
+                                            <p>Перетягніть файли або натисніть для вибору</p>
+                                            <span class="drop-hint">Підтримка до 25MB, AI розпізнає мову та структуру</span>
+                                        </div>
+                                    </div>
+                                    <ul class="asset-list" id="intel-asset-list"></ul>
+                                    <div class="intake-actions">
+                                        <button class="btn-secondary" id="intel-clear-assets">
+                                            <i class="fas fa-eraser"></i>
+                                            Очистити
+                                        </button>
+                                        <button class="btn-primary" id="intel-process-assets">
+                                            <i class="fas fa-sparkles"></i>
+                                            Запустити GPT-структурування
+                                        </button>
+                                    </div>
+                                    <p class="intake-disclaimer">
+                                        <i class="fas fa-shield-check"></i>
+                                        Дані шифруються та обробляються через приватний ChatGPT API. Зображення конвертуються у структуровані бриф-ноти.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <section class="sidebar-card live-context">
+                                <header class="card-heading">
+                                    <div class="icon-bubble"><i class="fas fa-wave-square"></i></div>
+                                    <div>
+                                        <h3>Живий статус</h3>
+                                        <p>Синхронний прогрес за останнім запуском аналітики.</p>
+                                    </div>
+                                </header>
+                                <div class="card-content">
+                                    <div class="status-indicator" id="intel-processing-state">
+                                        <span class="dot idle"></span>
+                                        <span class="status-label">Очікує дані</span>
+                                    </div>
+                                    <div class="status-meta" id="intel-processing-meta"></div>
+                                </div>
+                            </section>
+                        </aside>
+
+                        <section class="intel-main">
+                            <div class="matrix-hero">
+                                <div class="matrix-copy">
+                                    <h2>RACI Panorama</h2>
+                                    <p>
+                                        Візуалізуйте відповідальність, перевантаження та прогалини в режимі <span class="hint-pin" data-hint="Дані оновлюються відразу після кожного запуску аналізу.">live</span>.
+                                    </p>
+                                    <div class="matrix-controls">
+                                        <div class="control-block">
+                                            <label for="raci-team-select">Команда</label>
+                                            <select id="raci-team-select">
+                                                <option value="">Оберіть команду</option>
+                                            </select>
+                                        </div>
+                                        <div class="control-block toggle" id="raci-view-toggle">
+                                            <button class="toggle-btn active" data-view="actual">Поточна</button>
+                                            <button class="toggle-btn" data-view="ideal">Ідеальна</button>
+                                            <button class="toggle-btn" data-view="diff">Gap</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-infographic" aria-hidden="true">
+                                    <div class="pulse-orbit">
+                                        <span class="pulse-ring ring-r"></span>
+                                        <span class="pulse-ring ring-a"></span>
+                                        <span class="pulse-ring ring-c"></span>
+                                        <span class="pulse-ring ring-i"></span>
+                                        <div class="pulse-core">
+                                            <span class="core-label">Balanced Authority</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="insight-card">
-                                <div class="section-header">
-                                    <i class="fas fa-bolt"></i>
-                                    <h2>Швидкі кроки</h2>
+
+                            <div class="matrix-meta" id="raci-meta-info"></div>
+
+                            <div class="matrix-grid">
+                                <div class="matrix-panel">
+                                    <header class="panel-header">
+                                        <h3>Матриця відповідальності</h3>
+                                        <span class="hint-pin" data-hint="Перемикайтеся між поточним станом, цільовою моделлю та gap-аналітикою.">i</span>
+                                    </header>
+                                    <div class="matrix-table-shell">
+                                        <table id="raci-matrix-table" class="raci-table neon">
+                                            <thead>
+                                                <tr>
+                                                    <th>Функція</th>
+                                                    <th>R</th>
+                                                    <th>A</th>
+                                                    <th>C</th>
+                                                    <th>I</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div id="raci-quick-wins" class="quick-wins">
-                                    <div class="empty-state">
-                                        <div class="empty-icon"><i class="fas fa-bolt"></i></div>
-                                        <p>Рекомендації з'являться після аналізу</p>
+                                <div class="matrix-panel insights">
+                                    <div class="insight-card">
+                                        <div class="section-header">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            <h3>Ключові розриви</h3>
+                                        </div>
+                                        <div id="raci-gaps-list" class="gap-list">
+                                            <div class="empty-state">
+                                                <p>Запустіть аналіз, щоб побачити пріоритизовані ризики.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="insight-card">
+                                        <div class="section-header">
+                                            <i class="fas fa-bolt"></i>
+                                            <h3>Швидкі перемоги</h3>
+                                        </div>
+                                        <div id="raci-quick-wins" class="quick-wins">
+                                            <div class="empty-state">
+                                                <p>AI запропонує конкретні дії після аналізу.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="insight-card">
+                                        <div class="section-header">
+                                            <i class="fas fa-road"></i>
+                                            <h3>Роадмапа трансформації</h3>
+                                        </div>
+                                        <div id="raci-roadmap" class="raci-roadmap">
+                                            <div class="empty-state">
+                                                <p>Згенеруйте RACI аби побачити покроковий план.</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="insight-card">
-                                <div class="section-header">
-                                    <i class="fas fa-road"></i>
-                                    <h2>Дорожня карта</h2>
+
+                            <div class="intel-roster">
+                                <div class="roster-header">
+                                    <h3>Командна орбіта</h3>
+                                    <p>Клікніть, щоб розкрити повний контекст співробітника.</p>
                                 </div>
-                                <div id="raci-roadmap" class="raci-roadmap">
+                                <div id="intel-roster-list" class="roster-grid">
                                     <div class="empty-state">
-                                        <div class="empty-icon"><i class="fas fa-road"></i></div>
-                                        <p>Етапи впровадження з'являться після аналізу</p>
+                                        <div class="empty-icon"><i class="fas fa-user-astronaut"></i></div>
+                                        <p>Додайте учасників у Team Hub або завантажте дані, щоб побачити карту ролей.</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </section>
                     </div>
                 </div>
 
-                <!-- Salary Dashboard -->
-                <div id="salary-dashboard" class="tab-pane" style="display: none;">
-                    <div class="content-header">
-                        <h1>
-                            <i class="fas fa-sack-dollar"></i>
-                            Аналітика зарплат
-                        </h1>
-                        <div class="content-actions">
+                <!-- Salary Intelligence Suite -->
+                <div id="salary-dashboard" class="tab-pane module-intelligence" style="display: none;">
+                    <div class="intel-header">
+                        <div class="intel-headline">
+                            <span class="glow-badge alt">People Analytics</span>
+                            <h1>Compensation Experience Lab</h1>
+                            <p>AI співставляє навантаження, KPI та ринкові діапазони і будує <span class="hint-pin" data-hint="Інтерактивні підказки на картках пояснюють, чому рекомендація важлива.">пояснювані рекомендації</span> для кожного члена команди.</p>
+                        </div>
+                        <div class="intel-actions">
+                            <button class="btn-tertiary" data-action="open-team-hub">
+                                <i class="fas fa-users-cog"></i>
+                                Редагувати команду
+                            </button>
                             <button class="btn-primary" id="generate-salary-btn">
                                 <i class="fas fa-chart-pie"></i>
-                                Провести аналіз
+                                Запустити salary-аналітику
                             </button>
                         </div>
                     </div>
-                    <div class="salary-grid">
-                        <div class="salary-controls">
-                            <div class="meta-block">
-                                <label for="salary-member-select">Співробітник</label>
-                                <select id="salary-member-select">
-                                    <option value="">Оберіть учасника команди</option>
-                                </select>
-                            </div>
-                            <div class="meta-block">
-                                <label for="salary-amount">Рівень компенсації</label>
-                                <div class="input-group">
-                                    <input type="number" id="salary-amount" placeholder="Сума">
-                                    <select id="salary-currency">
-                                        <option value="UAH">UAH</option>
-                                        <option value="USD">USD</option>
-                                        <option value="EUR">EUR</option>
-                                        <option value="GBP">GBP</option>
-                                    </select>
+
+                    <div class="salary-experience">
+                        <aside class="intel-sidebar compact">
+                            <section class="sidebar-card profile-card">
+                                <header class="card-heading">
+                                    <div class="icon-bubble"><i class="fas fa-circle-info"></i></div>
+                                    <div>
+                                        <h3>Контекст працівника</h3>
+                                        <p>Оберіть людину і зафіксуйте актуальні параметри компенсації.</p>
+                                    </div>
+                                </header>
+                                <div class="card-content">
+                                    <div class="input-stack">
+                                        <label for="salary-member-select">Співробітник</label>
+                                        <select id="salary-member-select">
+                                            <option value="">Оберіть учасника команди</option>
+                                        </select>
+                                    </div>
+                                    <div class="input duo">
+                                        <div class="input-stack">
+                                            <label for="salary-amount">Компенсація</label>
+                                            <input type="number" id="salary-amount" placeholder="Напр., 3200">
+                                        </div>
+                                        <div class="input-stack">
+                                            <label for="salary-currency">Валюта</label>
+                                            <select id="salary-currency">
+                                                <option value="UAH">UAH</option>
+                                                <option value="USD">USD</option>
+                                                <option value="EUR">EUR</option>
+                                                <option value="GBP">GBP</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-stack">
+                                        <label for="salary-hours">Зайнятість (год/тиждень)</label>
+                                        <input type="number" id="salary-hours" placeholder="40">
+                                    </div>
+                                    <div class="input-stack">
+                                        <label for="salary-notes">Контекст / KPI</label>
+                                        <textarea id="salary-notes" rows="3" placeholder="Мета ролі, ключові ініціативи, очікуваний вплив..."></textarea>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="meta-block">
-                                <label for="salary-hours">Зайнятість (год/тиждень)</label>
-                                <input type="number" id="salary-hours" placeholder="Наприклад, 40">
-                            </div>
-                            <div class="meta-block">
-                                <label for="salary-notes">Контекст</label>
-                                <textarea id="salary-notes" rows="4" placeholder="Мета ролі, KPI, плани розвитку..."></textarea>
-                            </div>
-                        </div>
-                        <div class="salary-results">
-                            <div class="insight-card">
-                                <div class="section-header">
-                                    <i class="fas fa-pie-chart"></i>
-                                    <h2>Завантаженість</h2>
+                            </section>
+
+                            <section class="sidebar-card">
+                                <header class="card-heading">
+                                    <div class="icon-bubble"><i class="fas fa-wand-magic-sparkles"></i></div>
+                                    <div>
+                                        <h3>Формула запуску</h3>
+                                        <p>Після оновлення даних натискайте на інфокартки, щоб бачити розрахунки.</p>
+                                    </div>
+                                </header>
+                                <div class="card-content">
+                                    <ul class="compact-list" id="salary-launch-meta"></ul>
                                 </div>
-                                <div id="salary-utilization-chart" class="utilization-chart"></div>
-                                <div id="salary-utilization-details" class="utilization-details"></div>
+                            </section>
+                        </aside>
+
+                        <section class="salary-stage">
+                            <div class="stage-panels">
+                                <article class="stage-card utilization">
+                                    <header class="section-header">
+                                        <div>
+                                            <i class="fas fa-pie-chart"></i>
+                                            <h2>Завантаженість</h2>
+                                        </div>
+                                        <span class="hint-pin" data-hint="Сегментація часу за pipeline, discovery, delivery, підтримка.">i</span>
+                                    </header>
+                                    <div id="salary-utilization-chart" class="utilization-chart"></div>
+                                    <div id="salary-utilization-details" class="utilization-details"></div>
+                                </article>
+
+                                <article class="stage-card compensation">
+                                    <header class="section-header">
+                                        <div>
+                                            <i class="fas fa-scale-balanced"></i>
+                                            <h2>Порівняння компенсації</h2>
+                                        </div>
+                                        <span class="hint-pin" data-hint="AI враховує географію, seniority та матрицю грейдів компанії.">i</span>
+                                    </header>
+                                    <div id="salary-compensation" class="compensation-overview"></div>
+                                </article>
+
+                                <article class="stage-card recommendations">
+                                    <header class="section-header">
+                                        <div>
+                                            <i class="fas fa-lightbulb"></i>
+                                            <h2>Рекомендації</h2>
+                                        </div>
+                                    </header>
+                                    <div id="salary-recommendations" class="salary-recommendations"></div>
+                                </article>
                             </div>
-                            <div class="insight-card">
-                                <div class="section-header">
-                                    <i class="fas fa-scale-balanced"></i>
-                                    <h2>Порівняння компенсації</h2>
-                                </div>
-                                <div id="salary-compensation" class="compensation-overview"></div>
+
+                            <div class="insight-footer">
+                                <div class="insight-highlight" id="salary-signals"></div>
+                                <div class="insight-highlight secondary" id="salary-market-window"></div>
                             </div>
-                            <div class="insight-card">
-                                <div class="section-header">
-                                    <i class="fas fa-lightbulb"></i>
-                                    <h2>Рекомендації</h2>
-                                </div>
-                                <div id="salary-recommendations" class="salary-recommendations"></div>
-                            </div>
-                        </div>
+                        </section>
                     </div>
+                </div>
                 </div>
 
             </div>
@@ -1336,6 +1548,44 @@
                 <button class="btn-primary" data-action="save-recommendation-comment">
                     <i class="fas fa-save"></i>
                     Зберегти коментар
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Intelligence Modal -->
+    <div id="employee-intel-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-container employee-intel-modal">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-user-astronaut"></i>
+                    <span id="employee-intel-name">Співробітник</span>
+                </h2>
+                <button class="modal-close" data-action="close-employee-intel" title="Закрити">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="intel-modal-grid">
+                    <section class="intel-modal-section">
+                        <h3>Контекст</h3>
+                        <div id="employee-intel-summary" class="intel-modal-block"></div>
+                    </section>
+                    <section class="intel-modal-section">
+                        <h3>Сигнали</h3>
+                        <ul id="employee-intel-signals" class="intel-modal-list"></ul>
+                    </section>
+                    <section class="intel-modal-section">
+                        <h3>Рекомендовані кроки</h3>
+                        <ul id="employee-intel-actions" class="intel-modal-list"></ul>
+                    </section>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-meta" id="employee-intel-meta"></div>
+                <button class="btn-secondary" data-action="close-employee-intel">
+                    <i class="fas fa-times"></i>
+                    Закрити
                 </button>
             </div>
         </div>

@@ -1,4 +1,7 @@
+import Busboy from 'busboy';
+import mammoth from 'mammoth';
 import { Router } from 'express';
+import { extname } from 'path';
 import { performance } from 'perf_hooks';
 import { transaction, get, all, run } from '../utils/db.js';
 import { client as openaiClient, estimateTokens } from '../utils/openAIClient.js';
@@ -55,6 +58,189 @@ const sanitizeJsonString = (content) =>
     .replace(/```json/gi, '')
     .replace(/```/g, '')
     .trim();
+
+const SUPPORTED_TEXT_EXT = new Set(['.txt', '.md', '.csv', '.json']);
+const SUPPORTED_DOC_EXT = new Set(['.docx']);
+const SUPPORTED_IMAGE_MIME = new Set([
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+  'image/webp',
+  'image/svg+xml'
+]);
+const MAX_INTEL_FILES = 10;
+const MAX_INTEL_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+
+const buildTeamIntakePrompt = () => `
+Ти — Chief Team Architect для Kaminskyi AI.
+Задача: зібрати структурований профіль компанії, команди та її учасників.
+Поверни СТРОГО JSON без пояснень:
+{
+  "company": {
+    "name": "",
+    "industry": "",
+    "location": "",
+    "focus": "",
+    "insights": ["..."]
+  },
+  "team": {
+    "title": "",
+    "mission": "",
+    "tags": ["..."],
+    "rituals": ["..."],
+    "risks": ["..."]
+  },
+  "members": [
+    {
+      "full_name": "",
+      "role": "",
+      "seniority": "",
+      "location": "",
+      "responsibilities": ["..."],
+      "workload_percent": 0-200 або null,
+      "compensation": {"amount": число або null, "currency": "UAH"},
+      "status": "overloaded|balanced|underutilized",
+      "signals": ["..."],
+      "suggested_actions": ["..."],
+      "tags": ["..."]
+    }
+  ],
+  "summary": "Ключовий висновок (5-6 речень)",
+  "highlights": ["..."],
+  "ai_meta": {
+    "confidence": "high|medium|low",
+    "notes": ["..."]
+  }
+}
+`.trim();
+
+async function extractTextContent(filename, buffer, mimeType) {
+  const extension = (extname(filename || '') || '').toLowerCase();
+
+  if (SUPPORTED_DOC_EXT.has(extension)) {
+    try {
+      const result = await mammoth.extractRawText({ buffer });
+      return result.value || '';
+    } catch (error) {
+      throw new Error(`DOCX_PARSE_ERROR:${filename}`);
+    }
+  }
+
+  if (mimeType === 'image/svg+xml') {
+    return buffer.toString('utf-8');
+  }
+
+  if (SUPPORTED_TEXT_EXT.has(extension) || (mimeType && mimeType.startsWith('text/'))) {
+    return buffer.toString('utf-8');
+  }
+
+  return null;
+}
+
+function parseIntelligenceForm(req) {
+  return new Promise((resolve, reject) => {
+    let aborted = false;
+    const files = [];
+    const fields = {};
+
+    const busboy = Busboy({
+      headers: req.headers,
+      limits: {
+        files: MAX_INTEL_FILES,
+        fileSize: MAX_INTEL_FILE_SIZE
+      }
+    });
+
+    busboy.on('file', (fieldname, file, info) => {
+      if (aborted) {
+        file.resume();
+        return;
+      }
+
+      const { filename, mimeType } = info;
+      const chunks = [];
+
+      file.on('data', (data) => {
+        if (!aborted) {
+          chunks.push(data);
+        }
+      });
+
+      file.on('limit', () => {
+        aborted = true;
+        file.resume();
+        reject(new Error('FILE_TOO_LARGE'));
+      });
+
+      file.on('end', () => {
+        if (aborted) return;
+        files.push({
+          fieldName: fieldname,
+          filename: filename || 'unknown',
+          mimeType: mimeType || 'application/octet-stream',
+          buffer: Buffer.concat(chunks)
+        });
+      });
+    });
+
+    busboy.on('field', (name, value) => {
+      if (aborted) return;
+      fields[name] = value;
+    });
+
+    busboy.on('filesLimit', () => {
+      if (aborted) return;
+      aborted = true;
+      reject(new Error('TOO_MANY_FILES'));
+    });
+
+    busboy.on('error', (error) => {
+      if (aborted) return;
+      aborted = true;
+      reject(error);
+    });
+
+    busboy.on('finish', () => {
+      if (aborted) return;
+      resolve({ fields, files });
+    });
+
+    req.pipe(busboy);
+  });
+}
+
+function normalizeMemberCandidate(entry = {}) {
+  const responsibilities = Array.isArray(entry.responsibilities)
+    ? entry.responsibilities.map((item) => String(item || '').trim()).filter(Boolean)
+    : [];
+
+  const compensation = entry.compensation && typeof entry.compensation === 'object'
+    ? {
+        amount: entry.compensation.amount != null ? Number(entry.compensation.amount) : null,
+        currency: entry.compensation.currency || null
+      }
+    : { amount: null, currency: null };
+
+  return {
+    full_name: entry.full_name || entry.name || '',
+    role: entry.role || '',
+    seniority: entry.seniority || '',
+    location: entry.location || '',
+    responsibilities,
+    workload_percent: entry.workload_percent != null ? Number(entry.workload_percent) : null,
+    compensation,
+    metadata: {
+      status: entry.status || null,
+      signals: Array.isArray(entry.signals) ? entry.signals : [],
+      actions: Array.isArray(entry.suggested_actions) ? entry.suggested_actions : (Array.isArray(entry.actions) ? entry.actions : []),
+      tags: Array.isArray(entry.tags) ? entry.tags : [],
+      raci_actual: entry.raci_actual || null,
+      raci_ideal: entry.raci_ideal || null,
+      focus: entry.focus || null,
+      ai_meta: entry.ai_meta || null
+    }
+  };
+}
 
 const buildRaciSystemPrompt = () => `
 Ти — Chief Organisation Architect Kaminskyi AI.
@@ -588,7 +774,8 @@ r.post(
         },
         meta: {
           tokensUsed: tokensIn + tokensOut,
-          responseTime: Math.round(duration)
+          responseTime: Math.round(duration),
+          processedAt: new Date().toISOString()
         }
       });
     } catch (error) {
@@ -603,5 +790,300 @@ r.post(
     }
   }
 );
+
+r.post('/intelligence/ingest', async (req, res) => {
+  if (!ensureOpenAI(res)) return;
+
+  const start = performance.now();
+
+  try {
+    const { fields, files } = await parseIntelligenceForm(req);
+
+    let clientId = fields.client_id ? Number(fields.client_id) : null;
+    let teamId = fields.team_id ? Number(fields.team_id) : null;
+
+    if (!clientId && !teamId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Необхідно вказати client_id або team_id'
+      });
+    }
+
+    let profile = {};
+    if (fields.profile) {
+      try {
+        profile = JSON.parse(fields.profile);
+      } catch (error) {
+        return res.status(400).json({ success: false, error: 'Невірний формат профілю' });
+      }
+    }
+
+    const textAssets = [];
+    const imageAssets = [];
+
+    for (const file of files) {
+      const textContent = await extractTextContent(file.filename, file.buffer, file.mimeType);
+      if (textContent && textContent.trim()) {
+        textAssets.push({
+          name: file.filename,
+          content: textContent.trim()
+        });
+        continue;
+      }
+
+      if (SUPPORTED_IMAGE_MIME.has(file.mimeType)) {
+        imageAssets.push({
+          name: file.filename,
+          mimeType: file.mimeType,
+          base64: file.buffer.toString('base64')
+        });
+        continue;
+      }
+
+      return res.status(400).json({
+        success: false,
+        error: `Непідтримуваний тип файлу: ${file.filename}`
+      });
+    }
+
+    const requestPayload = {
+      profile,
+      text_assets: textAssets,
+      attachments: imageAssets.map((asset) => ({
+        name: asset.name,
+        mimeType: asset.mimeType
+      }))
+    };
+
+    const systemPrompt = buildTeamIntakePrompt();
+    const tokensInEstimate = estimateTokens(systemPrompt) + estimateTokens(JSON.stringify(requestPayload)) + 200;
+    await addTokensAndCheck(tokensInEstimate);
+
+    const userContent = [
+      { type: 'text', text: JSON.stringify(requestPayload) }
+    ];
+
+    imageAssets.forEach((asset) => {
+      userContent.push({
+        type: 'input_image',
+        image_url: {
+          url: `data:${asset.mimeType};base64,${asset.base64}`
+        }
+      });
+    });
+
+    const completion = await openaiClient.responses.create({
+      model: MODEL,
+      input: [
+        { role: 'system', content: [{ type: 'text', text: systemPrompt }] },
+        { role: 'user', content: userContent }
+      ]
+    });
+
+    const rawOutput = Array.isArray(completion.output_text)
+      ? completion.output_text.join('\n')
+      : completion.output?.map?.((segment) =>
+          segment.content?.map?.((chunk) => chunk.text || '').join('')
+        ).join('') || '';
+
+    const tokensOut = completion.usage?.output_tokens ?? estimateTokens(rawOutput);
+    await addTokensAndCheck(tokensOut);
+
+    logAIUsage(tokensInEstimate + tokensOut, MODEL, 'team_intelligence');
+
+    let parsed;
+    try {
+      parsed = JSON.parse(sanitizeJsonString(rawOutput));
+    } catch (error) {
+      throw new Error('INTAKE_PARSE_ERROR');
+    }
+
+    const structured = {
+      company: parsed.company || {},
+      team: parsed.team || {},
+      members: Array.isArray(parsed.members) ? parsed.members : [],
+      summary: parsed.summary || '',
+      highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],
+      ai_meta: parsed.ai_meta || {}
+    };
+
+    const normalizedMembers = structured.members
+      .map(normalizeMemberCandidate)
+      .filter((member) => member.full_name || member.role);
+
+    const processedAt = new Date().toISOString();
+
+    let savedTeam = null;
+    let insertedMembers = [];
+
+    await transaction(async (db) => {
+      let rawPayloadBase = {};
+
+      if (teamId) {
+        const existingTeam = await db.query('SELECT id, client_id, title, description, raw_payload FROM teams WHERE id = $1', [teamId]);
+        if (!existingTeam.rows.length) {
+          throw new Error('TEAM_NOT_FOUND');
+        }
+
+        const existing = existingTeam.rows[0];
+        if (!clientId) {
+          clientId = existing.client_id;
+        }
+
+        rawPayloadBase = toObject(existing.raw_payload);
+        rawPayloadBase.intelligence_intake = {
+          profile: structured,
+          summary: structured.summary,
+          highlights: structured.highlights,
+          processed_at: processedAt
+        };
+
+        const updatedTitle = structured.team.title || profile.team_name || existing.title || `Команда ${existing.id}`;
+        const updatedDescription = structured.team.mission || profile.team_mission || existing.description || null;
+
+        const updated = await db.query(
+          'UPDATE teams SET title = $1, description = $2, raw_payload = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
+          [updatedTitle, updatedDescription, rawPayloadBase, teamId]
+        );
+
+        savedTeam = updated.rows[0];
+      } else {
+        if (!clientId) {
+          throw new Error('CLIENT_REQUIRED');
+        }
+
+        rawPayloadBase = {
+          intelligence_intake: {
+            profile: structured,
+            summary: structured.summary,
+            highlights: structured.highlights,
+            processed_at: processedAt
+          }
+        };
+
+        const title = structured.team.title || profile.team_name || `Команда #${Date.now()}`;
+        const description = structured.team.mission || profile.team_mission || null;
+
+        const inserted = await db.query(
+          'INSERT INTO teams (client_id, title, description, raw_payload) VALUES ($1,$2,$3,$4) RETURNING *',
+          [clientId, title, description, rawPayloadBase]
+        );
+
+        savedTeam = inserted.rows[0];
+        teamId = savedTeam.id;
+      }
+
+      insertedMembers = [];
+      if (normalizedMembers.length) {
+        if (teamId) {
+          await db.query('DELETE FROM team_members WHERE team_id = $1', [teamId]);
+        }
+
+        for (const member of normalizedMembers) {
+          const insertedMember = await db.query(
+            `INSERT INTO team_members (
+              team_id,
+              full_name,
+              role,
+              seniority,
+              responsibilities,
+              workload_percent,
+              location,
+              metadata,
+              compensation_amount,
+              compensation_currency
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+            RETURNING *`,
+            [
+              teamId,
+              member.full_name,
+              member.role,
+              member.seniority,
+              member.responsibilities.join('\n'),
+              member.workload_percent,
+              member.location,
+              member.metadata,
+              member.compensation.amount,
+              member.compensation.currency
+            ]
+          );
+          insertedMembers.push(insertedMember.rows[0]);
+        }
+      } else if (teamId) {
+        const existingMembers = await db.query(
+          'SELECT * FROM team_members WHERE team_id = $1 ORDER BY id',
+          [teamId]
+        );
+        insertedMembers = existingMembers.rows;
+      }
+    });
+
+    const mappedMembers = insertedMembers.map(mapMemberRow);
+    savedTeam.members = mappedMembers;
+
+    const duration = performance.now() - start;
+    logPerformance('Team Intelligence Intake', duration, {
+      teamId,
+      clientId,
+      assetCount: files.length,
+      tokensIn: tokensInEstimate,
+      tokensOut
+    });
+
+    await recordAuditEvent({
+      requestId: req.context?.requestId,
+      eventType: 'team.intelligence_sync',
+      actor: req.user?.username,
+      entityType: 'team',
+      entityId: String(teamId),
+      metadata: {
+        clientId,
+        tokensIn: tokensInEstimate,
+        tokensOut,
+        assetCount: files.length
+      }
+    });
+
+    res.json({
+      success: true,
+      team: savedTeam,
+      members: mappedMembers,
+      profile: structured,
+      insights: {
+        summary: structured.summary,
+        highlights: structured.highlights,
+        ai_meta: structured.ai_meta
+      },
+      meta: {
+        tokensUsed: tokensInEstimate + tokensOut,
+        responseTime: Math.round(duration),
+        processedAt
+      }
+    });
+  } catch (error) {
+    logError(error, {
+      endpoint: 'POST /api/teams/intelligence/ingest',
+      ip: req.ip
+    });
+
+    if (error.message === 'FILE_TOO_LARGE') {
+      return res.status(400).json({ success: false, error: 'Файл перевищує 25MB' });
+    }
+    if (error.message === 'TOO_MANY_FILES') {
+      return res.status(400).json({ success: false, error: 'Максимум 10 файлів за один раз' });
+    }
+    if (error.message === 'TEAM_NOT_FOUND') {
+      return res.status(404).json({ success: false, error: 'Команду не знайдено' });
+    }
+    if (error.message === 'CLIENT_REQUIRED') {
+      return res.status(400).json({ success: false, error: 'Необхідно вказати client_id' });
+    }
+    if (error.message === 'INTAKE_PARSE_ERROR') {
+      return res.status(502).json({ success: false, error: 'AI повернув невалідну відповідь' });
+    }
+
+    res.status(500).json({ success: false, error: 'Не вдалося обробити дані команди' });
+  }
+});
 
 export default r;

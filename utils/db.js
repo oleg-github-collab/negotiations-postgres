@@ -1,5 +1,28 @@
-import { Pool } from 'pg';
+import pg from 'pg';
 import logger from './logger.js';
+
+const { Pool, types } = pg;
+
+const parseInteger = (value) => {
+  if (value === null) return null;
+  const parsed = parseInt(value, 10);
+  if (Number.isNaN(parsed)) return null;
+  return Math.abs(parsed) <= Number.MAX_SAFE_INTEGER ? parsed : value;
+};
+
+const parseFloatSafe = (value) => {
+  if (value === null) return null;
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? null : parsed;
+};
+
+// Ensure PostgreSQL numeric types are converted to JavaScript numbers where safe
+types.setTypeParser(20, parseInteger); // int8/bigint
+types.setTypeParser(21, parseInteger); // int2/smallint
+types.setTypeParser(23, parseInteger); // int4/integer
+types.setTypeParser(700, parseFloatSafe); // float4/real
+types.setTypeParser(701, parseFloatSafe); // float8/double
+types.setTypeParser(1700, parseFloatSafe); // numeric/decimal
 
 const FALLBACK_URL = 'postgres://postgres:postgres@localhost:5432/teampulse';
 

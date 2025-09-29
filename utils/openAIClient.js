@@ -36,54 +36,49 @@ try {
   console.error('❌ Failed to initialize OpenAI client:', initError.message);
 }
 
+const runWithCircuitBreaker = async (executor) => {
+  if (circuitBreaker.state === 'OPEN') {
+    if (Date.now() < circuitBreaker.nextAttempt) {
+      throw new Error('Circuit breaker is OPEN - OpenAI API temporarily unavailable');
+    }
+    circuitBreaker.state = 'HALF_OPEN';
+    circuitBreaker.halfOpenCalls = 0;
+  }
+
+  try {
+    const result = await executor();
+
+    if (circuitBreaker.state === 'HALF_OPEN') {
+      circuitBreaker.halfOpenCalls++;
+      if (circuitBreaker.halfOpenCalls >= circuitBreaker.halfOpenMaxCalls) {
+        circuitBreaker.state = 'CLOSED';
+        circuitBreaker.failures = 0;
+      }
+    } else if (circuitBreaker.state === 'CLOSED') {
+      circuitBreaker.failures = Math.max(0, circuitBreaker.failures - 1);
+    }
+
+    return result;
+  } catch (error) {
+    circuitBreaker.failures += 1;
+    if (circuitBreaker.failures >= circuitBreaker.maxFailures || circuitBreaker.state === 'HALF_OPEN') {
+      circuitBreaker.state = 'OPEN';
+      circuitBreaker.nextAttempt = Date.now() + circuitBreaker.timeout;
+      console.warn(`Circuit breaker OPENED after ${circuitBreaker.failures} failures`);
+    }
+    throw error;
+  }
+};
+
 // Circuit breaker wrapper
 export const client = _client ? {
   chat: {
     completions: {
-      create: async (options) => {
-        // Check circuit breaker state
-        if (circuitBreaker.state === 'OPEN') {
-          if (Date.now() < circuitBreaker.nextAttempt) {
-            throw new Error('Circuit breaker is OPEN - OpenAI API temporarily unavailable');
-          } else {
-            circuitBreaker.state = 'HALF_OPEN';
-            circuitBreaker.halfOpenCalls = 0;
-          }
-        }
-        
-        try {
-          const result = await _client.chat.completions.create(options);
-          
-          // Reset circuit breaker on success
-          if (circuitBreaker.state === 'HALF_OPEN') {
-            circuitBreaker.halfOpenCalls++;
-            if (circuitBreaker.halfOpenCalls >= circuitBreaker.halfOpenMaxCalls) {
-              circuitBreaker.state = 'CLOSED';
-              circuitBreaker.failures = 0;
-            }
-          } else if (circuitBreaker.state === 'CLOSED') {
-            circuitBreaker.failures = Math.max(0, circuitBreaker.failures - 1);
-          }
-          
-          return result;
-        } catch (error) {
-          // Record failure
-          circuitBreaker.failures++;
-          
-          // Open circuit breaker if too many failures
-          if (circuitBreaker.failures >= circuitBreaker.maxFailures) {
-            circuitBreaker.state = 'OPEN';
-            circuitBreaker.nextAttempt = Date.now() + circuitBreaker.timeout;
-            console.warn(`Circuit breaker OPENED after ${circuitBreaker.failures} failures`);
-          } else if (circuitBreaker.state === 'HALF_OPEN') {
-            circuitBreaker.state = 'OPEN';
-            circuitBreaker.nextAttempt = Date.now() + circuitBreaker.timeout;
-          }
-          
-          throw error;
-        }
-      }
+      create: async (options) => runWithCircuitBreaker(() => _client.chat.completions.create(options))
     }
+  },
+  responses: {
+    create: async (options) => runWithCircuitBreaker(() => _client.responses.create(options))
   }
 } : null;
 
