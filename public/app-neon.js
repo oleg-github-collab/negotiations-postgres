@@ -326,8 +326,6 @@
         charCount: $('#char-count'),
         wordCount: $('#word-count'),
         estimatedTokens: $('#estimated-tokens'),
-        analysisTeamSelect: $('#analysis-team-select'),
-        manageTeamBtn: $('#manage-team-btn'),
         focusPeopleChips: $('#focus-people-chips'),
         analysisQuestion: $('#analysis-question'),
         highlightDensity: $('#highlight-density'),
@@ -2905,7 +2903,7 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
 
         if (!members.length) {
             container.classList.add('empty');
-            container.innerHTML = '<span class="chip-placeholder">Додайте учасників команди</span>';
+            container.innerHTML = '<span class="chip-placeholder">Додайте учасників переговорів</span>';
             return;
         }
 
@@ -5500,7 +5498,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
                 selectProduct(target);
             });
         });
-        elements.manageTeamBtn?.addEventListener('click', () => selectProduct('team-hub'));
 
         const updateWizardProgressDebounced = debounce(updateClientWizardProgress, 150);
         elements.clientNextStep?.addEventListener('click', goToNextClientStep);
@@ -5515,24 +5512,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             });
         });
 
-        elements.analysisTeamSelect?.addEventListener('change', (event) => {
-            const teamId = Number(event.target.value);
-            if (teamId) {
-                selectTeam(teamId, { fromSelector: true });
-            } else {
-                state.team.current = null;
-                state.team.members = [];
-                state.team.latestRaci = null;
-                state.team.salaryInsights = [];
-                state.team.pendingTeamId = null;
-                state.analysis.focusPeople = [];
-                renderFocusChips();
-                updateTeamSelects();
-                renderTeamPreview();
-                clearRaciOutput();
-                renderSalaryAnalysis(null);
-            }
-        });
         elements.analysisQuestion?.addEventListener('input', (event) => {
             state.analysis.question = event.target.value;
         });
@@ -7681,7 +7660,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
             selectEl.value = teams.find(team => team.id === Number(previousValue)) ? previousValue : (currentId || '');
         };
 
-        updateSelect(elements.analysisTeamSelect);
         updateSelect(elements.raciTeamSelect);
 
         if (elements.salaryMemberSelect) {

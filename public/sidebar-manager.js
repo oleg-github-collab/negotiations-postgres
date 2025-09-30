@@ -13,16 +13,37 @@ class SidebarManager {
     }
 
     init() {
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initializeSidebars());
+        } else {
+            this.initializeSidebars();
+        }
+    }
+
+    initializeSidebars() {
         this.createDualSidebars();
         this.setupToggleButtons();
         this.setupEventListeners();
         this.updateSidebarVisibility();
+        this.updateLayoutSpacing();
+
+        // Load initial clients for negotiations
+        setTimeout(() => {
+            this.loadClients('negotiations');
+        }, 500);
     }
 
     // Create separate sidebars for each module
     createDualSidebars() {
-        const mainLayout = document.querySelector('.main-layout');
-        if (!mainLayout) return;
+        const appContainer = document.querySelector('.app-container');
+        if (!appContainer) return;
+
+        // Hide legacy sidebar
+        const legacySidebar = document.getElementById('sidebar-left');
+        if (legacySidebar) {
+            legacySidebar.style.display = 'none';
+        }
 
         // Create negotiations sidebar
         const negotiationsSidebar = this.createNegotiationsSidebar();
@@ -33,8 +54,8 @@ class SidebarManager {
         // Insert sidebars before main content
         const mainContent = document.querySelector('.main-content');
         if (mainContent) {
-            mainContent.parentNode.insertBefore(negotiationsSidebar, mainContent);
-            mainContent.parentNode.insertBefore(teamHubSidebar, mainContent);
+            appContainer.insertBefore(negotiationsSidebar, mainContent);
+            appContainer.insertBefore(teamHubSidebar, mainContent);
         }
     }
 
@@ -226,20 +247,46 @@ class SidebarManager {
         const headerActions = document.querySelector('.header-actions');
         if (!headerActions) return;
 
-        const toggleBtn = document.createElement('button');
-        toggleBtn.id = 'toggle-right-sidebar';
-        toggleBtn.className = 'btn-ghost sidebar-toggle-header';
-        toggleBtn.innerHTML = `
-            <i class="fas fa-sidebar"></i>
+        // Create container for sidebar toggles
+        const sidebarToggles = document.createElement('div');
+        sidebarToggles.className = 'sidebar-toggles';
+        sidebarToggles.style.cssText = 'display: flex; gap: 0.5rem; align-items: center;';
+
+        // Left sidebar toggle
+        const leftToggleBtn = document.createElement('button');
+        leftToggleBtn.id = 'header-toggle-left-sidebar';
+        leftToggleBtn.className = 'btn-ghost sidebar-toggle-header';
+        leftToggleBtn.innerHTML = `
+            <i class="fas fa-bars"></i>
+            <span>Клієнти</span>
+        `;
+        leftToggleBtn.title = 'Показати/сховати лівий сайдбар';
+
+        leftToggleBtn.addEventListener('click', () => {
+            if (this.currentModule === 'negotiations') {
+                this.toggleSidebar('leftNegotiations');
+            } else {
+                this.toggleSidebar('leftTeamHub');
+            }
+        });
+
+        // Right sidebar toggle
+        const rightToggleBtn = document.createElement('button');
+        rightToggleBtn.id = 'toggle-right-sidebar';
+        rightToggleBtn.className = 'btn-ghost sidebar-toggle-header';
+        rightToggleBtn.innerHTML = `
+            <i class="fas fa-history"></i>
             <span>Архів</span>
         `;
-        toggleBtn.title = 'Показати/сховати архів аналізів';
+        rightToggleBtn.title = 'Показати/сховати архів аналізів';
 
-        toggleBtn.addEventListener('click', () => {
+        rightToggleBtn.addEventListener('click', () => {
             this.toggleSidebar('right');
         });
 
-        headerActions.appendChild(toggleBtn);
+        sidebarToggles.appendChild(leftToggleBtn);
+        sidebarToggles.appendChild(rightToggleBtn);
+        headerActions.appendChild(sidebarToggles);
     }
 
     // Setup event listeners
@@ -320,10 +367,16 @@ class SidebarManager {
         const negotiationsSidebar = document.getElementById('negotiations-sidebar');
         const teamhubSidebar = document.getElementById('teamhub-sidebar');
 
+        console.log('🔄 Updating sidebar visibility for module:', this.currentModule);
+        console.log('📊 Negotiations sidebar found:', !!negotiationsSidebar);
+        console.log('👥 Team hub sidebar found:', !!teamhubSidebar);
+
         if (this.currentModule === 'negotiations') {
             if (negotiationsSidebar) {
                 negotiationsSidebar.style.display = 'flex';
+                negotiationsSidebar.style.visibility = 'visible';
                 this.sidebarStates.leftNegotiations.visible = true;
+                console.log('✅ Negotiations sidebar shown');
             }
             if (teamhubSidebar) {
                 teamhubSidebar.style.display = 'none';
@@ -336,7 +389,9 @@ class SidebarManager {
             }
             if (teamhubSidebar) {
                 teamhubSidebar.style.display = 'flex';
+                teamhubSidebar.style.visibility = 'visible';
                 this.sidebarStates.leftTeamHub.visible = true;
+                console.log('✅ Team hub sidebar shown');
             }
         }
     }
@@ -436,16 +491,42 @@ class SidebarManager {
         if (!mainContent) return;
 
         const leftCollapsed = this.isLeftSidebarCollapsed();
+        const leftVisible = this.isLeftSidebarVisible();
         const rightCollapsed = this.sidebarStates.right.collapsed;
         const rightVisible = this.sidebarStates.right.visible;
 
+        console.log('📐 Layout spacing update:', {
+            leftVisible,
+            leftCollapsed,
+            rightVisible,
+            rightCollapsed
+        });
+
         // Adjust main content margins
-        let marginLeft = leftCollapsed ? '80px' : '320px';
-        let marginRight = (rightVisible && !rightCollapsed) ? '350px' : '20px';
+        let marginLeft = '20px';
+        if (leftVisible) {
+            marginLeft = leftCollapsed ? '80px' : '320px';
+        }
+
+        let marginRight = '20px';
+        if (rightVisible && !rightCollapsed) {
+            marginRight = '350px';
+        }
 
         mainContent.style.marginLeft = marginLeft;
         mainContent.style.marginRight = marginRight;
         mainContent.style.transition = 'margin 0.3s ease';
+
+        console.log('📐 Applied margins:', { marginLeft, marginRight });
+    }
+
+    // Check if left sidebar is visible
+    isLeftSidebarVisible() {
+        if (this.currentModule === 'negotiations') {
+            return this.sidebarStates.leftNegotiations.visible;
+        } else {
+            return this.sidebarStates.leftTeamHub.visible;
+        }
     }
 
     // Check if left sidebar is collapsed
