@@ -156,14 +156,15 @@ function formatClientRow(row) {
   };
 }
 
-export async function fetchClientsWithStats(limit = 1000) {
-  const rows = await all(
-    `${CLIENT_SELECT_WITH_STATS}
+export async function fetchClientsWithStats(whereClause = '', params = [], limit = 1000) {
+  const limitParams = [...params, limit];
+  const query = `${CLIENT_SELECT_WITH_STATS}
+     ${whereClause}
      GROUP BY c.id
      ORDER BY c.updated_at DESC, c.id DESC
-     LIMIT $1`,
-    [limit]
-  );
+     LIMIT $${limitParams.length}`;
+
+  const rows = await all(query, limitParams);
   return rows.map(formatClientRow);
 }
 

@@ -7726,14 +7726,21 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         if (!container) return;
 
         if (!state.team.manualDraft.length) {
+            container.classList.add('empty');
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon"><i class="fas fa-user-gear"></i></div>
                     <p>Додайте ролі та обов'язки для створення команди</p>
+                    <button class="btn-ghost" onclick="document.getElementById('add-manual-member').click()">
+                        <i class="fas fa-plus"></i>
+                        Створити роль
+                    </button>
                 </div>
             `;
             return;
         }
+
+        container.classList.remove('empty');
 
         container.innerHTML = state.team.manualDraft.map((member, index) => `
             <div class="manual-member-card" data-member-index="${index}">

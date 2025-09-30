@@ -223,13 +223,35 @@
     async function performClientDeletionUpdates(clientId, client) {
         console.log('🔄 Performing client deletion UI updates...');
 
-        // Update application state
+        // Update all application states
         if (window.state && window.state.clients) {
             window.state.clients = window.state.clients.filter(c => c.id != clientId);
         }
         if (window.appState && window.appState.clients) {
             window.appState.clients = window.appState.clients.filter(c => c.id != clientId);
         }
+        if (window.clients) {
+            window.clients = window.clients.filter(c => c.id != clientId);
+        }
+
+        // Remove from right sidebar immediately
+        const sidebarClientItems = document.querySelectorAll(`.client-item[data-client-id="${clientId}"]`);
+        sidebarClientItems.forEach(item => {
+            item.style.transition = 'all 0.3s ease';
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                item.remove();
+
+                // Update sidebar client count
+                updateSidebarClientCount();
+
+                // If this was the selected client, clear selection
+                if (item.classList.contains('selected')) {
+                    clearClientSelection();
+                }
+            }, 300);
+        });
 
         // Remove from UI immediately
         const clientElements = document.querySelectorAll(`[data-client-id="${clientId}"]`);
@@ -392,6 +414,74 @@
                 </div>
             </div>
         `).join('');
+    }
+
+    // Update sidebar client count
+    function updateSidebarClientCount() {
+        const clientListContainer = document.querySelector('.client-list');
+        if (!clientListContainer) return;
+
+        const remainingClients = clientListContainer.querySelectorAll('.client-item');
+        const countElement = document.querySelector('.sidebar-header .client-count');
+
+        if (countElement) {
+            countElement.textContent = remainingClients.length;
+        }
+
+        // Show empty state if no clients
+        if (remainingClients.length === 0) {
+            showEmptyClientState();
+        }
+    }
+
+    // Clear client selection
+    function clearClientSelection() {
+        // Remove selected class from all client items
+        document.querySelectorAll('.client-item.selected').forEach(item => {
+            item.classList.remove('selected');
+        });
+
+        // Clear main content area
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.innerHTML = `
+                <div class="empty-selection">
+                    <div class="empty-icon">
+                        <i class="fas fa-hand-pointer"></i>
+                    </div>
+                    <h3>Оберіть клієнта</h3>
+                    <p>Виберіть клієнта зі списку для початку роботи</p>
+                </div>
+            `;
+        }
+
+        // Update global state
+        if (window.selectedClientId) {
+            window.selectedClientId = null;
+        }
+        if (window.currentClient) {
+            window.currentClient = null;
+        }
+    }
+
+    // Show empty client state
+    function showEmptyClientState() {
+        const clientListContainer = document.querySelector('.client-list');
+        if (!clientListContainer) return;
+
+        clientListContainer.innerHTML = `
+            <div class="empty-client-state">
+                <div class="empty-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h4>Немає клієнтів</h4>
+                <p>Додайте першого клієнта для початку роботи</p>
+                <button class="btn-primary btn-sm" onclick="document.getElementById('company').focus()">
+                    <i class="fas fa-plus"></i>
+                    Додати клієнта
+                </button>
+            </div>
+        `;
     }
 
     // Enhanced client selection with real-time updates

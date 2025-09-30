@@ -96,10 +96,16 @@ export async function initializeDatabase() {
         deadlines TEXT,
         previous_interactions TEXT,
         notes TEXT,
+        client_type TEXT DEFAULT 'negotiation',
+        is_active BOOLEAN DEFAULT true,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
+
+    // Add new columns if they don't exist
+    await client.query(`ALTER TABLE clients ADD COLUMN IF NOT EXISTS client_type TEXT DEFAULT 'negotiation';`);
+    await client.query(`ALTER TABLE clients ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;`);
 
     await client.query(`
       CREATE TABLE IF NOT EXISTS analyses (

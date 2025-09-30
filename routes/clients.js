@@ -26,12 +26,33 @@ const parseJsonColumn = (value, fallback) => {
   }
 };
 
-// GET /api/clients - get all clients with analytics
+// GET /api/clients - get all clients with analytics, optionally filtered by type
 r.get('/', async (req, res) => {
   const startTime = performance.now();
 
   try {
-    const clients = await fetchClientsWithStats();
+    const { type, active } = req.query;
+
+    // Build filter conditions
+    let whereConditions = [];
+    let params = [];
+    let paramIndex = 1;
+
+    if (type) {
+      whereConditions.push(`client_type = $${paramIndex}`);
+      params.push(type);
+      paramIndex++;
+    }
+
+    if (active !== undefined) {
+      whereConditions.push(`is_active = $${paramIndex}`);
+      params.push(active === 'true');
+      paramIndex++;
+    }
+
+    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+    const clients = await fetchClientsWithStats(whereClause, params);
     const duration = performance.now() - startTime;
 
     res.set('X-Response-Time', `${Math.round(duration)}ms`);
@@ -40,11 +61,12 @@ r.get('/', async (req, res) => {
       clients,
       meta: {
         count: clients.length,
-        responseTime: Math.round(duration)
+        responseTime: Math.round(duration),
+        filters: { type, active }
       }
     });
   } catch (error) {
-    logError(error, { endpoint: 'GET /api/clients', ip: req.ip });
+    logError(error, { endpoint: 'GET /api/clients', ip: req.ip, query: req.query });
     res.status(500).json({ success: false, error: 'Database error occurred' });
   }
 });
