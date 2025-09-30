@@ -36,6 +36,7 @@
         // Navigation buttons
         const prevBtn = document.getElementById('onboarding-prev');
         const nextBtn = document.getElementById('onboarding-next');
+        const skipBtn = document.getElementById('skip-onboarding');
 
         if (prevBtn) {
             prevBtn.addEventListener('click', () => goToStep(currentStep - 1));
@@ -51,6 +52,10 @@
             });
         }
 
+        if (skipBtn) {
+            skipBtn.addEventListener('click', finishOnboarding);
+        }
+
         // Dot navigation
         const dots = document.querySelectorAll('#onboarding-dots .dot');
         dots.forEach((dot, index) => {
@@ -58,7 +63,21 @@
         });
 
         // Keyboard navigation
-        document.addEventListener('keydown', handleKeyboardNavigation);
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('onboarding-modal');
+            if (!modal || modal.style.display === 'none') return;
+
+            if (e.key === 'Escape') {
+                closeOnboardingModal();
+            } else if (e.key === 'ArrowLeft' && currentStep > 1) {
+                goToStep(currentStep - 1);
+            } else if (e.key === 'ArrowRight' && currentStep < totalSteps) {
+                goToStep(currentStep + 1);
+            } else if (e.key === 'Enter' && currentStep === totalSteps) {
+                finishOnboarding();
+            }
+        });
+
 
         // Action buttons
         setupActionButtons();

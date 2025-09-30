@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="/archive-styles.css">
     <link rel="stylesheet" href="/onboarding-modal.css">
     <link rel="stylesheet" href="/person-filtering.css">
+    <link rel="stylesheet" href="/dual-sidebar.css">
+    <link rel="stylesheet" href="/enhanced-deletion.css">
     
     <!-- Meta tags for better SEO -->
     <meta name="description" content="Advanced AI-powered negotiation analysis tool for detecting manipulation and cognitive biases">
@@ -60,8 +62,8 @@
     <!-- App Container -->
     <div class="app-container" id="app-container" style="display: none;">
         
-        <!-- Left Sidebar - Client Management -->
-        <aside class="sidebar sidebar-left" id="sidebar-left">
+        <!-- Legacy Left Sidebar - Will be replaced by dual sidebar system -->
+        <aside class="sidebar sidebar-left legacy-sidebar" id="sidebar-left" style="display: none;">
             <div class="sidebar-header">
                 <div class="sidebar-brand">
                     <span class="brand-icon">⚡</span>
@@ -2329,5 +2331,7 @@
     <script src="/client-management.js"></script>
     <script src="/person-filtering.js"></script>
     <script src="/client-type-manager.js"></script>
+    <script src="/sidebar-manager.js"></script>
+    <script src="/enhanced-deletion.js"></script>
 </body>
 </html>

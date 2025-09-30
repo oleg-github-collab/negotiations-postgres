@@ -8908,6 +8908,51 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         window.addEventListener('beforeunload', saveAppState);
         
         console.log('✨ TeamPulse Turbo Neon - Ready!');
+
+        // Add onboarding control button
+        setTimeout(addOnboardingButton, 1000);
+    }
+
+    // Add onboarding control button
+    function addOnboardingButton() {
+        // Check if button already exists
+        if (document.getElementById('onboarding-trigger')) return;
+
+        // Create onboarding button
+        const onboardingBtn = document.createElement('button');
+        onboardingBtn.id = 'onboarding-trigger';
+        onboardingBtn.className = 'btn-ghost onboarding-btn';
+        onboardingBtn.innerHTML = `
+            <i class="fas fa-question-circle"></i>
+            <span>Довідка</span>
+        `;
+        onboardingBtn.title = 'Показати довідку та навчання';
+
+        onboardingBtn.addEventListener('click', () => {
+            const modal = document.getElementById('onboarding-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+
+                // Reset to first step if goToStep function exists
+                if (window.goToStep) {
+                    window.goToStep(1);
+                }
+            }
+        });
+
+        // Create floating onboarding button
+        const body = document.body;
+        const headerActions = document.createElement('div');
+        headerActions.className = 'floating-onboarding';
+        headerActions.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        `;
+        headerActions.appendChild(onboardingBtn);
+        body.appendChild(headerActions);
     }
 
     // Start when authenticated
