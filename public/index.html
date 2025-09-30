@@ -19,6 +19,8 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/styles-neon.css">
     <link rel="stylesheet" href="/archive-styles.css">
+    <link rel="stylesheet" href="/onboarding-modal.css">
+    <link rel="stylesheet" href="/person-filtering.css">
     
     <!-- Meta tags for better SEO -->
     <meta name="description" content="Advanced AI-powered negotiation analysis tool for detecting manipulation and cognitive biases">
@@ -1594,61 +1596,214 @@
 
     </div>
 
-    <!-- Onboarding Modal -->
-    <div id="onboarding-modal" class="onboarding-modal" style="display: none;">
-        <div class="onboarding-content">
-            <header class="onboarding-head">
-                <div class="onboarding-brand">
+    <!-- Enhanced Onboarding Modal -->
+    <div id="onboarding-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-container onboarding-modal">
+            <div class="modal-header">
+                <div class="modal-brand">
                     <span class="brand-icon">⚡</span>
-                    <div class="brand-copy">
+                    <div class="brand-info">
                         <h3>TeamPulse Turbo</h3>
-                        <p>Kaminskyi AI Negotiation Suite</p>
+                        <p>Онбординг та навчання</p>
                     </div>
                 </div>
-                <button class="onboarding-close" id="onboarding-close" title="Закрити">
-                    <i class="fas fa-xmark"></i>
+                <button class="modal-close" id="onboarding-close" title="Закрити">
+                    <i class="fas fa-times"></i>
                 </button>
-            </header>
-
-            <div class="onboarding-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="onboarding-progress"></div>
-                </div>
-                <span class="progress-text" id="progress-text">Крок 1 з 5</span>
             </div>
 
-            <div class="onboarding-step active" id="onboarding-step-1">
-                <div class="onboarding-grid">
-                    <div class="onboarding-copy">
-                        <div class="step-icon">🚀</div>
-                        <h2>Ласкаво просимо до TeamPulse Turbo!</h2>
-                        <p>Революційний AI-інструмент для аналізу переговорів та виявлення маніпуляцій, побудований на основі <strong>Kaminskyi AI</strong> — синтетичної полімаршрутної нейромережі з адаптивним навчанням.</p>
+            <div class="modal-body">
+                <div class="onboarding-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="onboarding-progress"></div>
+                    </div>
+                    <span class="progress-text" id="onboarding-progress-text">Крок 1 з 5</span>
+                </div>
 
-                        <div class="step-feature-grid">
-                            <div class="feature-item enhanced">
-                                <i class="fas fa-brain neon-icon"></i>
-                                <div>
+                    <!-- Onboarding Step 1: Welcome -->
+                    <div class="onboarding-step active" id="onboarding-step-1">
+                        <div class="step-header">
+                            <div class="step-icon">🚀</div>
+                            <h2>Ласкаво просимо до TeamPulse Turbo!</h2>
+                            <p>Потужний AI-інструмент для аналізу переговорів та виявлення маніпуляцій</p>
+                        </div>
+
+                        <div class="step-features">
+                            <div class="feature-item">
+                                <i class="fas fa-brain"></i>
+                                <div class="feature-content">
                                     <h4>AI-аналіз маніпуляцій</h4>
-                                    <p>Виявлення 47+ типів маніпуляцій з точністю 94.2%</p>
-                                    <span class="feature-badge">Real-time</span>
+                                    <p>Автоматичне виявлення маніпулятивних технік у переговорах</p>
                                 </div>
                             </div>
-                            <div class="feature-item enhanced">
-                                <i class="fas fa-chart-line neon-icon"></i>
-                                <div>
-                                    <h4>Барометр складності</h4>
-                                    <p>Теплові карти ризиків та прогнозування поведінки</p>
-                                    <span class="feature-badge">Predictive</span>
+                            <div class="feature-item">
+                                <i class="fas fa-user-focus"></i>
+                                <div class="feature-content">
+                                    <h4>Персональний фокус</h4>
+                                    <p>Аналіз репік конкретних осіб для глибшого розуміння</p>
                                 </div>
                             </div>
-                            <div class="feature-item enhanced">
-                                <i class="fas fa-lightbulb neon-icon"></i>
-                                <div>
-                                    <h4>Персоналізовані поради</h4>
-                                    <p>Контрстратегії на основі психопрофілю опонента</p>
-                                    <span class="feature-badge">Smart</span>
+                            <div class="feature-item">
+                                <i class="fas fa-archive"></i>
+                                <div class="feature-content">
+                                    <h4>Архів аналізів</h4>
+                                    <p>Зберігання та швидкий пошук всіх попередніх аналізів</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Onboarding Step 2: Client Management -->
+                    <div class="onboarding-step" id="onboarding-step-2">
+                        <div class="step-header">
+                            <div class="step-icon">👥</div>
+                            <h2>Управління клієнтами</h2>
+                            <p>Створюйте профілі клієнтів для персоналізованого аналізу</p>
+                        </div>
+
+                        <div class="step-demo">
+                            <div class="demo-screenshot">
+                                <div class="demo-window">
+                                    <div class="demo-titlebar">
+                                        <div class="demo-controls">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                        <span>Профіль клієнта</span>
+                                    </div>
+                                    <div class="demo-content">
+                                        <div class="demo-form">
+                                            <div class="demo-field">
+                                                <label>Компанія</label>
+                                                <input type="text" value="Apple Inc." readonly>
+                                            </div>
+                                            <div class="demo-field">
+                                                <label>Сектор</label>
+                                                <input type="text" value="Технології" readonly>
+                                            </div>
+                                            <div class="demo-field">
+                                                <label>Тип переговорів</label>
+                                                <input type="text" value="B2B Sales" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Onboarding Step 3: Analysis Process -->
+                    <div class="onboarding-step" id="onboarding-step-3">
+                        <div class="step-header">
+                            <div class="step-icon">🧠</div>
+                            <h2>Процес аналізу</h2>
+                            <p>Як працює AI-аналіз ваших переговорів</p>
+                        </div>
+
+                        <div class="step-process">
+                            <div class="process-item">
+                                <div class="process-number">1</div>
+                                <div class="process-content">
+                                    <h4>Завантаження тексту</h4>
+                                    <p>Вставте текст переговорів або завантажте файл</p>
+                                </div>
+                            </div>
+                            <div class="process-item">
+                                <div class="process-number">2</div>
+                                <div class="process-content">
+                                    <h4>AI-обробка</h4>
+                                    <p>Нейромережа аналізує маніпуляції та викривлення</p>
+                                </div>
+                            </div>
+                            <div class="process-item">
+                                <div class="process-number">3</div>
+                                <div class="process-content">
+                                    <h4>Результати</h4>
+                                    <p>Отримайте детальний звіт з рекомендаціями</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Onboarding Step 4: Features Overview -->
+                    <div class="onboarding-step" id="onboarding-step-4">
+                        <div class="step-header">
+                            <div class="step-icon">⚡</div>
+                            <h2>Ключові можливості</h2>
+                            <p>Все, що потрібно для ефективних переговорів</p>
+                        </div>
+
+                        <div class="step-grid">
+                            <div class="grid-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <h4>Барометр складності</h4>
+                                <p>Візуальна оцінка ризиків переговорів</p>
+                            </div>
+                            <div class="grid-item">
+                                <i class="fas fa-lightbulb"></i>
+                                <h4>Розумні поради</h4>
+                                <p>Персоналізовані рекомендації для кожної ситуації</p>
+                            </div>
+                            <div class="grid-item">
+                                <i class="fas fa-users"></i>
+                                <h4>Аналіз персон</h4>
+                                <p>Профілювання учасників переговорів</p>
+                            </div>
+                            <div class="grid-item">
+                                <i class="fas fa-chart-line"></i>
+                                <h4>Звіти та метрики</h4>
+                                <p>Детальна статистика та прогрес</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Onboarding Step 5: Get Started -->
+                    <div class="onboarding-step" id="onboarding-step-5">
+                        <div class="step-header">
+                            <div class="step-icon">🎯</div>
+                            <h2>Готові почати?</h2>
+                            <p>Створіть свого першого клієнта та проведіть аналіз</p>
+                        </div>
+
+                        <div class="step-actions">
+                            <div class="action-card primary">
+                                <i class="fas fa-user-plus"></i>
+                                <h4>Створити клієнта</h4>
+                                <p>Почніть з додавання профілю клієнта</p>
+                                <button class="btn-primary" onclick="startOnboarding()">
+                                    Створити зараз
+                                </button>
+                            </div>
+                            <div class="action-card secondary">
+                                <i class="fas fa-play"></i>
+                                <h4>Демо-аналіз</h4>
+                                <p>Спробуйте з прикладом переговорів</p>
+                                <button class="btn-secondary" onclick="showDemo()">
+                                    Переглянути демо
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="onboarding-prev" style="display: none;">
+                        <i class="fas fa-chevron-left"></i>
+                        Назад
+                    </button>
+                    <div class="step-dots" id="onboarding-dots">
+                        <span class="dot active" data-step="1"></span>
+                        <span class="dot" data-step="2"></span>
+                        <span class="dot" data-step="3"></span>
+                        <span class="dot" data-step="4"></span>
+                        <span class="dot" data-step="5"></span>
+                    </div>
+                    <button class="btn-primary" id="onboarding-next">
+                        Далі
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
                         </div>
 
                         <div class="success-metrics">
@@ -2169,5 +2324,8 @@
     <script src="/auth.js"></script>
     <script src="/app-neon.js"></script>
     <script src="/archive-extension.js"></script>
+    <script src="/onboarding-modal.js"></script>
+    <script src="/client-management.js"></script>
+    <script src="/person-filtering.js"></script>
 </body>
 </html>

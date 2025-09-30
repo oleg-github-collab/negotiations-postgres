@@ -236,9 +236,25 @@ export async function initializeDatabase() {
         insights JSONB DEFAULT '{}'::jsonb,
         highlighted_text TEXT,
         person_focus TEXT,
+        analysis_duration INTEGER DEFAULT 0,
+        manipulation_count INTEGER DEFAULT 0,
+        bias_count INTEGER DEFAULT 0,
+        fallacy_count INTEGER DEFAULT 0,
+        severity_average NUMERIC DEFAULT 0,
+        risk_level TEXT DEFAULT 'low',
+        client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
+
+    // Add new columns if they don't exist
+    await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS analysis_duration INTEGER DEFAULT 0;`);
+    await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS manipulation_count INTEGER DEFAULT 0;`);
+    await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS bias_count INTEGER DEFAULT 0;`);
+    await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS fallacy_count INTEGER DEFAULT 0;`);
+    await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS severity_average NUMERIC DEFAULT 0;`);
+    await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS risk_level TEXT DEFAULT 'low';`);
+    await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE;`);
 
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_analyses_client ON analyses(client_id);

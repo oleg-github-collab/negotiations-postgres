@@ -12,6 +12,49 @@ import { recordAuditEvent } from '../utils/audit.js';
 const r = Router();
 const MODEL = process.env.OPENAI_MODEL || 'gpt-4o';
 
+// Calculate analysis metrics from parsed result
+function calculateAnalysisMetrics(parsed) {
+  const highlights = parsed.highlights || [];
+
+  let manipulationCount = 0;
+  let biasCount = 0;
+  let fallacyCount = 0;
+  let severitySum = 0;
+  let totalHighlights = highlights.length;
+
+  highlights.forEach(highlight => {
+    if (highlight.category === 'manipulation') {
+      manipulationCount++;
+    } else if (highlight.category === 'cognitive_bias') {
+      biasCount++;
+    } else if (highlight.category === 'rhetorical_fallacy') {
+      fallacyCount++;
+    }
+
+    // Add severity to sum (assuming severity is 1-3)
+    const severity = highlight.severity || 1;
+    severitySum += severity;
+  });
+
+  const severityAverage = totalHighlights > 0 ? severitySum / totalHighlights : 0;
+
+  // Determine risk level based on counts and severity
+  let riskLevel = 'low';
+  if (totalHighlights > 10 || severityAverage > 2.5) {
+    riskLevel = 'high';
+  } else if (totalHighlights > 5 || severityAverage > 1.5) {
+    riskLevel = 'medium';
+  }
+
+  return {
+    manipulationCount,
+    biasCount,
+    fallacyCount,
+    severityAverage: Math.round(severityAverage * 100) / 100,
+    riskLevel
+  };
+}
+
 // Create new negotiation session (independent of teams)
 r.post('/', async (req, res) => {
   const start = performance.now();
@@ -372,14 +415,20 @@ ${analysisInstruction}Проаналізуй цей текст перегово�
       throw new Error('Не вдалося розпарсити відповідь AI');
     }
 
-    // Save analysis with person focus
+    // Calculate analysis metrics
+    const analysisMetrics = calculateAnalysisMetrics(parsed);
     const analysisTitle = person_focus
       ? `Аналіз репік "${person_focus}" - ${new Date().toLocaleString('uk-UA')}`
       : filename || `Аналіз ${new Date().toLocaleString('uk-UA')}`;
 
+    // Get client_id from negotiation
+    const negotiationData = await get('SELECT client_id FROM negotiations WHERE id = $1', [negotiationId]);
+    const clientId = negotiationData?.client_id;
+
     const analysis = await run(
       `INSERT INTO negotiation_analyses (
         negotiation_id,
+        client_id,
         title,
         source,
         original_filename,
@@ -390,10 +439,17 @@ ${analysisInstruction}Проаналізуй цей текст перегово�
         barometer,
         personas,
         insights,
-        person_focus
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
+        person_focus,
+        analysis_duration,
+        manipulation_count,
+        bias_count,
+        fallacy_count,
+        severity_average,
+        risk_level
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING *`,
       [
         negotiationId,
+        clientId,
         analysisTitle,
         source || 'manual',
         filename,
@@ -404,7 +460,13 @@ ${analysisInstruction}Проаналізуй цей текст перегово�
         parsed.barometer || {},
         parsed.personas || [],
         parsed.insights || {},
-        person_focus || null
+        person_focus || null,
+        Math.round((performance.now() - start) / 1000), // duration in seconds
+        analysisMetrics.manipulationCount,
+        analysisMetrics.biasCount,
+        analysisMetrics.fallacyCount,
+        analysisMetrics.severityAverage,
+        analysisMetrics.riskLevel
       ]
     );
 
@@ -801,6 +863,269 @@ r.delete('/analysis/:analysisId', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Не вдалося видалити аналіз'
+    });
+  }
+});
+
+// Get person history for autocomplete
+r.get('/persons-history', async (req, res) => {
+  try {
+    const start = performance.now();
+
+    // Get all unique persons from analyses with usage statistics
+    const personsData = await all(`
+      SELECT
+        person_focus,
+        COUNT(*) as usage_count,
+        MAX(created_at) as last_used,
+        ARRAY_AGG(DISTINCT CASE
+          WHEN highlights->0->>'category' IS NOT NULL
+          THEN highlights->0->>'category'
+          ELSE NULL
+        END) as categories
+      FROM negotiation_analyses
+      WHERE person_focus IS NOT NULL
+        AND person_focus != ''
+      GROUP BY person_focus
+      ORDER BY usage_count DESC, last_used DESC
+      LIMIT 100
+    `);
+
+    // Parse and format person data
+    const persons = personsData.map(row => {
+      const names = row.person_focus.split(',').map(n => n.trim()).filter(n => n);
+      return names.map(name => ({
+        name,
+        usageCount: parseInt(row.usage_count),
+        lastUsed: row.last_used,
+        categories: row.categories?.filter(c => c) || []
+      }));
+    }).flat();
+
+    // Deduplicate and aggregate by name
+    const personMap = new Map();
+    persons.forEach(person => {
+      if (personMap.has(person.name)) {
+        const existing = personMap.get(person.name);
+        existing.usageCount += person.usageCount;
+        if (new Date(person.lastUsed) > new Date(existing.lastUsed)) {
+          existing.lastUsed = person.lastUsed;
+        }
+        existing.categories = [...new Set([...existing.categories, ...person.categories])];
+      } else {
+        personMap.set(person.name, person);
+      }
+    });
+
+    const uniquePersons = Array.from(personMap.values())
+      .sort((a, b) => b.usageCount - a.usageCount)
+      .slice(0, 50);
+
+    const duration = performance.now() - start;
+
+    res.json({
+      success: true,
+      persons: uniquePersons,
+      meta: {
+        responseTime: Math.round(duration),
+        totalCount: uniquePersons.length
+      }
+    });
+  } catch (error) {
+    logError(error, {
+      endpoint: 'GET /api/negotiations/persons-history',
+      ip: req.ip
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Не вдалося завантажити історію осіб'
+    });
+  }
+});
+
+// Track person usage
+r.post('/track-person-usage', async (req, res) => {
+  try {
+    const { personName } = req.body;
+
+    if (!personName) {
+      return res.status(400).json({
+        success: false,
+        error: 'Назва особи обов\'язкова'
+      });
+    }
+
+    // This could be expanded to track in a separate table
+    // For now, we'll just acknowledge the tracking
+    res.json({
+      success: true,
+      message: 'Використання особи відстежено'
+    });
+  } catch (error) {
+    logError(error, {
+      endpoint: 'POST /api/negotiations/track-person-usage',
+      ip: req.ip
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Не вдалося відстежити використання особи'
+    });
+  }
+});
+
+// Get filter history
+r.get('/filter-history', async (req, res) => {
+  try {
+    const start = performance.now();
+
+    // Get common filter combinations
+    const filterHistory = await all(`
+      SELECT
+        person_focus,
+        COUNT(*) as usage_count,
+        MAX(created_at) as last_used,
+        AVG(CASE
+          WHEN risk_level = 'high' THEN 3
+          WHEN risk_level = 'medium' THEN 2
+          ELSE 1
+        END) as avg_risk_score
+      FROM negotiation_analyses
+      WHERE person_focus IS NOT NULL
+        AND person_focus != ''
+      GROUP BY person_focus
+      HAVING COUNT(*) > 1
+      ORDER BY usage_count DESC, last_used DESC
+      LIMIT 20
+    `);
+
+    const history = filterHistory.map(row => ({
+      persons: row.person_focus.split(',').map(p => p.trim()).filter(p => p),
+      usageCount: parseInt(row.usage_count),
+      lastUsed: row.last_used,
+      avgRiskScore: parseFloat(row.avg_risk_score || 0)
+    }));
+
+    const duration = performance.now() - start;
+
+    res.json({
+      success: true,
+      history,
+      meta: {
+        responseTime: Math.round(duration),
+        totalCount: history.length
+      }
+    });
+  } catch (error) {
+    logError(error, {
+      endpoint: 'GET /api/negotiations/filter-history',
+      ip: req.ip
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Не вдалося завантажити історію фільтрів'
+    });
+  }
+});
+
+// Enhanced analysis retrieval with person filtering
+r.get('/client/:clientId/analyses-filtered', validateClientId, async (req, res) => {
+  try {
+    const start = performance.now();
+    const clientId = Number(req.params.clientId);
+    const { persons, riskLevel, dateFrom, dateTo, limit = 50, offset = 0 } = req.query;
+
+    let whereConditions = ['na.client_id = $1'];
+    let params = [clientId];
+    let paramIndex = 2;
+
+    // Person filtering
+    if (persons) {
+      const personList = persons.split(',').map(p => p.trim()).filter(p => p);
+      if (personList.length > 0) {
+        const personConditions = personList.map(() => {
+          const condition = `na.person_focus ILIKE $${paramIndex}`;
+          params.push(`%${personList[paramIndex - 2]}%`);
+          paramIndex++;
+          return condition;
+        });
+        whereConditions.push(`(${personConditions.join(' OR ')})`);
+      }
+    }
+
+    // Risk level filtering
+    if (riskLevel && ['low', 'medium', 'high'].includes(riskLevel)) {
+      whereConditions.push(`na.risk_level = $${paramIndex}`);
+      params.push(riskLevel);
+      paramIndex++;
+    }
+
+    // Date range filtering
+    if (dateFrom) {
+      whereConditions.push(`na.created_at >= $${paramIndex}`);
+      params.push(dateFrom);
+      paramIndex++;
+    }
+
+    if (dateTo) {
+      whereConditions.push(`na.created_at <= $${paramIndex}`);
+      params.push(dateTo);
+      paramIndex++;
+    }
+
+    const whereClause = whereConditions.join(' AND ');
+
+    const analyses = await all(`
+      SELECT
+        na.*,
+        n.title as negotiation_title,
+        n.negotiation_type,
+        n.status as negotiation_status
+      FROM negotiation_analyses na
+      LEFT JOIN negotiations n ON na.negotiation_id = n.id
+      WHERE ${whereClause}
+      ORDER BY na.created_at DESC
+      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+    `, [...params, parseInt(limit), parseInt(offset)]);
+
+    // Get total count for pagination
+    const countResult = await get(`
+      SELECT COUNT(*) as total
+      FROM negotiation_analyses na
+      LEFT JOIN negotiations n ON na.negotiation_id = n.id
+      WHERE ${whereClause}
+    `, params);
+
+    const duration = performance.now() - start;
+
+    res.json({
+      success: true,
+      analyses,
+      pagination: {
+        total: parseInt(countResult.total),
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+        hasMore: parseInt(offset) + parseInt(limit) < parseInt(countResult.total)
+      },
+      meta: {
+        responseTime: Math.round(duration),
+        appliedFilters: {
+          persons: persons ? persons.split(',').map(p => p.trim()) : [],
+          riskLevel,
+          dateFrom,
+          dateTo
+        }
+      }
+    });
+  } catch (error) {
+    logError(error, {
+      endpoint: 'GET /api/negotiations/client/:clientId/analyses-filtered',
+      clientId: req.params.clientId,
+      query: req.query,
+      ip: req.ip
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Не вдалося отримати відфільтровані аналізи'
     });
   }
 });
