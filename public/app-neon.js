@@ -5450,6 +5450,13 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
 
         // Update right panel visibility based on selected tab
         updateRightPanelVisibility(targetId);
+
+        // Dispatch module change event for sidebar manager
+        const moduleChangeEvent = new CustomEvent('moduleChange', {
+            detail: { module: targetId }
+        });
+        document.dispatchEvent(moduleChangeEvent);
+        console.log(`🔄 Module change event dispatched: ${targetId}`);
     }
 
     function updateRightPanelVisibility(targetId) {

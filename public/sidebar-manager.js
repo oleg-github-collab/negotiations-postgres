@@ -7,6 +7,8 @@ class SidebarManager {
         this.sidebarStates = {
             leftNegotiations: { collapsed: false, visible: true },
             leftTeamHub: { collapsed: false, visible: false },
+            leftRaci: { collapsed: false, visible: false },
+            leftSalary: { collapsed: false, visible: false },
             right: { collapsed: false, visible: true }
         };
         this.init();
@@ -45,17 +47,19 @@ class SidebarManager {
             legacySidebar.style.display = 'none';
         }
 
-        // Create negotiations sidebar
+        // Create all module sidebars
         const negotiationsSidebar = this.createNegotiationsSidebar();
-
-        // Create team hub sidebar
         const teamHubSidebar = this.createTeamHubSidebar();
+        const raciSidebar = this.createRaciSidebar();
+        const salarySidebar = this.createSalarySidebar();
 
         // Insert sidebars before main content
         const mainContent = document.querySelector('.main-content');
         if (mainContent) {
             appContainer.insertBefore(negotiationsSidebar, mainContent);
             appContainer.insertBefore(teamHubSidebar, mainContent);
+            appContainer.insertBefore(raciSidebar, mainContent);
+            appContainer.insertBefore(salarySidebar, mainContent);
         }
     }
 
@@ -227,6 +231,178 @@ class SidebarManager {
         return sidebar;
     }
 
+    // Create RACI sidebar
+    createRaciSidebar() {
+        const sidebar = document.createElement('aside');
+        sidebar.id = 'raci-sidebar';
+        sidebar.className = 'left-sidebar raci-sidebar';
+        sidebar.innerHTML = `
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <i class="fas fa-sitemap neon-icon"></i>
+                    <div class="title-content">
+                        <h2>RACI матриці</h2>
+                        <p>Розподіл ролей та відповідальності</p>
+                    </div>
+                </div>
+                <div class="sidebar-controls">
+                    <span class="client-count" id="raci-client-count">0</span>
+                    <button class="sidebar-toggle-btn" id="toggle-raci-sidebar" title="Згорнути/розгорнути">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="sidebar-actions">
+                    <button class="btn-primary add-client-btn" id="add-raci-client">
+                        <i class="fas fa-plus"></i>
+                        <span class="btn-text">Створити RACI</span>
+                    </button>
+                    <button class="btn-secondary import-btn" id="import-raci">
+                        <i class="fas fa-upload"></i>
+                        <span class="btn-text">Імпорт матриці</span>
+                    </button>
+                </div>
+
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="raci-search" placeholder="Пошук матриць...">
+                        <button class="search-clear" id="clear-raci-search">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="project-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-diagram-project"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-raci-matrices">0</div>
+                            <div class="stat-label">Матриць</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users-gear"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-raci-roles">0</div>
+                            <div class="stat-label">Ролей</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="client-list-container">
+                    <div class="client-list" id="raci-client-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                            <h4>Немає RACI матриць</h4>
+                            <p>Створіть першу матрицю для аналізу розподілу ролей</p>
+                            <button class="btn-primary btn-sm" onclick="sidebarManager.showAddClientForm('raci')">
+                                <i class="fas fa-plus"></i>
+                                Створити RACI
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return sidebar;
+    }
+
+    // Create Salary Analysis sidebar
+    createSalarySidebar() {
+        const sidebar = document.createElement('aside');
+        sidebar.id = 'salary-sidebar';
+        sidebar.className = 'left-sidebar salary-sidebar';
+        sidebar.innerHTML = `
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <i class="fas fa-dollar-sign neon-icon"></i>
+                    <div class="title-content">
+                        <h2>Аналіз зарплат</h2>
+                        <p>Оцінка компенсацій та витрат</p>
+                    </div>
+                </div>
+                <div class="sidebar-controls">
+                    <span class="client-count" id="salary-client-count">0</span>
+                    <button class="sidebar-toggle-btn" id="toggle-salary-sidebar" title="Згорнути/розгорнути">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="sidebar-actions">
+                    <button class="btn-primary add-client-btn" id="add-salary-client">
+                        <i class="fas fa-plus"></i>
+                        <span class="btn-text">Новий аналіз</span>
+                    </button>
+                    <button class="btn-secondary import-btn" id="import-salary">
+                        <i class="fas fa-upload"></i>
+                        <span class="btn-text">Імпорт даних</span>
+                    </button>
+                </div>
+
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="salary-search" placeholder="Пошук аналізів...">
+                        <button class="search-clear" id="clear-salary-search">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="project-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-salary-analyses">0</div>
+                            <div class="stat-label">Аналізів</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-money-bill-trend-up"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="avg-salary">—</div>
+                            <div class="stat-label">Середня ЗП</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="client-list-container">
+                    <div class="client-list" id="salary-client-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <h4>Немає аналізів зарплат</h4>
+                            <p>Створіть перший аналіз для оцінки компенсацій</p>
+                            <button class="btn-primary btn-sm" onclick="sidebarManager.showAddClientForm('salary')">
+                                <i class="fas fa-plus"></i>
+                                Новий аналіз
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return sidebar;
+    }
+
     // Setup toggle buttons
     setupToggleButtons() {
         // Left sidebar toggles
@@ -235,6 +411,10 @@ class SidebarManager {
                 this.toggleSidebar('leftNegotiations');
             } else if (e.target.matches('#toggle-teamhub-sidebar, #toggle-teamhub-sidebar *')) {
                 this.toggleSidebar('leftTeamHub');
+            } else if (e.target.matches('#toggle-raci-sidebar, #toggle-raci-sidebar *')) {
+                this.toggleSidebar('leftRaci');
+            } else if (e.target.matches('#toggle-salary-sidebar, #toggle-salary-sidebar *')) {
+                this.toggleSidebar('leftSalary');
             }
         });
 
@@ -263,11 +443,13 @@ class SidebarManager {
         leftToggleBtn.title = 'Показати/сховати лівий сайдбар';
 
         leftToggleBtn.addEventListener('click', () => {
-            if (this.currentModule === 'negotiations') {
-                this.toggleSidebar('leftNegotiations');
-            } else {
-                this.toggleSidebar('leftTeamHub');
-            }
+            const moduleMap = {
+                'negotiations': 'leftNegotiations',
+                'teamhub': 'leftTeamHub',
+                'raci': 'leftRaci',
+                'salary': 'leftSalary'
+            };
+            this.toggleSidebar(moduleMap[this.currentModule] || 'leftNegotiations');
         });
 
         // Right sidebar toggle
@@ -308,20 +490,40 @@ class SidebarManager {
 
     // Setup search listeners
     setupSearchListeners() {
-        const negotiationsSearch = document.getElementById('negotiations-search');
-        const teamhubSearch = document.getElementById('teamhub-search');
+        const searches = {
+            'negotiations-search': 'negotiations',
+            'teamhub-search': 'teamhub',
+            'raci-search': 'raci',
+            'salary-search': 'salary'
+        };
 
-        if (negotiationsSearch) {
-            negotiationsSearch.addEventListener('input', (e) => {
-                this.filterClients('negotiations', e.target.value);
-            });
-        }
+        Object.entries(searches).forEach(([id, module]) => {
+            const searchInput = document.getElementById(id);
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    this.filterClients(module, e.target.value);
+                });
+            }
+        });
 
-        if (teamhubSearch) {
-            teamhubSearch.addEventListener('input', (e) => {
-                this.filterClients('teamhub', e.target.value);
-            });
-        }
+        // Setup clear search buttons
+        const clearButtons = {
+            'clear-negotiations-search': 'negotiations-search',
+            'clear-teamhub-search': 'teamhub-search',
+            'clear-raci-search': 'raci-search',
+            'clear-salary-search': 'salary-search'
+        };
+
+        Object.entries(clearButtons).forEach(([btnId, inputId]) => {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            if (btn && input) {
+                btn.addEventListener('click', () => {
+                    input.value = '';
+                    input.dispatchEvent(new Event('input'));
+                });
+            }
+        });
     }
 
     // Setup filter tabs
@@ -342,6 +544,33 @@ class SidebarManager {
                 this.showAddClientForm('negotiations');
             } else if (e.target.matches('#add-teamhub-client, #add-teamhub-client *')) {
                 this.showAddClientForm('teamhub');
+            } else if (e.target.matches('#add-raci-client, #add-raci-client *')) {
+                this.showAddClientForm('raci');
+            } else if (e.target.matches('#add-salary-client, #add-salary-client *')) {
+                this.showAddClientForm('salary');
+            }
+        });
+
+        // Setup import buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('#import-negotiations, #import-negotiations *')) {
+                this.handleImport('negotiations');
+            } else if (e.target.matches('#import-teamhub, #import-teamhub *')) {
+                this.handleImport('teamhub');
+            } else if (e.target.matches('#import-raci, #import-raci *')) {
+                this.handleImport('raci');
+            } else if (e.target.matches('#import-salary, #import-salary *')) {
+                this.handleImport('salary');
+            }
+        });
+
+        // Setup client item clicks
+        document.addEventListener('click', (e) => {
+            const clientItem = e.target.closest('.client-item');
+            if (clientItem && !e.target.closest('.client-actions')) {
+                const clientId = clientItem.dataset.clientId;
+                const module = clientItem.dataset.module;
+                this.selectClient(clientId, module);
             }
         });
     }
@@ -350,50 +579,60 @@ class SidebarManager {
     switchModule(module) {
         const oldModule = this.currentModule;
 
-        if (module === 'team-hub') {
-            this.currentModule = 'teamhub';
-        } else {
-            this.currentModule = 'negotiations';
-        }
+        // Map module names to internal identifiers
+        const moduleMap = {
+            'analysis-dashboard': 'negotiations',
+            'team-hub': 'teamhub',
+            'raci-matrix': 'raci',
+            'salary-analysis': 'salary'
+        };
+
+        this.currentModule = moduleMap[module] || module;
+
+        console.log(`🔄 Module switch: ${oldModule} → ${this.currentModule}`);
 
         if (oldModule !== this.currentModule) {
             this.updateSidebarVisibility();
             this.updateRightSidebarVisibility();
+            this.loadDataForModule(this.currentModule);
         }
     }
 
     // Update sidebar visibility based on current module
     updateSidebarVisibility() {
-        const negotiationsSidebar = document.getElementById('negotiations-sidebar');
-        const teamhubSidebar = document.getElementById('teamhub-sidebar');
+        const sidebars = {
+            negotiations: document.getElementById('negotiations-sidebar'),
+            teamhub: document.getElementById('teamhub-sidebar'),
+            raci: document.getElementById('raci-sidebar'),
+            salary: document.getElementById('salary-sidebar')
+        };
 
         console.log('🔄 Updating sidebar visibility for module:', this.currentModule);
-        console.log('📊 Negotiations sidebar found:', !!negotiationsSidebar);
-        console.log('👥 Team hub sidebar found:', !!teamhubSidebar);
 
-        if (this.currentModule === 'negotiations') {
-            if (negotiationsSidebar) {
-                negotiationsSidebar.style.display = 'flex';
-                negotiationsSidebar.style.visibility = 'visible';
-                this.sidebarStates.leftNegotiations.visible = true;
-                console.log('✅ Negotiations sidebar shown');
+        // Hide all sidebars first
+        Object.entries(sidebars).forEach(([key, sidebar]) => {
+            if (sidebar) {
+                sidebar.style.display = 'none';
+                const stateKey = `left${key.charAt(0).toUpperCase() + key.slice(1)}`;
+                if (this.sidebarStates[stateKey]) {
+                    this.sidebarStates[stateKey].visible = false;
+                }
             }
-            if (teamhubSidebar) {
-                teamhubSidebar.style.display = 'none';
-                this.sidebarStates.leftTeamHub.visible = false;
+        });
+
+        // Show current module sidebar
+        const currentSidebar = sidebars[this.currentModule];
+        if (currentSidebar) {
+            currentSidebar.style.display = 'flex';
+            currentSidebar.style.visibility = 'visible';
+            const stateKey = `left${this.currentModule.charAt(0).toUpperCase() + this.currentModule.slice(1)}`;
+            if (this.sidebarStates[stateKey]) {
+                this.sidebarStates[stateKey].visible = true;
             }
-        } else if (this.currentModule === 'teamhub') {
-            if (negotiationsSidebar) {
-                negotiationsSidebar.style.display = 'none';
-                this.sidebarStates.leftNegotiations.visible = false;
-            }
-            if (teamhubSidebar) {
-                teamhubSidebar.style.display = 'flex';
-                teamhubSidebar.style.visibility = 'visible';
-                this.sidebarStates.leftTeamHub.visible = true;
-                console.log('✅ Team hub sidebar shown');
-            }
+            console.log(`✅ ${this.currentModule} sidebar shown`);
         }
+
+        this.updateLayoutSpacing();
     }
 
     // Update right sidebar visibility
@@ -438,6 +677,14 @@ class SidebarManager {
                 sidebar = document.getElementById('teamhub-sidebar');
                 toggleBtn = document.getElementById('toggle-teamhub-sidebar');
                 break;
+            case 'leftRaci':
+                sidebar = document.getElementById('raci-sidebar');
+                toggleBtn = document.getElementById('toggle-raci-sidebar');
+                break;
+            case 'leftSalary':
+                sidebar = document.getElementById('salary-sidebar');
+                toggleBtn = document.getElementById('toggle-salary-sidebar');
+                break;
             case 'right':
                 sidebar = document.querySelector('.right-sidebar');
                 toggleBtn = document.getElementById('toggle-right-sidebar');
@@ -447,6 +694,8 @@ class SidebarManager {
         if (sidebar && toggleBtn) {
             this.animateSidebarToggle(sidebar, toggleBtn, state.collapsed);
         }
+
+        console.log(`🔄 Sidebar toggled: ${sidebarType}, collapsed: ${state.collapsed}`);
     }
 
     // Animate sidebar toggle
@@ -522,20 +771,26 @@ class SidebarManager {
 
     // Check if left sidebar is visible
     isLeftSidebarVisible() {
-        if (this.currentModule === 'negotiations') {
-            return this.sidebarStates.leftNegotiations.visible;
-        } else {
-            return this.sidebarStates.leftTeamHub.visible;
-        }
+        const stateMap = {
+            'negotiations': 'leftNegotiations',
+            'teamhub': 'leftTeamHub',
+            'raci': 'leftRaci',
+            'salary': 'leftSalary'
+        };
+        const stateKey = stateMap[this.currentModule];
+        return stateKey ? this.sidebarStates[stateKey].visible : false;
     }
 
     // Check if left sidebar is collapsed
     isLeftSidebarCollapsed() {
-        if (this.currentModule === 'negotiations') {
-            return this.sidebarStates.leftNegotiations.collapsed;
-        } else {
-            return this.sidebarStates.leftTeamHub.collapsed;
-        }
+        const stateMap = {
+            'negotiations': 'leftNegotiations',
+            'teamhub': 'leftTeamHub',
+            'raci': 'leftRaci',
+            'salary': 'leftSalary'
+        };
+        const stateKey = stateMap[this.currentModule];
+        return stateKey ? this.sidebarStates[stateKey].collapsed : false;
     }
 
     // Filter clients
@@ -736,6 +991,224 @@ class SidebarManager {
         if (window.deleteClientEnhanced) {
             window.deleteClientEnhanced(clientId);
         }
+    }
+
+    // Load data for specific module
+    async loadDataForModule(module) {
+        console.log(`📊 Loading data for module: ${module}`);
+
+        switch (module) {
+            case 'negotiations':
+                await this.loadClients('negotiations');
+                break;
+            case 'teamhub':
+                await this.loadTeamHubData();
+                break;
+            case 'raci':
+                await this.loadRaciData();
+                break;
+            case 'salary':
+                await this.loadSalaryData();
+                break;
+        }
+    }
+
+    // Load TeamHub data
+    async loadTeamHubData() {
+        try {
+            const response = await fetch('/api/clients?type=team&active=true');
+            if (!response.ok) throw new Error('Failed to load team hub data');
+
+            const data = await response.json();
+            this.renderClients('teamhub', data.clients || []);
+
+            // Update stats
+            const totalProjects = data.clients?.length || 0;
+            const totalMembers = data.clients?.reduce((sum, client) => sum + (client.members_count || 0), 0) || 0;
+
+            const totalProjectsEl = document.getElementById('total-projects');
+            const totalMembersEl = document.getElementById('total-members');
+
+            if (totalProjectsEl) totalProjectsEl.textContent = totalProjects;
+            if (totalMembersEl) totalMembersEl.textContent = totalMembers;
+
+        } catch (error) {
+            console.error('❌ Failed to load team hub data:', error);
+        }
+    }
+
+    // Load RACI data
+    async loadRaciData() {
+        try {
+            const response = await fetch('/api/teams');
+            if (!response.ok) throw new Error('Failed to load RACI data');
+
+            const data = await response.json();
+            const teams = data.teams || [];
+
+            // Render RACI matrices
+            const raciList = document.getElementById('raci-client-list');
+            if (!raciList) return;
+
+            if (teams.length === 0) {
+                raciList.innerHTML = this.getEmptyStateHTML('raci');
+                return;
+            }
+
+            raciList.innerHTML = teams.map(team => `
+                <div class="client-item" data-client-id="${team.id}" data-module="raci">
+                    <div class="client-avatar">
+                        <i class="fas fa-sitemap"></i>
+                    </div>
+                    <div class="client-info">
+                        <div class="client-name">${team.title || 'Без назви'}</div>
+                        <div class="client-meta">${team.description || 'RACI матриця'}</div>
+                        <div class="client-stats">
+                            <span class="stat">
+                                <i class="fas fa-users"></i>
+                                ${team.members_count || 0} ролей
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update counts
+            const totalRaciEl = document.getElementById('total-raci-matrices');
+            const totalRolesEl = document.getElementById('total-raci-roles');
+            const raciCountEl = document.getElementById('raci-client-count');
+
+            const totalRoles = teams.reduce((sum, team) => sum + (team.members_count || 0), 0);
+
+            if (totalRaciEl) totalRaciEl.textContent = teams.length;
+            if (totalRolesEl) totalRolesEl.textContent = totalRoles;
+            if (raciCountEl) raciCountEl.textContent = teams.length;
+
+        } catch (error) {
+            console.error('❌ Failed to load RACI data:', error);
+        }
+    }
+
+    // Load Salary Analysis data
+    async loadSalaryData() {
+        try {
+            const response = await fetch('/api/teams?with_salary=true');
+            if (!response.ok) throw new Error('Failed to load salary data');
+
+            const data = await response.json();
+            const teams = data.teams || [];
+
+            // Render salary analyses
+            const salaryList = document.getElementById('salary-client-list');
+            if (!salaryList) return;
+
+            if (teams.length === 0) {
+                salaryList.innerHTML = this.getEmptyStateHTML('salary');
+                return;
+            }
+
+            salaryList.innerHTML = teams.map(team => `
+                <div class="client-item" data-client-id="${team.id}" data-module="salary">
+                    <div class="client-avatar">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="client-info">
+                        <div class="client-name">${team.title || 'Без назви'}</div>
+                        <div class="client-meta">Аналіз компенсацій</div>
+                        <div class="client-stats">
+                            <span class="stat">
+                                <i class="fas fa-users"></i>
+                                ${team.members_count || 0} учасників
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update counts
+            const totalAnalysesEl = document.getElementById('total-salary-analyses');
+            const salaryCountEl = document.getElementById('salary-client-count');
+
+            if (totalAnalysesEl) totalAnalysesEl.textContent = teams.length;
+            if (salaryCountEl) salaryCountEl.textContent = teams.length;
+
+            // Calculate average salary
+            const avgSalaryEl = document.getElementById('avg-salary');
+            if (avgSalaryEl) {
+                // This would need actual salary data from the API
+                avgSalaryEl.textContent = '—';
+            }
+
+        } catch (error) {
+            console.error('❌ Failed to load salary data:', error);
+        }
+    }
+
+    // Select client/item
+    selectClient(clientId, module) {
+        console.log(`✅ Selected client ${clientId} in ${module} module`);
+
+        // Remove previous selection
+        document.querySelectorAll('.client-item.selected').forEach(item => {
+            item.classList.remove('selected');
+        });
+
+        // Add selection to clicked item
+        const selectedItem = document.querySelector(`.client-item[data-client-id="${clientId}"][data-module="${module}"]`);
+        if (selectedItem) {
+            selectedItem.classList.add('selected');
+        }
+
+        // Trigger appropriate action based on module
+        if (window.app) {
+            switch (module) {
+                case 'negotiations':
+                    if (window.app.selectClient) {
+                        window.app.selectClient(clientId);
+                    }
+                    break;
+                case 'teamhub':
+                    if (window.app.selectTeam) {
+                        window.app.selectTeam(clientId);
+                    }
+                    break;
+                case 'raci':
+                    if (window.app.loadRaciMatrix) {
+                        window.app.loadRaciMatrix(clientId);
+                    }
+                    break;
+                case 'salary':
+                    if (window.app.loadSalaryAnalysis) {
+                        window.app.loadSalaryAnalysis(clientId);
+                    }
+                    break;
+            }
+        }
+    }
+
+    // Handle import
+    handleImport(module) {
+        console.log(`📥 Import requested for ${module} module`);
+
+        // Create file input dynamically
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = module === 'raci' || module === 'salary' ? '.csv,.xlsx,.xls' : '.txt,.pdf,.doc,.docx';
+
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            console.log(`📁 File selected: ${file.name}`);
+
+            // Here you would implement the actual import logic
+            // For now, just show a notification
+            if (window.showNotification) {
+                window.showNotification(`Імпорт файлу "${file.name}" для модуля ${module}`, 'info');
+            }
+        };
+
+        input.click();
     }
 }
 
