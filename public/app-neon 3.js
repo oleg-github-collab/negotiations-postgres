@@ -70,25 +70,6 @@
             steps: [],
             modules: {}
         },
-        archive: {
-            analyses: [],
-            filters: {
-                search: '',
-                person_filter: '',
-                analysis_type: '',
-                date_from: '',
-                date_to: ''
-            },
-            pagination: {
-                page: 1,
-                limit: 20,
-                total: 0,
-                totalPages: 1
-            },
-            available_persons: [],
-            available_types: [],
-            loading: false
-        },
         ui: {
             leftSidebarCollapsed: false,
             rightSidebarCollapsed: false,
@@ -1142,7 +1123,28 @@
     }
 
     // ===== Layout Management =====
-    // toggleSidebar is defined later in the file
+    function toggleSidebar(side) {
+        // Left sidebar is now always visible, only right sidebar can be toggled
+        if (side === 'right') {
+            const sidebar = elements.sidebarRight;
+            state.ui.rightSidebarCollapsed = !state.ui.rightSidebarCollapsed;
+            sidebar.classList.toggle('collapsed', state.ui.rightSidebarCollapsed);
+            
+            // Update main content margin
+            if (window.innerWidth > 1024) {
+                elements.mainContent.style.marginRight = state.ui.rightSidebarCollapsed ? '0' : 'var(--right-panel-width)';
+            }
+            
+            // Update toggle icon
+            const icon = elements.sidebarRightToggle?.querySelector('i');
+            if (icon) {
+                icon.className = state.ui.rightSidebarCollapsed ? 'fas fa-chevron-left' : 'fas fa-chevron-right';
+            }
+            
+            // Save state
+            localStorage.setItem('teampulse-ui-state', JSON.stringify(state.ui));
+        }
+    }
 
     function showSection(sectionId) {
         // Smart navigation: check if user has required data
@@ -6480,281 +6482,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
         }
     }
 
-    // ===== Archive Management =====
-    async function loadArchive(clientId) {
-        if (!clientId) {
-            document.getElementById('archive-section').style.display = 'none';
-            return;
-        }
-
-        state.archive.loading = true;
-        updateArchiveUI();
-
-        try {
-            const params = new URLSearchParams({
-                limit: state.archive.pagination.limit,
-                offset: (state.archive.pagination.page - 1) * state.archive.pagination.limit,
-                ...state.archive.filters
-            });
-
-            const response = await fetch(`/api/negotiations/client/${clientId}/archive?${params}`);
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Помилка завантаження архіву');
-            }
-
-            state.archive.analyses = data.analyses || [];
-            state.archive.available_persons = data.filters?.available_persons || [];
-            state.archive.available_types = data.filters?.available_types || [];
-            state.archive.pagination.total = data.meta?.total || 0;
-            state.archive.pagination.totalPages = Math.ceil(state.archive.pagination.total / state.archive.pagination.limit);
-
-            updateArchiveFilters();
-            renderArchiveList();
-            updateArchivePagination();
-            document.getElementById('archive-section').style.display = 'block';
-
-        } catch (error) {
-            console.error('Archive loading error:', error);
-            showNotification(error.message || 'Помилка завантаження архіву', 'error');
-        } finally {
-            state.archive.loading = false;
-            updateArchiveUI();
-        }
-    }
-
-    function updateArchiveFilters() {
-        const personFilter = document.getElementById('archive-person-filter');
-        const typeFilter = document.getElementById('archive-type-filter');
-
-        // Update person filter options
-        personFilter.innerHTML = '<option value="">Всі особи</option>';
-        state.archive.available_persons.forEach(person => {
-            const option = document.createElement('option');
-            option.value = person;
-            option.textContent = person;
-            option.selected = person === state.archive.filters.person_filter;
-            personFilter.appendChild(option);
-        });
-
-        // Update type filter options
-        typeFilter.innerHTML = '<option value="">Всі типи</option>';
-        state.archive.available_types.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type === 'manual' ? 'Ручний ввід' : type;
-            option.selected = type === state.archive.filters.analysis_type;
-            typeFilter.appendChild(option);
-        });
-
-        // Set current filter values
-        document.getElementById('archive-search').value = state.archive.filters.search;
-        document.getElementById('archive-date-from').value = state.archive.filters.date_from;
-        document.getElementById('archive-date-to').value = state.archive.filters.date_to;
-    }
-
-    function renderArchiveList() {
-        const archiveList = document.getElementById('archive-list');
-        const archiveCount = document.getElementById('archive-count');
-
-        archiveCount.textContent = state.archive.pagination.total;
-
-        if (state.archive.analyses.length === 0) {
-            archiveList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="fas fa-archive"></i>
-                    </div>
-                    <p>Архів аналізів порожній</p>
-                </div>
-            `;
-            return;
-        }
-
-        archiveList.innerHTML = state.archive.analyses.map(analysis => {
-            const date = new Date(analysis.created_at).toLocaleDateString('uk-UA');
-            const time = new Date(analysis.created_at).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
-
-            return `
-                <div class="archive-item" data-analysis-id="${analysis.id}">
-                    <div class="archive-item-header">
-                        <div class="archive-item-title">
-                            <i class="fas fa-brain"></i>
-                            <span>${analysis.title}</span>
-                        </div>
-                        <div class="archive-item-actions">
-                            <button class="btn-icon" onclick="loadArchiveAnalysis(${analysis.id})" title="Завантажити">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" onclick="deleteArchiveAnalysis(${analysis.id})" title="Видалити">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="archive-item-meta">
-                        <span class="archive-date">
-                            <i class="fas fa-calendar"></i>
-                            ${date} о ${time}
-                        </span>
-                        ${analysis.person_focus ? `
-                            <span class="archive-person">
-                                <i class="fas fa-user"></i>
-                                ${analysis.person_focus}
-                            </span>
-                        ` : ''}
-                        ${analysis.tokens_estimated ? `
-                            <span class="archive-tokens">
-                                <i class="fas fa-coins"></i>
-                                ${analysis.tokens_estimated} токенів
-                            </span>
-                        ` : ''}
-                    </div>
-                    <div class="archive-item-preview">
-                        ${analysis.negotiation_title || 'Без назви переговорів'}
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function updateArchivePagination() {
-        const pagination = document.getElementById('archive-pagination');
-        const pageInfo = document.getElementById('archive-page-info');
-        const prevBtn = document.getElementById('archive-prev-page');
-        const nextBtn = document.getElementById('archive-next-page');
-
-        if (state.archive.pagination.totalPages <= 1) {
-            pagination.style.display = 'none';
-            return;
-        }
-
-        pagination.style.display = 'flex';
-        pageInfo.textContent = `${state.archive.pagination.page} / ${state.archive.pagination.totalPages}`;
-
-        prevBtn.disabled = state.archive.pagination.page === 1;
-        nextBtn.disabled = state.archive.pagination.page === state.archive.pagination.totalPages;
-    }
-
-    function updateArchiveUI() {
-        const archiveList = document.getElementById('archive-list');
-
-        if (state.archive.loading) {
-            archiveList.innerHTML = `
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <p>Завантаження архіву...</p>
-                </div>
-            `;
-        }
-    }
-
-    async function applyArchiveFilters() {
-        state.archive.filters = {
-            search: document.getElementById('archive-search').value.trim(),
-            person_filter: document.getElementById('archive-person-filter').value,
-            analysis_type: document.getElementById('archive-type-filter').value,
-            date_from: document.getElementById('archive-date-from').value,
-            date_to: document.getElementById('archive-date-to').value
-        };
-
-        state.archive.pagination.page = 1;
-        await loadArchive(state.currentClient?.id);
-    }
-
-    function clearArchiveFilters() {
-        state.archive.filters = {
-            search: '',
-            person_filter: '',
-            analysis_type: '',
-            date_from: '',
-            date_to: ''
-        };
-
-        document.getElementById('archive-search').value = '';
-        document.getElementById('archive-person-filter').value = '';
-        document.getElementById('archive-type-filter').value = '';
-        document.getElementById('archive-date-from').value = '';
-        document.getElementById('archive-date-to').value = '';
-
-        state.archive.pagination.page = 1;
-        loadArchive(state.currentClient?.id);
-    }
-
-    async function loadArchiveAnalysis(analysisId) {
-        try {
-            showNotification('Завантаження аналізу...', 'info');
-
-            // Find the analysis in archive
-            const analysis = state.archive.analyses.find(a => a.id === analysisId);
-            if (!analysis) {
-                throw new Error('Аналіз не знайдено');
-            }
-
-            // Set as current analysis and display
-            state.currentAnalysis = {
-                id: analysis.id,
-                title: analysis.title,
-                content: analysis.original_text,
-                highlights: analysis.highlights || [],
-                summary: analysis.summary || {},
-                barometer: analysis.barometer || {},
-                personas: analysis.personas || [],
-                insights: analysis.insights || {},
-                person_focus: analysis.person_focus
-            };
-
-            showAnalysisResults();
-            showNotification('Аналіз завантажено з архіву', 'success');
-
-        } catch (error) {
-            console.error('Archive analysis loading error:', error);
-            showNotification(error.message || 'Помилка завантаження аналізу', 'error');
-        }
-    }
-
-    async function deleteArchiveAnalysis(analysisId) {
-        if (!confirm('Видалити цей аналіз з архіву? Цю дію неможливо скасувати.')) {
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/negotiations/analysis/${analysisId}`, {
-                method: 'DELETE'
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Помилка видалення аналізу');
-            }
-
-            // Reload archive
-            await loadArchive(state.currentClient?.id);
-            showNotification('Аналіз видалено з архіву', 'success');
-
-        } catch (error) {
-            console.error('Archive analysis deletion error:', error);
-            showNotification(error.message || 'Помилка видалення аналізу', 'error');
-        }
-    }
-
-    function navigateArchive(direction) {
-        if (direction === 'prev' && state.archive.pagination.page > 1) {
-            state.archive.pagination.page--;
-        } else if (direction === 'next' && state.archive.pagination.page < state.archive.pagination.totalPages) {
-            state.archive.pagination.page++;
-        }
-
-        loadArchive(state.currentClient?.id);
-    }
-
-    function toggleArchiveFilters() {
-        const filters = document.getElementById('archive-filters');
-        const isVisible = filters.style.display !== 'none';
-        filters.style.display = isVisible ? 'none' : 'block';
-    }
-
     // ===== Global Functions =====
     window.showClientForm = showClientForm;
     window.selectClient = selectClient;
@@ -6784,10 +6511,6 @@ ${rec.comment ? `КОМЕНТАР: ${rec.comment}` : ''}`;
     window.exportRecommendations = exportRecommendations;
     window.showCustomConfirmation = showCustomConfirmation;
     window.closeConfirmationModal = closeConfirmationModal;
-
-    // Archive functions
-    window.loadArchiveAnalysis = loadArchiveAnalysis;
-    window.deleteArchiveAnalysis = deleteArchiveAnalysis;
     
     // ===== Debug Testing Functions =====
     window.testClientFunctions = function() {

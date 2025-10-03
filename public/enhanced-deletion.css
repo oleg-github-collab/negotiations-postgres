@@ -1,7 +1,7 @@
 /* Enhanced Deletion Modal Styles */
 
 .deletion-modal {
-    z-index: 10000;
+    z-index: 9998;
     backdrop-filter: blur(8px);
     background: rgba(0, 0, 0, 0.85);
 }

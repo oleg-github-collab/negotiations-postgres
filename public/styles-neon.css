@@ -652,49 +652,9 @@ body::before {
     border: 2px dashed var(--border);
     border-radius: var(--radius-md);
     padding: var(--spacing-lg);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    align-items: start;
-}
-
-.team-editor-grid.empty {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.team-editor-grid:not(.empty):empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.team-editor-grid .empty-state {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-/* Responsive team editor grid */
-@media (max-width: 1200px) {
-    .team-editor-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .team-editor-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .team-editor-grid .manual-member-card {
-        margin-bottom: 0.5rem;
-    }
 }
 
 .panel-actions {
@@ -2680,7 +2640,7 @@ mark.cognitive {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 9997;
     padding: clamp(1rem, 3vw, 2rem);
     animation: fadeIn 0.4s ease-out;
 }
@@ -4031,7 +3991,7 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10001;
+    z-index: 9996;
     animation: fadeIn 0.3s ease-out;
 }
 
@@ -4595,7 +4555,7 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10001;
+    z-index: 9995;
 }
 
 .login-container {
@@ -4864,7 +4824,7 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 9994;
     animation: fadeIn 0.3s ease-out;
 }
 
@@ -5040,7 +5000,7 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 9993;
     opacity: 0;
     animation: fadeIn 0.3s ease forwards;
 }

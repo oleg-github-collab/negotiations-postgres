@@ -262,6 +262,210 @@ export async function initializeDatabase() {
     await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS risk_level TEXT DEFAULT 'low';`);
     await client.query(`ALTER TABLE negotiation_analyses ADD COLUMN IF NOT EXISTS client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE;`);
 
+    // ====== BEST HIRE MODULE TABLES ======
+
+    // Job positions for clients
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS positions (
+        id BIGSERIAL PRIMARY KEY,
+        client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        department TEXT,
+        seniority_level TEXT,
+        employment_type TEXT DEFAULT 'full-time',
+        location TEXT,
+        is_remote BOOLEAN DEFAULT false,
+        salary_min NUMERIC,
+        salary_max NUMERIC,
+        salary_currency TEXT DEFAULT 'UAH',
+        status TEXT DEFAULT 'open',
+        priority TEXT DEFAULT 'medium',
+        required_skills JSONB DEFAULT '[]'::jsonb,
+        preferred_skills JSONB DEFAULT '[]'::jsonb,
+        responsibilities JSONB DEFAULT '[]'::jsonb,
+        requirements JSONB DEFAULT '[]'::jsonb,
+        benefits JSONB DEFAULT '[]'::jsonb,
+        description TEXT,
+        headcount INTEGER DEFAULT 1,
+        filled_count INTEGER DEFAULT 0,
+        deadline DATE,
+        hiring_manager TEXT,
+        recruiter_assigned TEXT,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // Resumes/Candidates
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS resumes (
+        id BIGSERIAL PRIMARY KEY,
+        position_id BIGINT REFERENCES positions(id) ON DELETE CASCADE,
+        client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
+        candidate_name TEXT NOT NULL,
+        email TEXT,
+        phone TEXT,
+        linkedin_url TEXT,
+        current_position TEXT,
+        current_company TEXT,
+        location TEXT,
+        willing_to_relocate BOOLEAN DEFAULT false,
+        expected_salary_min NUMERIC,
+        expected_salary_max NUMERIC,
+        salary_currency TEXT DEFAULT 'UAH',
+        notice_period_days INTEGER,
+        years_of_experience NUMERIC,
+        skills JSONB DEFAULT '[]'::jsonb,
+        education JSONB DEFAULT '[]'::jsonb,
+        work_history JSONB DEFAULT '[]'::jsonb,
+        certifications JSONB DEFAULT '[]'::jsonb,
+        languages JSONB DEFAULT '[]'::jsonb,
+        resume_text TEXT,
+        resume_file_url TEXT,
+        source_channel TEXT,
+        stage TEXT DEFAULT 'new',
+        rating NUMERIC DEFAULT 0,
+        interviewer_notes JSONB DEFAULT '[]'::jsonb,
+        ai_match_score NUMERIC,
+        ai_analysis JSONB,
+        rejection_reason TEXT,
+        hired_date DATE,
+        start_date DATE,
+        actual_salary NUMERIC,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // Recruiting channels analytics
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS recruiting_channels (
+        id BIGSERIAL PRIMARY KEY,
+        client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
+        channel_name TEXT NOT NULL,
+        channel_type TEXT,
+        cost_per_month NUMERIC DEFAULT 0,
+        cost_currency TEXT DEFAULT 'UAH',
+        candidates_sourced INTEGER DEFAULT 0,
+        candidates_screened INTEGER DEFAULT 0,
+        candidates_interviewed INTEGER DEFAULT 0,
+        candidates_hired INTEGER DEFAULT 0,
+        avg_time_to_hire_days NUMERIC,
+        avg_quality_score NUMERIC,
+        conversion_rate NUMERIC,
+        cost_per_hire NUMERIC,
+        is_active BOOLEAN DEFAULT true,
+        notes TEXT,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // Market salary data and benchmarks
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS market_salaries (
+        id BIGSERIAL PRIMARY KEY,
+        position_title TEXT NOT NULL,
+        seniority_level TEXT,
+        location TEXT,
+        industry TEXT,
+        salary_min NUMERIC,
+        salary_median NUMERIC,
+        salary_max NUMERIC,
+        salary_currency TEXT DEFAULT 'UAH',
+        sample_size INTEGER,
+        data_source TEXT,
+        year INTEGER,
+        quarter INTEGER,
+        skills_required JSONB DEFAULT '[]'::jsonb,
+        remote_allowed BOOLEAN,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // Hiring bottlenecks and blockers
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS hiring_bottlenecks (
+        id BIGSERIAL PRIMARY KEY,
+        client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
+        position_id BIGINT REFERENCES positions(id) ON DELETE SET NULL,
+        bottleneck_type TEXT NOT NULL,
+        severity TEXT DEFAULT 'medium',
+        stage TEXT,
+        description TEXT NOT NULL,
+        impact_description TEXT,
+        affected_positions_count INTEGER DEFAULT 1,
+        days_delayed INTEGER DEFAULT 0,
+        cost_impact NUMERIC DEFAULT 0,
+        cost_currency TEXT DEFAULT 'UAH',
+        identified_by TEXT,
+        status TEXT DEFAULT 'open',
+        resolution_plan TEXT,
+        resolved_at TIMESTAMPTZ,
+        resolution_notes TEXT,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // Interview pipeline and stages
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS interview_stages (
+        id BIGSERIAL PRIMARY KEY,
+        resume_id BIGINT REFERENCES resumes(id) ON DELETE CASCADE,
+        position_id BIGINT REFERENCES positions(id) ON DELETE CASCADE,
+        stage_name TEXT NOT NULL,
+        stage_order INTEGER DEFAULT 1,
+        scheduled_date TIMESTAMPTZ,
+        completed_date TIMESTAMPTZ,
+        interviewer TEXT,
+        status TEXT DEFAULT 'pending',
+        feedback TEXT,
+        rating NUMERIC,
+        decision TEXT,
+        next_steps TEXT,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // Budget tracking for hiring
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS hiring_budgets (
+        id BIGSERIAL PRIMARY KEY,
+        client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
+        budget_year INTEGER NOT NULL,
+        budget_quarter INTEGER,
+        department TEXT,
+        total_budget NUMERIC NOT NULL,
+        budget_currency TEXT DEFAULT 'UAH',
+        spent_amount NUMERIC DEFAULT 0,
+        committed_amount NUMERIC DEFAULT 0,
+        available_amount NUMERIC,
+        headcount_budget INTEGER,
+        headcount_filled INTEGER DEFAULT 0,
+        notes TEXT,
+        metadata JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // Add columns if they don't exist
+    await client.query(`ALTER TABLE positions ADD COLUMN IF NOT EXISTS filled_count INTEGER DEFAULT 0;`);
+    await client.query(`ALTER TABLE positions ADD COLUMN IF NOT EXISTS hiring_manager TEXT;`);
+    await client.query(`ALTER TABLE positions ADD COLUMN IF NOT EXISTS recruiter_assigned TEXT;`);
+    await client.query(`ALTER TABLE resumes ADD COLUMN IF NOT EXISTS ai_match_score NUMERIC;`);
+    await client.query(`ALTER TABLE resumes ADD COLUMN IF NOT EXISTS ai_analysis JSONB;`);
+    await client.query(`ALTER TABLE resumes ADD COLUMN IF NOT EXISTS actual_salary NUMERIC;`);
+
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_analyses_client ON analyses(client_id);
     `);
@@ -299,6 +503,38 @@ export async function initializeDatabase() {
     `);
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_negotiation_analyses_created_at ON negotiation_analyses(created_at DESC);
+    `);
+
+    // Indices for Best Hire tables
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_positions_client ON positions(client_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_positions_status ON positions(status);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_resumes_position ON resumes(position_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_resumes_client ON resumes(client_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_resumes_stage ON resumes(stage);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_recruiting_channels_client ON recruiting_channels(client_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_hiring_bottlenecks_client ON hiring_bottlenecks(client_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_hiring_bottlenecks_position ON hiring_bottlenecks(position_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_interview_stages_resume ON interview_stages(resume_id);
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_hiring_budgets_client ON hiring_budgets(client_id);
     `);
 
     await client.query('COMMIT');

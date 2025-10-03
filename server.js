@@ -25,6 +25,7 @@ import adviceRoutes from './routes/advice.js';
 import teamsRoutes from './routes/teams.js';
 import negotiationsRoutes from './routes/negotiations.js';
 import auditRoutes from './routes/audit.js';
+import bestHireRoutes from './routes/best-hire.js';
 import { requestContext } from './middleware/requestContext.js';
 import { initializeDatabase, get as dbGet, run as dbRun } from './utils/db.js';
 
@@ -211,7 +212,8 @@ app.get(`/api/${API_VERSION}/info`, (req, res) => {
       clients: true,
       negotiations: true,
       advice: true,
-      audit: true
+      audit: true,
+      bestHire: true
     }
   });
 });
@@ -415,6 +417,7 @@ app.use(`/api/${API_VERSION}/teams`, authMiddleware, teamsRoutes);
 app.use(`/api/${API_VERSION}/negotiations`, authMiddleware, negotiationsRoutes);
 app.use(`/api/${API_VERSION}/advice`, authMiddleware, adviceRoutes);
 app.use(`/api/${API_VERSION}/audit`, authMiddleware, auditRoutes);
+app.use(`/api/${API_VERSION}/best-hire`, authMiddleware, bestHireRoutes);
 
 // Legacy API support (backwards compatibility)
 app.use('/api/analyze', authMiddleware, analysisLimiter, analyzeRoutes);
@@ -423,6 +426,7 @@ app.use('/api/teams', authMiddleware, teamsRoutes);
 app.use('/api/negotiations', authMiddleware, negotiationsRoutes);
 app.use('/api/advice', authMiddleware, adviceRoutes);
 app.use('/api/audit', authMiddleware, auditRoutes);
+app.use('/api/best-hire', authMiddleware, bestHireRoutes);
 
 app.get('/favicon.ico', (_req, res) => {
   res.type('image/svg+xml');
