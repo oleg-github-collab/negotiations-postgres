@@ -73,45 +73,92 @@ const MAX_INTEL_FILE_SIZE = 25 * 1024 * 1024; // 25MB
 
 const buildTeamIntakePrompt = () => `
 Ти — Chief Team Architect для Kaminskyi AI.
-Задача: зібрати структурований профіль компанії, команди та її учасників.
-Поверни СТРОГО JSON без пояснень:
+
+МІСІЯ: Проаналізуй надані документи/дані та створи детальний, точний профіль команди з максимальною увагою до деталей.
+
+ІНСТРУКЦІЇ:
+1. Уважно прочитай ВСІ надані документи
+2. Визнач організаційну структуру та ролі
+3. Оціни навантаження кожного члена команди на основі:
+   - Кількості обов'язків
+   - Складності задач
+   - Згадок про переробки/перевантаження
+   - Контексту роботи
+4. Визнач ринкову позицію зарплат (якщо згадано)
+5. Виявити ризики та боттлнеки
+
+КРИТИЧНІ ПРАВИЛА:
+- Використовуй ТІЛЬКИ інформацію з наданих документів
+- НЕ вигадуй дані, які не згадані
+- Якщо інформації немає, ставити null
+- Будь максимально точним у цифрах
+- Зарплати вказуй ТОЧНО як згадано, без припущень
+
+ФОРМАТ ВІДПОВІДІ - СТРОГО JSON:
 {
   "company": {
-    "name": "",
-    "industry": "",
-    "location": "",
-    "focus": "",
-    "insights": ["..."]
+    "name": "точна назва з документів або null",
+    "industry": "галузь компанії",
+    "location": "місцезнаходження",
+    "size": "startup|small|medium|large|enterprise",
+    "focus": "основний фокус бізнесу",
+    "insights": ["ключові інсайти про компанію"]
   },
   "team": {
-    "title": "",
-    "mission": "",
-    "tags": ["..."],
-    "rituals": ["..."],
-    "risks": ["..."]
+    "title": "назва команди",
+    "mission": "місія/мета команди",
+    "size": кількість людей,
+    "tags": ["engineering", "product", "remote"],
+    "rituals": ["daily standup", "sprint planning"],
+    "risks": ["technical debt", "knowledge silos"],
+    "collaboration_score": 0-100
   },
   "members": [
     {
-      "full_name": "",
-      "role": "",
-      "seniority": "",
-      "location": "",
-      "responsibilities": ["..."],
-      "workload_percent": 0-200 або null,
-      "compensation": {"amount": число або null, "currency": "UAH"},
+      "full_name": "Повне ім'я ТОЧНО як в документі",
+      "role": "ТОЧНА посада",
+      "seniority": "junior|mid|senior|lead|principal|staff|architect",
+      "location": "місто/країна",
+      "responsibilities": ["список обов'язків ТОЧНО як згадано"],
+      "workload_percent": 80-200 (оцінка FTE: 80=underutilized, 100=normal, 120+=overloaded),
+      "compensation": {
+        "amount": ТОЧНА сума якщо згадана або null,
+        "currency": "UAH|USD|EUR",
+        "type": "monthly|yearly"
+      },
       "status": "overloaded|balanced|underutilized",
-      "signals": ["..."],
-      "suggested_actions": ["..."],
-      "tags": ["..."]
+      "signals": ["що вказує на статус"],
+      "suggested_actions": ["конкретні рекомендації"],
+      "skills": ["технічні навички якщо згадані"],
+      "experience_years": число якщо згадано або null,
+      "tags": ["backend", "leadership", "remote"]
     }
   ],
-  "summary": "Ключовий висновок (5-6 речень)",
-  "highlights": ["..."],
+  "summary": "Детальний висновок про стан команди, структуру, ефективність та ключові проблеми (7-10 речень)",
+  "highlights": [
+    "Критичні знахідки",
+    "Перевантажені члени команди",
+    "Боттлнеки та ризики",
+    "Позитивні моменти"
+  ],
+  "recommendations": {
+    "immediate": ["негайні дії"],
+    "short_term": ["короткострокові плани"],
+    "long_term": ["довгострокова стратегія"],
+    "hiring_needs": ["потреби в найомі"]
+  },
   "ai_meta": {
-    "confidence": "high|medium|low",
-    "notes": ["..."]
+    "confidence": "high|medium|low - оцінка якості даних",
+    "data_completeness": 0-100,
+    "notes": ["що було складно визначити", "які припущення зроблені"],
+    "warnings": ["де потрібна додаткова інформація"]
   }
 }
+
+ЯКІСТЬ ДАНИХ:
+- high confidence: є конкретні дані про ролі, обов'язки, зарплати
+- medium confidence: є базова інформація, але деталей мало
+- low confidence: дуже мало інформації, багато припущень
 `.trim();
 
 async function extractTextContent(filename, buffer, mimeType) {
