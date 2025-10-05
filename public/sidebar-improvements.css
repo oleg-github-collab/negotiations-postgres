@@ -1,0 +1,266 @@
+/* Sidebar Improvements - Collapsible Right Sidebar & Better Layout */
+
+/* Right Sidebar Toggle Button */
+.sidebar-right .sidebar-toggle {
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 48px;
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 8px 0 0 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: -2px 0 8px rgba(168, 85, 247, 0.2);
+}
+
+.sidebar-right .sidebar-toggle:hover {
+    background: linear-gradient(135deg, #9333ea 0%, #6b21a8 100%);
+    box-shadow: -4px 0 16px rgba(168, 85, 247, 0.4);
+}
+
+.sidebar-right .sidebar-toggle i {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-right.collapsed .sidebar-toggle {
+    left: -24px;
+}
+
+.sidebar-right.collapsed .sidebar-toggle i {
+    transform: rotate(180deg);
+}
+
+/* Smooth sidebar collapse animation */
+.sidebar-right {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Main content adaptation when sidebar collapsed */
+.main-content {
+    transition: margin-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-right: var(--right-panel-width);
+}
+
+.sidebar-right.collapsed ~ .main-content,
+.main-content.sidebar-right-collapsed {
+    margin-right: 0;
+}
+
+/* Better empty states */
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-state .empty-icon {
+    font-size: 48px;
+    color: #a855f7;
+    opacity: 0.3;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.5;
+}
+
+/* Fix overlapping content at bottom */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.tab-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+}
+
+/* Analysis dashboard improvements */
+#analysis-dashboard {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+#analysis-dashboard .content-wrapper {
+    flex: 1;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Remove fixed positioning that causes overlap */
+.bottom-stats,
+.footer-content {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    margin-top: 40px;
+    padding: 24px;
+    background: rgba(30, 27, 75, 0.6);
+    border-radius: 16px;
+}
+
+/* Better spacing for results section */
+.results-section {
+    margin-top: 32px;
+    margin-bottom: 80px;
+    padding: 24px;
+}
+
+/* Improve mobile responsiveness */
+@media (max-width: 1024px) {
+    .sidebar-right .sidebar-toggle {
+        display: flex;
+    }
+
+    .main-content {
+        margin-right: 0;
+    }
+
+    .sidebar-right:not(.collapsed) {
+        box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-right .sidebar-toggle {
+        left: 12px;
+        top: 12px;
+        position: fixed;
+        transform: none;
+        z-index: 201;
+        border-radius: 8px;
+    }
+
+    .sidebar-right.collapsed .sidebar-toggle {
+        left: 12px;
+    }
+}
+
+/* Improved button styles */
+.btn-primary,
+.btn-secondary,
+.btn-tertiary {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary::before,
+.btn-secondary::before,
+.btn-tertiary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before,
+.btn-secondary:hover::before,
+.btn-tertiary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-tertiary:active {
+    transform: scale(0.98);
+}
+
+/* Loading state improvements */
+.btn-loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-loading i.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Better focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid #a855f7;
+    outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+.sidebar-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: rgba(30, 27, 75, 0.3);
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.5);
+}
+
+/* Fix z-index issues */
+.sidebar-left {
+    z-index: 100;
+}
+
+.main-content {
+    z-index: 50;
+}
+
+.sidebar-right {
+    z-index: 99;
+}
+
+.top-nav {
+    z-index: 150;
+}
+
+/* Better modal positioning */
+.modal {
+    z-index: 1000;
+}
+
+.modal-backdrop {
+    z-index: 999;
+}
