@@ -18,6 +18,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/ultra-optimized.css">
     <link rel="stylesheet" href="/app-core.css">
+    <link rel="stylesheet" href="/modals.css">
 
     <meta name="description" content="AI-powered negotiation analysis and team analytics platform">
     <meta name="theme-color" content="#667eea">
@@ -636,9 +637,21 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
+    <!-- Include Modals -->
+    <script>
+        fetch('/modals.html')
+            .then(response => response.text())
+            .then(html => {
+                const div = document.createElement('div');
+                div.innerHTML = html;
+                document.body.appendChild(div);
+            });
+    </script>
+
     <!-- Scripts -->
     <script src="/ultra-smooth.js"></script>
     <script src="/app-core.js"></script>
+    <script src="/modals.js"></script>
     <script src="/auth.js"></script>
 </body>
 </html>

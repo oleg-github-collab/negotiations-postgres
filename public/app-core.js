@@ -270,6 +270,16 @@
         convertBtn.addEventListener('click', () => this.convertToClient());
       }
 
+      // Notes button
+      const notesBtn = $('#prospect-notes-btn');
+      if (notesBtn) {
+        notesBtn.addEventListener('click', () => {
+          if (AppState.selectedProspect && window.NotesManager) {
+            window.NotesManager.open(AppState.selectedProspect.id, AppState.selectedProspect.name);
+          }
+        });
+      }
+
       // Barometer reset
       this.resetBarometer();
     },
@@ -595,8 +605,9 @@
     },
 
     createProspect() {
-      showToast('Відкриття форми створення клієнта...', 'info');
-      // TODO: Open modal for creating new prospect
+      if (window.ModalManager) {
+        window.ModalManager.open('create-prospect-modal');
+      }
     },
 
     createAnalysis() {
@@ -604,13 +615,15 @@
         showToast('Спочатку виберіть клієнта', 'warning');
         return;
       }
-      showToast('Відкриття форми створення аналізу...', 'info');
-      // TODO: Open analysis creation modal
+      if (window.ModalManager) {
+        window.ModalManager.open('create-analysis-modal');
+      }
     },
 
     viewAnalysis(id) {
-      showToast(`Перегляд аналізу #${id}`, 'info');
-      // TODO: Open analysis view modal
+      if (window.ModalManager) {
+        window.ModalManager.open('analysis-detail-modal', id);
+      }
     },
 
     convertToClient() {
@@ -618,8 +631,9 @@
         showToast('Спочатку виберіть клієнта', 'warning');
         return;
       }
-      showToast('Відкриття форми конвертації в активного клієнта...', 'info');
-      // TODO: Open conversion modal
+      if (window.ModalManager) {
+        window.ModalManager.open('convert-modal', AppState.selectedProspect);
+      }
     }
   };
 
@@ -784,8 +798,9 @@
     },
 
     createClient() {
-      showToast('Відкриття форми створення клієнта...', 'info');
-      // TODO: Open client creation modal
+      if (window.ModalManager) {
+        window.ModalManager.open('create-client-modal');
+      }
     }
   };
 

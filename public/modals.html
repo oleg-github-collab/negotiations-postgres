@@ -1,0 +1,606 @@
+<!-- ============================================
+     MODALS - TeamPulse Turbo
+     Всі модальні вікна додатку
+     ============================================ -->
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop" id="modal-backdrop" style="display: none;"></div>
+
+<!-- ============================================
+     CREATE PROSPECT MODAL
+     ============================================ -->
+<div class="modal" id="create-prospect-modal" style="display: none;">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-briefcase"></i>
+                Новий потенційний клієнт
+            </h2>
+            <button class="modal-close" id="close-prospect-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="create-prospect-form" class="modal-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prospect-name">
+                        <i class="fas fa-building"></i>
+                        Назва компанії *
+                    </label>
+                    <input type="text" id="prospect-name" required placeholder="Назва компанії">
+                </div>
+
+                <div class="form-group">
+                    <label for="prospect-contact">
+                        <i class="fas fa-user"></i>
+                        Контактна особа
+                    </label>
+                    <input type="text" id="prospect-contact" placeholder="Ім'я та прізвище">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prospect-email">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input type="email" id="prospect-email" placeholder="email@company.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="prospect-phone">
+                        <i class="fas fa-phone"></i>
+                        Телефон
+                    </label>
+                    <input type="tel" id="prospect-phone" placeholder="+380...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="prospect-industry">
+                    <i class="fas fa-industry"></i>
+                    Галузь
+                </label>
+                <select id="prospect-industry">
+                    <option value="">Оберіть галузь</option>
+                    <option value="IT">IT / Технології</option>
+                    <option value="Finance">Фінанси</option>
+                    <option value="Healthcare">Охорона здоров'я</option>
+                    <option value="Retail">Роздрібна торгівля</option>
+                    <option value="Manufacturing">Виробництво</option>
+                    <option value="Education">Освіта</option>
+                    <option value="Other">Інше</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="prospect-notes">
+                    <i class="fas fa-sticky-note"></i>
+                    Нотатки
+                </label>
+                <textarea id="prospect-notes" rows="4" placeholder="Додаткова інформація про клієнта..."></textarea>
+            </div>
+        </form>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancel-prospect-btn">
+                <i class="fas fa-times"></i>
+                Скасувати
+            </button>
+            <button type="submit" form="create-prospect-form" class="btn btn-primary">
+                <i class="fas fa-check"></i>
+                Створити клієнта
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     CREATE ANALYSIS MODAL
+     ============================================ -->
+<div class="modal" id="create-analysis-modal" style="display: none;">
+    <div class="modal-content modal-xl">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-chart-line"></i>
+                Новий аналіз переговорів
+            </h2>
+            <button class="modal-close" id="close-analysis-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="create-analysis-form" class="modal-body">
+            <div class="form-group">
+                <label for="analysis-title">
+                    <i class="fas fa-heading"></i>
+                    Назва аналізу *
+                </label>
+                <input type="text" id="analysis-title" required placeholder="Назва переговорної сесії">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="analysis-date">
+                        <i class="fas fa-calendar"></i>
+                        Дата переговорів
+                    </label>
+                    <input type="date" id="analysis-date">
+                </div>
+
+                <div class="form-group">
+                    <label for="analysis-participants">
+                        <i class="fas fa-users"></i>
+                        Учасники (через кому)
+                    </label>
+                    <input type="text" id="analysis-participants" placeholder="Іван, Марія, Петро">
+                </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="upload-section">
+                <div class="upload-tabs">
+                    <button type="button" class="upload-tab active" data-tab="text">
+                        <i class="fas fa-keyboard"></i>
+                        Текст
+                    </button>
+                    <button type="button" class="upload-tab" data-tab="file">
+                        <i class="fas fa-file-upload"></i>
+                        Файл
+                    </button>
+                    <button type="button" class="upload-tab" data-tab="image">
+                        <i class="fas fa-image"></i>
+                        Зображення
+                    </button>
+                </div>
+
+                <!-- Text Input -->
+                <div class="upload-content active" id="upload-text">
+                    <label>
+                        <i class="fas fa-comments"></i>
+                        Текст переговорів *
+                    </label>
+                    <textarea id="negotiation-text" rows="12" required
+                              placeholder="Вставте текст переговорів тут...&#10;&#10;Підтримується форматування:&#10;Особа 1: Текст&#10;Особа 2: Текст&#10;..."></textarea>
+                    <div class="upload-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Підказка: Використовуйте формат "Ім'я: Текст" для кращого розпізнавання
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div class="upload-content" id="upload-file">
+                    <div class="file-upload-area" id="file-drop-area">
+                        <input type="file" id="file-input" accept=".txt,.pdf,.doc,.docx,.json" hidden>
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                        </div>
+                        <h3>Перетягніть файл сюди</h3>
+                        <p>або</p>
+                        <button type="button" class="btn btn-secondary" id="browse-file-btn">
+                            <i class="fas fa-folder-open"></i>
+                            Обрати файл
+                        </button>
+                        <div class="upload-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Підтримуються: TXT, PDF, DOC, DOCX, JSON (до 10 МБ)
+                        </div>
+                    </div>
+                    <div class="upload-preview" id="file-preview" style="display: none;">
+                        <div class="preview-header">
+                            <div class="file-info">
+                                <i class="fas fa-file-alt fa-2x"></i>
+                                <div>
+                                    <h4 id="file-name">filename.txt</h4>
+                                    <span id="file-size">1.2 MB</span>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" id="remove-file-btn">
+                                <i class="fas fa-trash"></i>
+                                Видалити
+                            </button>
+                        </div>
+                        <div class="preview-content" id="file-content-preview"></div>
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="upload-content" id="upload-image">
+                    <div class="file-upload-area" id="image-drop-area">
+                        <input type="file" id="image-input" accept="image/*" multiple hidden>
+                        <div class="upload-icon">
+                            <i class="fas fa-images fa-3x"></i>
+                        </div>
+                        <h3>Перетягніть зображення сюди</h3>
+                        <p>або</p>
+                        <button type="button" class="btn btn-secondary" id="browse-image-btn">
+                            <i class="fas fa-folder-open"></i>
+                            Обрати зображення
+                        </button>
+                        <div class="upload-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Підтримуються: JPG, PNG, WebP (до 5 МБ кожне). OpenAI Vision API
+                        </div>
+                    </div>
+                    <div class="upload-preview" id="image-preview" style="display: none;">
+                        <div class="preview-header">
+                            <h4>
+                                <i class="fas fa-images"></i>
+                                Завантажені зображення
+                            </h4>
+                            <button type="button" class="btn btn-secondary btn-sm" id="remove-all-images-btn">
+                                <i class="fas fa-trash"></i>
+                                Видалити всі
+                            </button>
+                        </div>
+                        <div class="images-grid" id="images-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Options -->
+            <div class="analysis-options">
+                <h3>
+                    <i class="fas fa-sliders-h"></i>
+                    Налаштування аналізу
+                </h3>
+                <div class="options-grid">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="detect-manipulation" checked>
+                        <span>Виявляти маніпуляції</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="detect-bias" checked>
+                        <span>Виявляти когнітивні упередження</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="detect-fallacies" checked>
+                        <span>Виявляти логічні помилки</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="detect-pressure" checked>
+                        <span>Виявляти тиск та загрози</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="sentiment-analysis">
+                        <span>Аналіз тональності</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="generate-recommendations" checked>
+                        <span>Генерувати рекомендації</span>
+                    </label>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancel-analysis-btn">
+                <i class="fas fa-times"></i>
+                Скасувати
+            </button>
+            <button type="submit" form="create-analysis-form" class="btn btn-primary" id="submit-analysis-btn">
+                <i class="fas fa-magic"></i>
+                Створити аналіз
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     NOTES MODAL
+     ============================================ -->
+<div class="modal" id="notes-modal" style="display: none;">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-sticky-note"></i>
+                Замітки: <span id="notes-client-name">Клієнт</span>
+            </h2>
+            <button class="modal-close" id="close-notes-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body notes-container">
+            <div class="notes-toolbar">
+                <button type="button" class="btn btn-primary btn-sm" id="add-note-btn">
+                    <i class="fas fa-plus"></i>
+                    Додати замітку
+                </button>
+                <div class="notes-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="notes-search" placeholder="Пошук в замітках...">
+                </div>
+            </div>
+
+            <div class="notes-list" id="notes-list">
+                <!-- Dynamic notes -->
+                <div class="empty-state">
+                    <i class="fas fa-sticky-note fa-3x"></i>
+                    <p>Немає заміток</p>
+                </div>
+            </div>
+
+            <!-- New Note Form -->
+            <form id="new-note-form" class="note-form" style="display: none;">
+                <textarea id="new-note-text" rows="5" placeholder="Введіть текст замітки..." required></textarea>
+                <div class="note-form-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" id="cancel-note-btn">
+                        Скасувати
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-save"></i>
+                        Зберегти
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     CONVERT TO CLIENT MODAL
+     ============================================ -->
+<div class="modal" id="convert-modal" style="display: none;">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-arrow-right"></i>
+                Конвертувати в активного клієнта
+            </h2>
+            <button class="modal-close" id="close-convert-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="convert-form" class="modal-body">
+            <div class="info-box info-box-primary">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Конвертація клієнта</strong>
+                    <p>Вся інформація з переговорів буде перенесена. Додайте дані про команду для повного профілю.</p>
+                </div>
+            </div>
+
+            <!-- Existing Data Preview -->
+            <div class="data-preview">
+                <h3>
+                    <i class="fas fa-check-circle"></i>
+                    Наявна інформація
+                </h3>
+                <div class="preview-grid">
+                    <div class="preview-item">
+                        <label>Назва компанії:</label>
+                        <span id="convert-company-name">—</span>
+                    </div>
+                    <div class="preview-item">
+                        <label>Контакт:</label>
+                        <span id="convert-contact">—</span>
+                    </div>
+                    <div class="preview-item">
+                        <label>Email:</label>
+                        <span id="convert-email">—</span>
+                    </div>
+                    <div class="preview-item">
+                        <label>Кількість аналізів:</label>
+                        <span id="convert-analyses-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Data -->
+            <div class="form-section">
+                <h3>
+                    <i class="fas fa-plus-circle"></i>
+                    Додаткова інформація
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="convert-type">
+                            <i class="fas fa-tag"></i>
+                            Тип клієнта *
+                        </label>
+                        <select id="convert-type" required>
+                            <option value="">Оберіть тип</option>
+                            <option value="enterprise">Enterprise</option>
+                            <option value="mid-market">Mid-Market</option>
+                            <option value="startup">Startup</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="convert-team-size">
+                            <i class="fas fa-users"></i>
+                            Розмір команди *
+                        </label>
+                        <input type="number" id="convert-team-size" required min="1" placeholder="Кількість співробітників">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-upload"></i>
+                        Завантажити дані команди (опціонально)
+                    </label>
+                    <div class="file-upload-mini">
+                        <input type="file" id="convert-team-data" accept=".json,.csv,.xlsx,.pdf,image/*" multiple hidden>
+                        <button type="button" class="btn btn-secondary btn-sm" id="upload-team-data-btn">
+                            <i class="fas fa-folder-open"></i>
+                            Обрати файли
+                        </button>
+                        <span class="file-hint">JSON, CSV, Excel, PDF або фото структури команди</span>
+                    </div>
+                    <div id="team-files-preview" class="files-preview"></div>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancel-convert-btn">
+                <i class="fas fa-times"></i>
+                Скасувати
+            </button>
+            <button type="submit" form="convert-form" class="btn btn-success">
+                <i class="fas fa-check"></i>
+                Конвертувати клієнта
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     CREATE ACTIVE CLIENT MODAL
+     ============================================ -->
+<div class="modal" id="create-client-modal" style="display: none;">
+    <div class="modal-content modal-xl">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-building"></i>
+                Новий активний клієнт
+            </h2>
+            <button class="modal-close" id="close-client-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="create-client-form" class="modal-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="client-name">
+                        <i class="fas fa-building"></i>
+                        Назва компанії *
+                    </label>
+                    <input type="text" id="client-name" required placeholder="Назва компанії">
+                </div>
+
+                <div class="form-group">
+                    <label for="client-type">
+                        <i class="fas fa-tag"></i>
+                        Тип клієнта *
+                    </label>
+                    <select id="client-type" required>
+                        <option value="">Оберіть тип</option>
+                        <option value="enterprise">Enterprise</option>
+                        <option value="mid-market">Mid-Market</option>
+                        <option value="startup">Startup</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="client-contact">
+                        <i class="fas fa-user"></i>
+                        Контактна особа
+                    </label>
+                    <input type="text" id="client-contact" placeholder="Ім'я та прізвище">
+                </div>
+
+                <div class="form-group">
+                    <label for="client-team-size">
+                        <i class="fas fa-users"></i>
+                        Розмір команди *
+                    </label>
+                    <input type="number" id="client-team-size" required min="1" placeholder="Кількість співробітників">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-database"></i>
+                    Завантажити дані команди
+                </label>
+                <div class="upload-tabs">
+                    <button type="button" class="upload-tab active" data-tab="manual">
+                        <i class="fas fa-keyboard"></i>
+                        Ввести вручну
+                    </button>
+                    <button type="button" class="upload-tab" data-tab="upload">
+                        <i class="fas fa-upload"></i>
+                        Завантажити файли
+                    </button>
+                </div>
+
+                <div class="upload-content active" id="manual-entry">
+                    <textarea id="client-team-data-manual" rows="8"
+                              placeholder="Введіть дані команди у форматі JSON або текст...&#10;&#10;Приклад:&#10;{&#10;  &quot;employees&quot;: [&#10;    { &quot;name&quot;: &quot;Іван&quot;, &quot;position&quot;: &quot;Manager&quot;, &quot;salary&quot;: 50000 }&#10;  ]&#10;}"></textarea>
+                </div>
+
+                <div class="upload-content" id="file-upload-client">
+                    <div class="file-upload-area" id="client-files-drop">
+                        <input type="file" id="client-files-input" accept=".json,.csv,.xlsx,.pdf,image/*" multiple hidden>
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                        </div>
+                        <h3>Перетягніть файли сюди</h3>
+                        <p>або</p>
+                        <button type="button" class="btn btn-secondary" id="browse-client-files-btn">
+                            <i class="fas fa-folder-open"></i>
+                            Обрати файли
+                        </button>
+                        <div class="upload-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Підтримуються: JSON, CSV, Excel, PDF, зображення. AI автоматично розпізнає структуру.
+                        </div>
+                    </div>
+                    <div id="client-files-preview-area" class="files-preview"></div>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancel-client-btn">
+                <i class="fas fa-times"></i>
+                Скасувати
+            </button>
+            <button type="submit" form="create-client-form" class="btn btn-primary">
+                <i class="fas fa-check"></i>
+                Створити клієнта
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     ANALYSIS DETAIL MODAL
+     ============================================ -->
+<div class="modal" id="analysis-detail-modal" style="display: none;">
+    <div class="modal-content modal-xl">
+        <div class="modal-header">
+            <h2 id="analysis-detail-title">
+                <i class="fas fa-chart-line"></i>
+                Аналіз переговорів
+            </h2>
+            <button class="modal-close" id="close-analysis-detail-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body analysis-detail-body">
+            <!-- Loading State -->
+            <div class="loading-state" id="analysis-loading">
+                <div class="spinner"></div>
+                <p>Завантаження аналізу...</p>
+            </div>
+
+            <!-- Analysis Content -->
+            <div id="analysis-detail-content" style="display: none;">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="export-analysis-btn">
+                <i class="fas fa-download"></i>
+                Експортувати
+            </button>
+            <button type="button" class="btn btn-secondary" id="close-analysis-detail-btn">
+                <i class="fas fa-times"></i>
+                Закрити
+            </button>
+        </div>
+    </div>
+</div>
