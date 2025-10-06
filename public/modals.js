@@ -733,28 +733,34 @@
         e.preventDefault();
 
         const data = {
-          name: $('#prospect-name').value,
-          contact: $('#prospect-contact').value,
+          company: $('#prospect-name').value,
+          negotiator: $('#prospect-contact').value,
           email: $('#prospect-email').value,
           phone: $('#prospect-phone').value,
-          industry: $('#prospect-industry').value,
-          notes: $('#prospect-notes').value
+          sector: $('#prospect-industry').value,
+          company_size: $('#prospect-company-size')?.value,
+          negotiation_type: $('#prospect-negotiation-type')?.value || 'sales',
+          deal_value: $('#prospect-deal-value')?.value,
+          goal: $('#prospect-goals')?.value,
+          notes: $('#prospect-notes')?.value
         };
 
         try {
-          const prospect = await apiCall('/negotiations/prospects', {
+          const result = await apiCall('/prospects', {
             method: 'POST',
             body: JSON.stringify(data)
           });
 
-          showToast('Клієнта створено', 'success');
+          showToast('Потенційного клієнта створено', 'success');
           ModalManager.close('create-prospect-modal');
+          form.reset();
 
-          // Reload prospects list
-          if (window.NegotiationsModule) {
-            window.NegotiationsModule.loadProspects();
+          // Reload prospects list if function exists
+          if (window.loadProspects) {
+            window.loadProspects();
           }
         } catch (error) {
+          console.error('Error creating prospect:', error);
           showToast('Помилка створення клієнта', 'error');
         }
       });
@@ -973,15 +979,17 @@
 
   // Helper functions
   window.apiCall = async function(endpoint, options = {}) {
-    const token = localStorage.getItem('adminToken');
     const defaultOptions = {
       headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include' // Include cookies for auth
     };
 
-    const response = await fetch(`/api${endpoint}`, {
+    // Add /api/v1 prefix if not present
+    const url = endpoint.startsWith('/api') ? endpoint : `/api/v1${endpoint}`;
+
+    const response = await fetch(url, {
       ...defaultOptions,
       ...options,
       headers: {

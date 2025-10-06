@@ -21,6 +21,8 @@ import { validateSecurityHeaders } from './middleware/validators.js';
 
 import analyzeRoutes from './routes/analyze.js';
 import clientsRoutes from './routes/clients.js';
+import prospectsRoutes from './routes/prospects.js';
+import searchRoutes from './routes/search.js';
 import adviceRoutes from './routes/advice.js';
 import teamsRoutes from './routes/teams.js';
 import negotiationsRoutes from './routes/negotiations.js';
@@ -413,6 +415,8 @@ app.post('/api/admin/cleanup-database', authMiddleware, async (req, res) => {
 // Versioned API Routes with authentication middleware
 app.use(`/api/${API_VERSION}/analyze`, authMiddleware, analysisLimiter, analyzeRoutes);
 app.use(`/api/${API_VERSION}/clients`, authMiddleware, clientsRoutes);
+app.use(`/api/${API_VERSION}/prospects`, authMiddleware, prospectsRoutes);
+app.use(`/api/${API_VERSION}/search`, authMiddleware, searchRoutes);
 app.use(`/api/${API_VERSION}/teams`, authMiddleware, teamsRoutes);
 app.use(`/api/${API_VERSION}/negotiations`, authMiddleware, negotiationsRoutes);
 app.use(`/api/${API_VERSION}/advice`, authMiddleware, adviceRoutes);
@@ -422,6 +426,8 @@ app.use(`/api/${API_VERSION}/best-hire`, authMiddleware, bestHireRoutes);
 // Legacy API support (backwards compatibility)
 app.use('/api/analyze', authMiddleware, analysisLimiter, analyzeRoutes);
 app.use('/api/clients', authMiddleware, clientsRoutes);
+app.use('/api/prospects', authMiddleware, prospectsRoutes);
+app.use('/api/search', authMiddleware, searchRoutes);
 app.use('/api/teams', authMiddleware, teamsRoutes);
 app.use('/api/negotiations', authMiddleware, negotiationsRoutes);
 app.use('/api/advice', authMiddleware, adviceRoutes);
