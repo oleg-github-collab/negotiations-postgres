@@ -604,3 +604,238 @@
         </div>
     </div>
 </div>
+
+<!-- ============================================
+     ADD ACTIVE CLIENT MODAL
+     ============================================ -->
+<div class="modal" id="add-client-modal" style="display: none;">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-users-cog"></i>
+                Додати активного клієнта
+            </h2>
+            <button class="modal-close" onclick="closeModal('add-client-modal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="add-client-form" class="modal-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="new-client-company">
+                        <i class="fas fa-building"></i>
+                        Назва компанії *
+                    </label>
+                    <input type="text" id="new-client-company" required placeholder="Назва компанії">
+                </div>
+
+                <div class="form-group">
+                    <label for="new-client-negotiator">
+                        <i class="fas fa-user"></i>
+                        Відповідальний менеджер
+                    </label>
+                    <input type="text" id="new-client-negotiator" placeholder="Ім'я менеджера">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="new-client-sector">
+                        <i class="fas fa-briefcase"></i>
+                        Сфера діяльності
+                    </label>
+                    <input type="text" id="new-client-sector" placeholder="IT, Finance, Healthcare...">
+                </div>
+
+                <div class="form-group">
+                    <label for="new-client-team-size">
+                        <i class="fas fa-users"></i>
+                        Розмір команди
+                    </label>
+                    <input type="number" id="new-client-team-size" min="1" placeholder="5">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="new-client-goal">
+                    <i class="fas fa-bullseye"></i>
+                    Основні цілі співпраці
+                </label>
+                <textarea id="new-client-goal" rows="3" placeholder="Опишіть цілі та завдання клієнта..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="new-client-notes">
+                    <i class="fas fa-sticky-note"></i>
+                    Додаткові примітки
+                </label>
+                <textarea id="new-client-notes" rows="3" placeholder="Будь-які важливі деталі..."></textarea>
+            </div>
+        </form>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('add-client-modal')">
+                <i class="fas fa-times"></i>
+                Скасувати
+            </button>
+            <button type="submit" form="add-client-form" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                Додати клієнта
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     CLIENT ONBOARDING MODAL (After Conversion)
+     ============================================ -->
+<div class="modal" id="onboarding-modal" style="display: none;">
+    <div class="modal-content modal-xl">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-rocket"></i>
+                Вітаємо! Клієнт активовано
+            </h2>
+            <button class="modal-close" onclick="closeModal('onboarding-modal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="onboarding-progress">
+                <div class="onboarding-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Базова інформація</div>
+                </div>
+                <div class="onboarding-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Створити команду</div>
+                </div>
+                <div class="onboarding-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Налаштування</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Basic Info -->
+            <div class="onboarding-content active" data-content="1">
+                <div class="onboarding-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Основна інформація про клієнта</h3>
+                    <p>Перегляньте та підтвердьте дані активного клієнта</p>
+                </div>
+
+                <div class="client-info-summary" id="onboarding-client-info">
+                    <!-- Dynamic client info -->
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-tags"></i>
+                        Додати теги
+                    </label>
+                    <input type="text" id="onboarding-tags" placeholder="Наприклад: Enterprise, High-Priority, Tech">
+                    <small>Розділіть теги комами</small>
+                </div>
+            </div>
+
+            <!-- Step 2: Create Team -->
+            <div class="onboarding-content" data-content="2">
+                <div class="onboarding-header">
+                    <i class="fas fa-users"></i>
+                    <h3>Створити команду для клієнта</h3>
+                    <p>Додайте учасників команди та розподіліть ролі</p>
+                </div>
+
+                <div class="team-builder">
+                    <div class="form-group">
+                        <label for="onboarding-team-title">
+                            <i class="fas fa-heading"></i>
+                            Назва команди
+                        </label>
+                        <input type="text" id="onboarding-team-title" placeholder="Основна команда">
+                    </div>
+
+                    <div class="team-members-list" id="onboarding-team-members">
+                        <!-- Dynamic team members -->
+                    </div>
+
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="Onboarding.addTeamMember()">
+                        <i class="fas fa-user-plus"></i>
+                        Додати учасника
+                    </button>
+                </div>
+
+                <div class="onboarding-actions">
+                    <button type="button" class="btn btn-secondary" onclick="Onboarding.skipStep()">
+                        <i class="fas fa-forward"></i>
+                        Пропустити
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Setup -->
+            <div class="onboarding-content" data-content="3">
+                <div class="onboarding-header">
+                    <i class="fas fa-cog"></i>
+                    <h3>Налаштування робочого процесу</h3>
+                    <p>Оберіть інструменти та функції для роботи з клієнтом</p>
+                </div>
+
+                <div class="onboarding-features">
+                    <label class="feature-card">
+                        <input type="checkbox" id="feature-best-hire" checked>
+                        <div class="feature-content">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>Best Hire Analytics</h4>
+                            <p>Аналіз найму та підбору персоналу</p>
+                        </div>
+                    </label>
+
+                    <label class="feature-card">
+                        <input type="checkbox" id="feature-salary-insights" checked>
+                        <div class="feature-content">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h4>Salary Insights</h4>
+                            <p>Аналіз компенсацій та зарплат</p>
+                        </div>
+                    </label>
+
+                    <label class="feature-card">
+                        <input type="checkbox" id="feature-raci" checked>
+                        <div class="feature-content">
+                            <i class="fas fa-sitemap"></i>
+                            <h4>RACI Matrix</h4>
+                            <p>Матриця відповідальності команди</p>
+                        </div>
+                    </label>
+
+                    <label class="feature-card">
+                        <input type="checkbox" id="feature-analytics">
+                        <div class="feature-content">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>Advanced Analytics</h4>
+                            <p>Розширена аналітика та звіти</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="Onboarding.previousStep()" id="onboarding-prev" style="display: none;">
+                <i class="fas fa-arrow-left"></i>
+                Назад
+            </button>
+            <button type="button" class="btn btn-primary" onclick="Onboarding.nextStep()" id="onboarding-next">
+                Далі
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="button" class="btn btn-primary" onclick="Onboarding.finish()" id="onboarding-finish" style="display: none;">
+                <i class="fas fa-check"></i>
+                Завершити
+            </button>
+        </div>
+    </div>
+</div>

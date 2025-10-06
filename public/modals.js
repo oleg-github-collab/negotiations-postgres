@@ -722,6 +722,7 @@
       this.setupAnalysisForm();
       this.setupConvertForm();
       this.setupClientForm();
+      this.setupAddClientForm();
       this.setupNotesForm();
     },
 
@@ -877,13 +878,22 @@
           ModalManager.close('convert-modal');
           form.reset();
 
+          // Reload prospects
           if (window.ProspectsManager) {
             window.ProspectsManager.loadProspects();
           }
 
-          if (window.loadActiveClients) {
-            window.loadActiveClients();
+          // Start onboarding flow
+          if (window.Onboarding && response.client) {
+            setTimeout(() => {
+              window.Onboarding.init(response.client);
+            }, 500);
+          } else if (window.TeamHub) {
+            // If no onboarding, just reload TeamHub
+            await window.TeamHub.loadActiveClients();
+            window.TeamHub.render();
           }
+
         } catch (error) {
           console.error('Error converting prospect:', error);
           showToast(error.message || 'Помилка конвертації', 'error');
@@ -925,6 +935,68 @@
           }
         } catch (error) {
           showToast('Помилка створення клієнта', 'error');
+        }
+      });
+    },
+
+    setupAddClientForm() {
+      const form = $('#add-client-form');
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = e.submitter;
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Створення...';
+        }
+
+        const notes = {};
+        const goalValue = $('#new-client-goal')?.value?.trim();
+        const notesValue = $('#new-client-notes')?.value?.trim();
+        if (goalValue) notes.goal = goalValue;
+        if (notesValue) notes.additional_notes = notesValue;
+
+        const data = {
+          company: $('#new-client-company').value,
+          negotiator: $('#new-client-negotiator').value || null,
+          sector: $('#new-client-sector').value || null,
+          weekly_hours: parseInt($('#new-client-team-size').value) || null,
+          client_type: 'active',
+          status: 'active',
+          notes: Object.keys(notes).length > 0 ? notes : null
+        };
+
+        try {
+          const response = await apiCall('/clients', {
+            method: 'POST',
+            body: JSON.stringify(data)
+          });
+
+          showToast('Активного клієнта успішно створено!', 'success');
+          ModalManager.close('add-client-modal');
+          form.reset();
+
+          // Start onboarding for new client
+          if (window.Onboarding && response.client) {
+            setTimeout(() => {
+              window.Onboarding.init(response.client);
+            }, 500);
+          } else if (window.TeamHub) {
+            // If no onboarding, just reload TeamHub
+            await window.TeamHub.loadActiveClients();
+            window.TeamHub.render();
+          }
+
+        } catch (error) {
+          console.error('Error creating client:', error);
+          showToast(error.message || 'Помилка створення клієнта', 'error');
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-plus"></i> Додати клієнта';
+          }
         }
       });
     },
