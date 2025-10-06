@@ -390,18 +390,18 @@ export const validateFileUpload = (req, res, next) => {
 
 // Security headers validation
 export const validateSecurityHeaders = (req, res, next) => {
-  // Check for suspicious headers
-  const suspiciousHeaders = ['x-forwarded-for', 'x-real-ip'];
+  // Only check specific user-controlled headers that could be malicious
+  const headersToCheck = ['referer', 'origin', 'x-forwarded-for', 'x-real-ip', 'x-custom'];
   const suspiciousPatterns = [/<script/i, /javascript:/i, /on\w+=/i];
-  
-  for (const header in req.headers) {
-    const value = req.headers[header];
+
+  for (const headerName of headersToCheck) {
+    const value = req.headers[headerName];
     if (typeof value === 'string') {
       for (const pattern of suspiciousPatterns) {
         if (pattern.test(value)) {
           logSecurity('Suspicious header detected', {
             ip: req.ip,
-            header,
+            header: headerName,
             value,
             userAgent: req.get('User-Agent')
           });
@@ -410,6 +410,6 @@ export const validateSecurityHeaders = (req, res, next) => {
       }
     }
   }
-  
+
   next();
 };
