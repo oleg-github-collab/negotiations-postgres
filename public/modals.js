@@ -1014,4 +1014,44 @@
     initModals();
   }
 
+  // ============================================
+  // INTEGRATION WITH OLD APP-NEON.JS
+  // ============================================
+
+  // Override showClientForm to open modal
+  window.showClientFormModal = function() {
+    ModalManager.open('create-prospect-modal');
+  };
+
+  // Listen for new client button clicks
+  document.addEventListener('DOMContentLoaded', () => {
+    // Wait for modals to load
+    setTimeout(() => {
+      const newClientBtns = [
+        '#new-client-btn',
+        '#empty-new-client-btn',
+        '#create-first-client'
+      ];
+
+      newClientBtns.forEach(selector => {
+        document.addEventListener('click', (e) => {
+          if (e.target.closest(selector)) {
+            e.preventDefault();
+            e.stopPropagation();
+            ModalManager.open('create-prospect-modal');
+          }
+        });
+      });
+
+      // New analysis button
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('#new-analysis-btn') || e.target.closest('#create-analysis-btn')) {
+          e.preventDefault();
+          e.stopPropagation();
+          ModalManager.open('create-analysis-modal');
+        }
+      });
+    }, 500);
+  });
+
 })();
