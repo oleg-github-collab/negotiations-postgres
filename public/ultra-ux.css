@@ -1,0 +1,721 @@
+/* ============================================
+   ULTRA UX - NEXT LEVEL DESIGN & INTERACTIONS
+   Command Palette, Tours, Animations, Micro-interactions
+   ============================================ */
+
+/* ============================================
+   COMMAND PALETTE
+   ============================================ */
+
+.command-palette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+}
+
+.command-palette-open {
+  display: flex;
+}
+
+.command-palette-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s;
+}
+
+.command-palette-container {
+  position: relative;
+  width: 640px;
+  max-width: 90vw;
+  background: linear-gradient(135deg, rgba(15, 20, 45, 0.98), rgba(20, 25, 50, 0.98));
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(102, 126, 234, 0.1);
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.command-palette-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.command-palette-icon {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+}
+
+.command-palette-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  outline: none;
+}
+
+.command-palette-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.command-palette-kbd {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.command-palette-results {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.command-palette-section {
+  padding: 12px 16px 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.command-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.command-palette-item:hover,
+.command-palette-item.selected {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.command-palette-item.selected {
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+}
+
+.command-item-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+  color: #667eea;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.command-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.command-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.command-item-title mark {
+  background: rgba(255, 235, 59, 0.3);
+  color: #ffeb3b;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+.command-item-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.command-item-shortcut {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+.command-palette-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.command-palette-empty i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.command-palette-footer {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.command-palette-hints {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.command-palette-hints kbd {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 10px;
+  margin: 0 2px;
+}
+
+/* Command Toast */
+.command-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, rgba(15, 20, 45, 0.95), rgba(20, 25, 50, 0.95));
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10001;
+}
+
+.command-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.command-toast i {
+  color: #667eea;
+}
+
+/* ============================================
+   ONBOARDING TOURS
+   ============================================ */
+
+.tour-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.tour-overlay-centered {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  pointer-events: all;
+}
+
+.tour-highlight {
+  position: absolute;
+  border: 3px solid #667eea;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
+              0 0 30px rgba(102, 126, 234, 0.5);
+  pointer-events: all;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
+                0 0 30px rgba(102, 126, 234, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
+                0 0 40px rgba(102, 126, 234, 0.8);
+  }
+}
+
+.tour-tooltip {
+  position: fixed;
+  width: 380px;
+  max-width: 90vw;
+  background: linear-gradient(135deg, rgba(15, 20, 45, 0.98), rgba(20, 25, 50, 0.98));
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10000;
+  pointer-events: all;
+}
+
+.tour-tooltip-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tour-tooltip-centered {
+  width: 480px;
+}
+
+.tour-tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tour-tooltip-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tour-tooltip-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.tour-tooltip-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.tour-tooltip-body {
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.tour-tooltip-body kbd {
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.tour-tooltip-footer {
+  padding: 16px 20px 20px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tour-tooltip-progress {
+  margin-bottom: 12px;
+}
+
+.tour-tooltip-progress span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.tour-progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tour-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.3s;
+}
+
+.tour-tooltip-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.tour-tooltip-completion {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.tour-tooltip-completion i {
+  font-size: 64px;
+  color: #51cf66;
+  margin-bottom: 20px;
+}
+
+.tour-tooltip-completion h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.tour-tooltip-completion p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 24px;
+}
+
+/* Tour Banner */
+.tour-banner {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 420px;
+  max-width: calc(100vw - 40px);
+  background: linear-gradient(135deg, rgba(15, 20, 45, 0.98), rgba(20, 25, 50, 0.98));
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  z-index: 9998;
+  opacity: 0;
+  transform: translateX(450px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tour-banner.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tour-banner-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.tour-banner-content i {
+  font-size: 28px;
+  color: #667eea;
+  flex-shrink: 0;
+}
+
+.tour-banner-text strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.tour-banner-text span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.tour-banner-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.tour-banner-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.tour-banner-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Contextual Tooltips */
+.context-tooltip {
+  position: fixed;
+  padding: 8px 12px;
+  background: rgba(10, 14, 27, 0.95);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10002;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: all 0.2s;
+  max-width: 250px;
+}
+
+.context-tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   SHORTCUTS MODAL
+   ============================================ */
+
+.shortcuts-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s;
+}
+
+.shortcuts-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.shortcuts-content {
+  position: relative;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 80vh;
+  background: linear-gradient(135deg, rgba(15, 20, 45, 0.98), rgba(20, 25, 50, 0.98));
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.shortcuts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shortcuts-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shortcuts-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.shortcuts-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.shortcuts-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.shortcut-item:last-child {
+  border-bottom: none;
+}
+
+.shortcut-keys {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 13px;
+  font-weight: 600;
+  color: #667eea;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+}
+
+.shortcut-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+/* ============================================
+   MICRO-INTERACTIONS
+   ============================================ */
+
+/* Ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+/* Magnetic buttons */
+.magnetic-btn {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.magnetic-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Glow on hover */
+.glow-on-hover {
+  position: relative;
+  transition: all 0.3s;
+}
+
+.glow-on-hover::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: inherit;
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.3s;
+  z-index: -1;
+}
+
+.glow-on-hover:hover::before {
+  opacity: 0.7;
+}
+
+/* Smooth scale */
+.scale-on-hover {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scale-on-hover:hover {
+  transform: scale(1.05);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .command-palette-container {
+    width: 95vw;
+  }
+
+  .tour-tooltip {
+    width: 90vw;
+  }
+
+  .tour-banner {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  .shortcuts-content {
+    width: 95vw;
+  }
+
+  .shortcut-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

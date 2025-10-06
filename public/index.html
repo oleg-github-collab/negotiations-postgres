@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/kanban-board.css">
     <link rel="stylesheet" href="/teamhub.css">
     <link rel="stylesheet" href="/advanced-components.css">
+    <link rel="stylesheet" href="/ultra-ux.css">
 
     <style>
         /* Clean Modern Interface */
@@ -224,16 +225,24 @@
             </div>
 
             <div class="nav-actions">
-                <button class="icon-btn" id="search-btn" title="Пошук">
+                <button class="icon-btn ripple" id="search-btn"
+                        data-tooltip="Пошук (Ctrl+K)"
+                        data-tooltip-position="bottom">
                     <i class="fas fa-search"></i>
                 </button>
-                <button class="icon-btn" id="notifications-btn" title="Сповіщення">
+                <button class="icon-btn ripple" id="notifications-btn"
+                        data-tooltip="Сповіщення"
+                        data-tooltip-position="bottom">
                     <i class="fas fa-bell"></i>
                 </button>
-                <button class="icon-btn" id="settings-btn" title="Налаштування">
+                <button class="icon-btn ripple" id="settings-btn"
+                        data-tooltip="Налаштування"
+                        data-tooltip-position="bottom">
                     <i class="fas fa-cog"></i>
                 </button>
-                <button class="icon-btn" id="logout-btn" title="Вийти">
+                <button class="icon-btn ripple" id="logout-btn"
+                        data-tooltip="Вийти"
+                        data-tooltip-position="bottom">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
@@ -358,6 +367,8 @@
     <script src="/custom-fields.js"></script>
     <script src="/teamhub.js"></script>
     <script src="/onboarding.js"></script>
+    <script src="/command-palette.js"></script>
+    <script src="/onboarding-tour.js"></script>
 
     <!-- Load modals HTML -->
     <script>
@@ -369,8 +380,16 @@
             .catch(err => console.error('Failed to load modals:', err));
     </script>
 
-    <!-- Tab Switching -->
+    <!-- UI Enhancements -->
     <script>
+        // Search button opens Command Palette
+        document.getElementById('search-btn')?.addEventListener('click', () => {
+            if (window.CommandPalette) {
+                CommandPalette.open();
+            }
+        });
+
+        // Tab Switching
         document.querySelectorAll('.nav-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.dataset.tab;
