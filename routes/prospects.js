@@ -541,4 +541,77 @@ r.post('/:id/notes', async (req, res) => {
   }
 });
 
+// GET /api/prospects/:id/timeline - Get prospect timeline
+r.get('/:id/timeline', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const prospect = await get(`SELECT notes FROM clients WHERE id = $1 AND client_type = 'prospect'`, [id]);
+    if (!prospect) return res.status(404).json({ success: false, error: 'Prospect not found' });
+
+    const notes = typeof prospect.notes === 'string' ? JSON.parse(prospect.notes || '{}') : (prospect.notes || {});
+    res.json({ success: true, events: notes.timeline || [] });
+  } catch (error) {
+    logError(error, { endpoint: 'GET /api/prospects/:id/timeline', ip: req.ip });
+    res.status(500).json({ success: false, error: 'Failed to load timeline' });
+  }
+});
+
+// POST /api/prospects/:id/timeline - Add timeline event
+r.post('/:id/timeline', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { event_type, data, timestamp } = req.body;
+
+    const prospect = await run(`
+      UPDATE clients SET
+        notes = jsonb_set(COALESCE(notes::jsonb, '{}'::jsonb), '{timeline}',
+          COALESCE(notes::jsonb->'timeline', '[]'::jsonb) || jsonb_build_array(jsonb_build_object(
+            'id', (SELECT COALESCE(MAX((elem->>'id')::int), 0) + 1 FROM jsonb_array_elements(COALESCE(notes::jsonb->'timeline', '[]'::jsonb)) elem),
+            'event_type', $2, 'data', $3::jsonb, 'created_at', $4, 'user', $5))),
+        updated_at = NOW()
+      WHERE id = $1 AND client_type = 'prospect' RETURNING *
+    `, [id, event_type, JSON.stringify(data), timestamp || new Date().toISOString(), req.user?.username || 'operator']);
+
+    res.json({ success: true, prospect });
+  } catch (error) {
+    logError(error, { endpoint: 'POST /api/prospects/:id/timeline', ip: req.ip });
+    res.status(500).json({ success: false, error: 'Failed to add timeline event' });
+  }
+});
+
+// GET /api/prospects/:id/custom-fields - Get custom field values
+r.get('/:id/custom-fields', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const prospect = await get(`SELECT notes FROM clients WHERE id = $1 AND client_type = 'prospect'`, [id]);
+    if (!prospect) return res.status(404).json({ success: false, error: 'Prospect not found' });
+
+    const notes = typeof prospect.notes === 'string' ? JSON.parse(prospect.notes || '{}') : (prospect.notes || {});
+    res.json({ success: true, values: notes.custom_fields || {} });
+  } catch (error) {
+    logError(error, { endpoint: 'GET /api/prospects/:id/custom-fields', ip: req.ip });
+    res.status(500).json({ success: false, error: 'Failed to load custom fields' });
+  }
+});
+
+// PUT /api/prospects/:id/custom-fields - Update custom field values
+r.put('/:id/custom-fields', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { values } = req.body;
+
+    const prospect = await run(`
+      UPDATE clients SET
+        notes = jsonb_set(COALESCE(notes::jsonb, '{}'::jsonb), '{custom_fields}', $2::jsonb),
+        updated_at = NOW()
+      WHERE id = $1 AND client_type = 'prospect' RETURNING *
+    `, [id, JSON.stringify(values)]);
+
+    res.json({ success: true, prospect });
+  } catch (error) {
+    logError(error, { endpoint: 'PUT /api/prospects/:id/custom-fields', ip: req.ip });
+    res.status(500).json({ success: false, error: 'Failed to update custom fields' });
+  }
+});
+
 export default r;
