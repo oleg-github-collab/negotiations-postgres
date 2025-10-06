@@ -15,6 +15,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     <!-- Styles -->
+    <link rel="stylesheet" href="/ui-helpers.css">
     <link rel="stylesheet" href="/ultra-optimized.css">
     <link rel="stylesheet" href="/modals.css">
     <link rel="stylesheet" href="/prospects-manager.css">
@@ -356,6 +357,7 @@
     <div id="modals-container"></div>
 
     <!-- Scripts -->
+    <script src="/ui-helpers.js"></script>
     <script src="/ultra-smooth.js"></script>
     <script src="/error-handler.js"></script>
     <script src="/auto-save.js"></script>
@@ -377,6 +379,7 @@
     <script src="/advanced-search.js"></script>
     <script src="/bulk-operations.js"></script>
     <script src="/keyboard-shortcuts.js"></script>
+    <script src="/app-init.js"></script>
 
     <!-- Load modals HTML -->
     <script>
@@ -388,65 +391,30 @@
             .catch(err => console.error('Failed to load modals:', err));
     </script>
 
-    <!-- UI Enhancements -->
+    <!-- View Toggle (Prospects panel specific) -->
     <script>
-        // Search button opens Command Palette
-        document.getElementById('search-btn')?.addEventListener('click', () => {
-            if (window.CommandPalette) {
-                CommandPalette.open();
-            }
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
 
-        // Tab Switching
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.dataset.tab;
+                    // Update active button
+                    document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
 
-                // Update active tab
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                // Show corresponding panel
-                document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-                document.getElementById(`${tabName}-panel`).classList.add('active');
-            });
-        });
-
-        // View Toggle
-        document.querySelectorAll('.view-toggle-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const view = btn.dataset.view;
-
-                // Update active button
-                document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // Toggle views
-                if (view === 'grid') {
-                    document.getElementById('prospects-list').style.display = 'block';
-                    document.getElementById('kanban-board').style.display = 'none';
-                } else if (view === 'kanban') {
-                    document.getElementById('prospects-list').style.display = 'none';
-                    document.getElementById('kanban-board').style.display = 'block';
-                    if (window.KanbanBoard) {
-                        window.KanbanBoard.refresh();
+                    // Toggle views
+                    if (view === 'grid') {
+                        document.getElementById('prospects-list').style.display = 'block';
+                        document.getElementById('kanban-board').style.display = 'none';
+                    } else if (view === 'kanban') {
+                        document.getElementById('prospects-list').style.display = 'none';
+                        document.getElementById('kanban-board').style.display = 'block';
+                        if (window.KanbanBoard) {
+                            window.KanbanBoard.refresh();
+                        }
                     }
-                }
+                });
             });
-        });
-
-        // Search button
-        document.getElementById('search-btn')?.addEventListener('click', () => {
-            document.getElementById('prospect-search')?.focus();
-        });
-
-        // Logout
-        document.getElementById('logout-btn')?.addEventListener('click', () => {
-            if (window.logout) {
-                window.logout();
-            } else {
-                window.location.href = '/login.html';
-            }
         });
     </script>
 

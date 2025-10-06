@@ -72,7 +72,7 @@
         
         try {
             // Use server-side authentication
-            const response = await fetch('/api/login', {
+            const response = await fetch('/api/v1/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -114,7 +114,7 @@
         console.log('🔐 Logout initiated...');
         try {
             // Call server logout endpoint
-            const response = await fetch('/api/logout', {
+            const response = await fetch('/api/v1/auth/logout', {
                 method: 'POST'
             });
             console.log('🔐 Server logout response:', response.status);
