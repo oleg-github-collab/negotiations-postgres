@@ -1,0 +1,362 @@
+/**
+ * Keyboard Shortcuts Help Modal Styles
+ */
+
+/* Modal */
+.keyboard-shortcuts-help-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.keyboard-shortcuts-help-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+}
+
+.keyboard-shortcuts-help-modal .modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    background: linear-gradient(135deg, rgba(15, 20, 45, 0.98), rgba(20, 25, 50, 0.98));
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    animation: slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Header */
+.keyboard-shortcuts-help-modal .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.keyboard-shortcuts-help-modal .modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.keyboard-shortcuts-help-modal .modal-header h2 i {
+    font-size: 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.keyboard-shortcuts-help-modal .modal-close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.keyboard-shortcuts-help-modal .modal-close-btn:hover {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: rgba(244, 67, 54, 0.5);
+    color: #F44336;
+}
+
+/* Body */
+.keyboard-shortcuts-help-modal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+}
+
+/* Shortcuts Sections */
+.shortcuts-section {
+    margin-bottom: 32px;
+}
+
+.shortcuts-section:last-child {
+    margin-bottom: 0;
+}
+
+.shortcuts-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #667eea;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shortcuts-section h3::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Shortcuts List */
+.shortcuts-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 12px;
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s;
+}
+
+.shortcut-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(4px);
+}
+
+/* Shortcut Keys */
+.shortcut-keys {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+kbd {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom-width: 2px;
+    color: #fff;
+    font-family: 'Inter', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 28px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.key-plus {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0 2px;
+}
+
+.key-then {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0 6px;
+    font-style: italic;
+}
+
+/* Shortcut Description */
+.shortcut-description {
+    flex: 1;
+    margin-left: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    text-align: right;
+}
+
+/* Footer */
+.keyboard-shortcuts-help-modal .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.vim-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.vim-mode-toggle input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #667eea;
+    cursor: pointer;
+}
+
+.vim-mode-toggle:hover span {
+    color: #667eea;
+}
+
+.keyboard-shortcuts-help-modal .btn-primary {
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.keyboard-shortcuts-help-modal .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Scrollbar */
+.keyboard-shortcuts-help-modal .modal-body::-webkit-scrollbar {
+    width: 10px;
+}
+
+.keyboard-shortcuts-help-modal .modal-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+}
+
+.keyboard-shortcuts-help-modal .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 5px;
+}
+
+.keyboard-shortcuts-help-modal .modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
+}
+
+/* Visual Indicator for Active Shortcuts */
+.shortcut-active-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: rgba(15, 20, 45, 0.95);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 9997;
+    animation: fadeIn 0.2s ease-out;
+    display: none;
+}
+
+.shortcut-active-indicator.visible {
+    display: block;
+}
+
+.shortcut-active-indicator kbd {
+    margin: 0 4px;
+}
+
+/* Vim Mode Indicator */
+.vim-mode-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    z-index: 9997;
+    animation: slideInFromLeft 0.3s ease-out;
+    display: none;
+}
+
+.vim-mode-active .vim-mode-indicator {
+    display: block;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .keyboard-shortcuts-help-modal .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .shortcuts-list {
+        grid-template-columns: 1fr;
+    }
+
+    .shortcut-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .shortcut-description {
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .keyboard-shortcuts-help-modal .modal-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .vim-mode-toggle,
+    .keyboard-shortcuts-help-modal .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+}
