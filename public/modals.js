@@ -847,30 +847,51 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const prospectId = window.ProspectsManager?.selectedProspect?.id;
+        if (!prospectId) {
+          showToast('Оберіть потенційного клієнта', 'error');
+          return;
+        }
+
+        const submitBtn = e.submitter;
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Конвертація...';
+        }
+
         const data = {
-          prospect_id: window.AppState.selectedProspect.id,
-          type: $('#convert-type').value,
-          team_size: parseInt($('#convert-team-size').value)
+          type: 'teamhub',
+          team_size: parseInt($('#convert-team-size').value) || 5,
+          additional_data: {
+            client_type: $('#convert-type').value
+          }
         };
 
         try {
-          const client = await apiCall('/clients/convert', {
+          const response = await apiCall(`/prospects/${prospectId}/convert`, {
             method: 'POST',
             body: JSON.stringify(data)
           });
 
-          showToast('Клієнта конвертовано успішно', 'success');
+          showToast('Клієнта успішно конвертовано в активного!', 'success');
           ModalManager.close('convert-modal');
+          form.reset();
 
-          // Reload lists
-          if (window.NegotiationsModule) {
-            window.NegotiationsModule.loadProspects();
+          if (window.ProspectsManager) {
+            window.ProspectsManager.loadProspects();
           }
-          if (window.TeamHubModule) {
-            window.TeamHubModule.loadClients();
+
+          if (window.loadActiveClients) {
+            window.loadActiveClients();
           }
         } catch (error) {
-          showToast('Помилка конвертації', 'error');
+          console.error('Error converting prospect:', error);
+          showToast(error.message || 'Помилка конвертації', 'error');
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> Конвертувати клієнта';
+          }
         }
       });
     },
