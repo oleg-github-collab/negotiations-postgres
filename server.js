@@ -28,6 +28,7 @@ import teamsRoutes from './routes/teams.js';
 import negotiationsRoutes from './routes/negotiations.js';
 import auditRoutes from './routes/audit.js';
 import bestHireRoutes from './routes/best-hire.js';
+import aiRoutes from './routes/ai.js';
 import { requestContext } from './middleware/requestContext.js';
 import { initializeDatabase, get as dbGet, run as dbRun } from './utils/db.js';
 
@@ -94,8 +95,9 @@ app.use(
       directives: {
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+        fontSrc: ["'self'", "data:", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrcAttr: ["'unsafe-inline'"],
         imgSrc: ["'self'", "data:", "https:"],
         connectSrc: ["'self'"],
         objectSrc: ["'none'"],
@@ -422,6 +424,7 @@ app.use(`/api/${API_VERSION}/negotiations`, authMiddleware, negotiationsRoutes);
 app.use(`/api/${API_VERSION}/advice`, authMiddleware, adviceRoutes);
 app.use(`/api/${API_VERSION}/audit`, authMiddleware, auditRoutes);
 app.use(`/api/${API_VERSION}/best-hire`, authMiddleware, bestHireRoutes);
+app.use(`/api/${API_VERSION}/ai`, authMiddleware, aiRoutes);
 
 // Legacy API support (backwards compatibility)
 app.use('/api/analyze', authMiddleware, analysisLimiter, analyzeRoutes);
@@ -433,6 +436,7 @@ app.use('/api/negotiations', authMiddleware, negotiationsRoutes);
 app.use('/api/advice', authMiddleware, adviceRoutes);
 app.use('/api/audit', authMiddleware, auditRoutes);
 app.use('/api/best-hire', authMiddleware, bestHireRoutes);
+app.use('/api/ai', authMiddleware, aiRoutes);
 
 app.get('/favicon.ico', (_req, res) => {
   res.type('image/svg+xml');

@@ -542,3 +542,87 @@
   message: '❌ Failed to start TeamPulse Turbo server',
   timestamp: '2025-09-29 07:49:23'
 }
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'listen EADDRINUSE: address already in use 0.0.0.0:3000',
+    stack: 'Error: listen EADDRINUSE: address already in use 0.0.0.0:3000\n' +
+      '    at Server.setupListenHandle [as _listen2] (node:net:1908:16)\n' +
+      '    at listenInCluster (node:net:1965:12)\n' +
+      '    at doListen (node:net:2139:7)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)',
+    name: 'Error'
+  },
+  context: {
+    type: 'uncaughtException',
+    errorId: '4qhuf5e0emx',
+    pid: 89145,
+    memory: {
+      rss: 86552576,
+      heapTotal: 39235584,
+      heapUsed: 27056992,
+      external: 3685497,
+      arrayBuffers: 104232
+    },
+    uptime: 2.655743162
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-10-08 10:49:14'
+}
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'listen EADDRINUSE: address already in use 0.0.0.0:3000',
+    stack: 'Error: listen EADDRINUSE: address already in use 0.0.0.0:3000\n' +
+      '    at Server.setupListenHandle [as _listen2] (node:net:1908:16)\n' +
+      '    at listenInCluster (node:net:1965:12)\n' +
+      '    at doListen (node:net:2139:7)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)',
+    name: 'Error'
+  },
+  context: {
+    type: 'uncaughtException',
+    errorId: '1z54h6eipcv',
+    pid: 19527,
+    memory: {
+      rss: 91758592,
+      heapTotal: 55750656,
+      heapUsed: 25668248,
+      external: 3690091,
+      arrayBuffers: 108826
+    },
+    uptime: 0.977404776
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-10-08 12:26:26'
+}
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'listen EADDRINUSE: address already in use 0.0.0.0:3000',
+    stack: 'Error: listen EADDRINUSE: address already in use 0.0.0.0:3000\n' +
+      '    at Server.setupListenHandle [as _listen2] (node:net:1908:16)\n' +
+      '    at listenInCluster (node:net:1965:12)\n' +
+      '    at doListen (node:net:2139:7)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)',
+    name: 'Error'
+  },
+  context: {
+    type: 'uncaughtException',
+    errorId: 'fmyarrs1jpu',
+    pid: 8680,
+    memory: {
+      rss: 89481216,
+      heapTotal: 58376192,
+      heapUsed: 25999136,
+      external: 3691185,
+      arrayBuffers: 108826
+    },
+    uptime: 8.349576983
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-10-08 17:13:37'
+}

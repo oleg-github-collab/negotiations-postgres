@@ -1,0 +1,6 @@
+
+> teampulse-turbo@2.0.0 start
+> NODE_ENV=production node server.js
+
+🔑 Initializing OpenAI client with API key: sk-proj-...
+✅ OpenAI client initialized successfully

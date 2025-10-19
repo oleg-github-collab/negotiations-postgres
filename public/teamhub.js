@@ -340,30 +340,470 @@ const TeamHub = {
   async manageTeams(clientId) {
     try {
       const client = await apiCall(`/clients/${clientId}`);
-      this.selectedClient = client;
+      const teams = await apiCall(`/teams?client_id=${clientId}`);
 
-      // Navigate to teams tab
-      if (typeof window.TeamManager !== 'undefined') {
-        window.TeamManager.loadTeamsByClient(clientId);
-      }
+      this.selectedClient = client.data || client;
+      const teamsData = teams.data || teams.teams || [];
 
-      showNotification(`Завантажуємо команди для ${client.company}`, 'info');
+      this.showTeamsManagementModal(this.selectedClient, teamsData);
     } catch (error) {
       console.error('Failed to load teams:', error);
       showNotification('Не вдалося завантажити команди', 'error');
     }
   },
 
+  showTeamsManagementModal(client, teams) {
+    let modal = document.getElementById('teams-management-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'teams-management-modal';
+      modal.className = 'modal';
+      document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+      <div class="modal-overlay" onclick="hideModal('teams-management-modal')"></div>
+      <div class="modal-content modal-xl">
+        <div class="modal-header">
+          <h2>
+            <i class="fas fa-users-cog"></i>
+            Управління командами: ${this.escapeHtml(client.company)}
+          </h2>
+          <button class="modal-close-btn" onclick="hideModal('teams-management-modal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="teams-toolbar">
+            <input type="text" class="search-input" id="teams-search" placeholder="Пошук команди...">
+            <button class="btn btn-primary" onclick="TeamHub.createNewTeam(${client.id})">
+              <i class="fas fa-plus"></i>
+              Додати команду
+            </button>
+          </div>
+
+          <div class="teams-grid" id="teams-grid">
+            ${teams.length > 0 ? this.renderTeamsGrid(teams) : this.renderNoTeams()}
+          </div>
+        </div>
+      </div>
+    `;
+
+    showModal('teams-management-modal');
+  },
+
+  renderTeamsGrid(teams) {
+    return teams.map(team => {
+      const membersCount = team.members?.length || team.members_count || 0;
+      const raciComplete = team.raci_complete || false;
+
+      return `
+        <div class="team-card" data-team-id="${team.id}">
+          <div class="team-card-header">
+            <h4>${this.escapeHtml(team.name || 'Без назви')}</h4>
+            ${raciComplete ? '<span class="badge badge-success"><i class="fas fa-check"></i> RACI готова</span>' : '<span class="badge badge-warning">RACI не завершена</span>'}
+          </div>
+          <div class="team-card-body">
+            <div class="team-stat">
+              <i class="fas fa-users"></i>
+              <span>${membersCount} ${this.pluralize(membersCount, 'учасник', 'учасника', 'учасників')}</span>
+            </div>
+            ${team.description ? `<p class="team-description">${this.escapeHtml(team.description)}</p>` : ''}
+          </div>
+          <div class="team-card-footer">
+            <button class="btn-secondary btn-sm" onclick="TeamHub.editTeam(${team.id})">
+              <i class="fas fa-edit"></i>
+              Редагувати
+            </button>
+            <button class="btn-primary btn-sm" onclick="TeamHub.manageRACI(${team.id})">
+              <i class="fas fa-table"></i>
+              RACI матриця
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  renderNoTeams() {
+    return `
+      <div class="empty-state">
+        <i class="fas fa-users fa-3x"></i>
+        <p>Команди ще не створені</p>
+        <button class="btn btn-primary" onclick="TeamHub.createNewTeam(${this.selectedClient.id})">
+          <i class="fas fa-plus"></i>
+          Створити першу команду
+        </button>
+      </div>
+    `;
+  },
+
+  async createNewTeam(clientId) {
+    // Trigger team management module
+    if (window.TeamManagement && typeof TeamManagement.showCreateTeamModal === 'function') {
+      TeamManagement.currentClientId = clientId;
+      TeamManagement.showCreateTeamModal();
+    } else {
+      showNotification('Модуль створення команд недоступний', 'error');
+    }
+  },
+
+  async editTeam(teamId) {
+    if (window.TeamManagement && typeof TeamManagement.editTeam === 'function') {
+      TeamManagement.editTeam(teamId);
+    } else {
+      showNotification('Модуль редагування команд недоступний', 'error');
+    }
+  },
+
+  async manageRACI(teamId) {
+    try {
+      const team = await apiCall(`/teams/${teamId}`);
+      const teamData = team.data || team;
+
+      this.showRACIMatrix(teamData);
+    } catch (error) {
+      console.error('Failed to load RACI matrix:', error);
+      showNotification('Не вдалося завантажити RACI матрицю', 'error');
+    }
+  },
+
+  showRACIMatrix(team) {
+    let modal = document.getElementById('raci-matrix-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'raci-matrix-modal';
+      modal.className = 'modal';
+      document.body.appendChild(modal);
+    }
+
+    const members = team.members || [];
+    const tasks = team.tasks || [];
+
+    modal.innerHTML = `
+      <div class="modal-overlay" onclick="hideModal('raci-matrix-modal')"></div>
+      <div class="modal-content modal-fullscreen">
+        <div class="modal-header">
+          <h2>
+            <i class="fas fa-table"></i>
+            RACI матриця: ${this.escapeHtml(team.name)}
+          </h2>
+          <button class="modal-close-btn" onclick="hideModal('raci-matrix-modal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="raci-toolbar">
+            <button class="btn btn-secondary" onclick="TeamHub.addRACITask(${team.id})">
+              <i class="fas fa-plus"></i>
+              Додати задачу
+            </button>
+            <button class="btn btn-secondary" onclick="TeamHub.exportRACI(${team.id})">
+              <i class="fas fa-download"></i>
+              Експорт
+            </button>
+            <button class="btn btn-primary" onclick="TeamHub.saveRACI(${team.id})">
+              <i class="fas fa-save"></i>
+              Зберегти
+            </button>
+          </div>
+
+          <div class="raci-matrix-container">
+            ${this.renderRACIMatrixTable(team, members, tasks)}
+          </div>
+
+          <div class="raci-legend">
+            <h4>Легенда RACI:</h4>
+            <div class="legend-items">
+              <span class="legend-item"><strong>R</strong> - Responsible (Відповідальний за виконання)</span>
+              <span class="legend-item"><strong>A</strong> - Accountable (Підзвітний, приймає рішення)</span>
+              <span class="legend-item"><strong>C</strong> - Consulted (Консультант, радник)</span>
+              <span class="legend-item"><strong>I</strong> - Informed (Інформований)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    showModal('raci-matrix-modal');
+  },
+
+  renderRACIMatrixTable(team, members, tasks) {
+    if (members.length === 0) {
+      return '<p class="text-muted">Спочатку додайте учасників команди</p>';
+    }
+
+    if (tasks.length === 0) {
+      return '<p class="text-muted">Додайте задачі для побудови RACI матриці</p>';
+    }
+
+    return `
+      <table class="raci-table">
+        <thead>
+          <tr>
+            <th class="task-column">Задача / Рішення</th>
+            ${members.map(m => `
+              <th class="member-column">
+                <div class="member-header">
+                  <div class="member-avatar">${this.getInitials(m.name)}</div>
+                  <span>${this.escapeHtml(m.name)}</span>
+                  <small>${this.escapeHtml(m.role || '')}</small>
+                </div>
+              </th>
+            `).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${tasks.map(task => `
+            <tr class="raci-row" data-task-id="${task.id}">
+              <td class="task-name">${this.escapeHtml(task.name)}</td>
+              ${members.map(member => {
+                const raciValue = this.getRACIValue(task, member);
+                return `
+                  <td class="raci-cell">
+                    <select class="raci-select" data-task-id="${task.id}" data-member-id="${member.id}" onchange="TeamHub.updateRACIValue(${task.id}, ${member.id}, this.value)">
+                      <option value="">—</option>
+                      <option value="R" ${raciValue === 'R' ? 'selected' : ''}>R</option>
+                      <option value="A" ${raciValue === 'A' ? 'selected' : ''}>A</option>
+                      <option value="C" ${raciValue === 'C' ? 'selected' : ''}>C</option>
+                      <option value="I" ${raciValue === 'I' ? 'selected' : ''}>I</option>
+                    </select>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  },
+
+  getRACIValue(task, member) {
+    if (!task.raci) return '';
+    const assignment = task.raci.find(r => r.member_id === member.id);
+    return assignment?.role || '';
+  },
+
+  getInitials(name) {
+    if (!name) return '?';
+    const words = name.trim().split(' ');
+    if (words.length === 1) return words[0][0].toUpperCase();
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+  },
+
+  raciChanges: new Map(),
+
+  updateRACIValue(taskId, memberId, value) {
+    const key = `${taskId}-${memberId}`;
+    this.raciChanges.set(key, { taskId, memberId, role: value });
+    console.log('RACI updated:', { taskId, memberId, value });
+  },
+
+  async saveRACI(teamId) {
+    try {
+      const changes = Array.from(this.raciChanges.values());
+
+      if (changes.length === 0) {
+        showNotification('Немає змін для збереження', 'info');
+        return;
+      }
+
+      await apiCall(`/teams/${teamId}/raci`, {
+        method: 'POST',
+        body: JSON.stringify({ assignments: changes })
+      });
+
+      this.raciChanges.clear();
+      showNotification('RACI матриця збережена', 'success');
+    } catch (error) {
+      console.error('Failed to save RACI:', error);
+      showNotification('Помилка збереження RACI матриці', 'error');
+    }
+  },
+
   async viewAnalytics(clientId) {
     try {
       const client = await apiCall(`/clients/${clientId}`);
-      this.selectedClient = client;
+      const analytics = await apiCall(`/clients/${clientId}/analytics`);
 
-      // Show analytics modal or navigate to analytics view
-      showNotification(`Аналітика для ${client.company} (в розробці)`, 'info');
+      this.selectedClient = client.data || client;
+      const analyticsData = analytics.data || analytics;
+
+      this.showAnalyticsModal(this.selectedClient, analyticsData);
     } catch (error) {
       console.error('Failed to load analytics:', error);
       showNotification('Не вдалося завантажити аналітику', 'error');
+    }
+  },
+
+  showAnalyticsModal(client, analytics) {
+    let modal = document.getElementById('client-analytics-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'client-analytics-modal';
+      modal.className = 'modal';
+      document.body.appendChild(modal);
+    }
+
+    const teamMetrics = analytics.team_metrics || {};
+    const performanceData = analytics.performance || {};
+
+    modal.innerHTML = `
+      <div class="modal-overlay" onclick="hideModal('client-analytics-modal')"></div>
+      <div class="modal-content modal-xl">
+        <div class="modal-header">
+          <h2>
+            <i class="fas fa-chart-bar"></i>
+            Аналітика: ${this.escapeHtml(client.company)}
+          </h2>
+          <button class="modal-close-btn" onclick="hideModal('client-analytics-modal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Ключові метрики -->
+          <div class="analytics-metrics">
+            <div class="metric-card">
+              <div class="metric-icon"><i class="fas fa-users"></i></div>
+              <div class="metric-info">
+                <h4>Команди</h4>
+                <span class="metric-value">${teamMetrics.teams_count || 0}</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon"><i class="fas fa-user-friends"></i></div>
+              <div class="metric-info">
+                <h4>Учасники</h4>
+                <span class="metric-value">${teamMetrics.total_members || 0}</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon"><i class="fas fa-tasks"></i></div>
+              <div class="metric-info">
+                <h4>Задачі</h4>
+                <span class="metric-value">${teamMetrics.total_tasks || 0}</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+              <div class="metric-info">
+                <h4>Аналізи</h4>
+                <span class="metric-value">${analytics.analyses_count || 0}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance overview -->
+          <div class="analytics-section">
+            <h3><i class="fas fa-tachometer-alt"></i> Ефективність співпраці</h3>
+            <div class="performance-score">
+              <div class="score-gauge">
+                <div class="gauge-value">${performanceData.collaboration_score || 'N/A'}</div>
+                <div class="gauge-label">Загальний бал</div>
+              </div>
+              <div class="performance-breakdown">
+                ${this.renderPerformanceMetrics(performanceData)}
+              </div>
+            </div>
+          </div>
+
+          <!-- Team distribution -->
+          <div class="analytics-section">
+            <h3><i class="fas fa-pie-chart"></i> Розподіл команд</h3>
+            <div id="team-distribution-chart">
+              ${this.renderTeamDistribution(teamMetrics)}
+            </div>
+          </div>
+
+          <!-- RACI completion -->
+          <div class="analytics-section">
+            <h3><i class="fas fa-table"></i> Стан RACI матриць</h3>
+            ${this.renderRACIStatus(teamMetrics)}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="hideModal('client-analytics-modal')">
+            Закрити
+          </button>
+          <button class="btn btn-primary" onclick="TeamHub.exportAnalytics(${client.id})">
+            <i class="fas fa-download"></i>
+            Експорт звіту
+          </button>
+        </div>
+      </div>
+    `;
+
+    showModal('client-analytics-modal');
+  },
+
+  renderPerformanceMetrics(performance) {
+    const metrics = [
+      { label: 'Комунікація', value: performance.communication || 0 },
+      { label: 'Чіткість ролей', value: performance.role_clarity || 0 },
+      { label: 'Прийняття рішень', value: performance.decision_making || 0 },
+      { label: 'Виконання задач', value: performance.task_completion || 0 }
+    ];
+
+    return metrics.map(m => `
+      <div class="performance-metric">
+        <label>${m.label}</label>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${m.value}%"></div>
+        </div>
+        <span class="metric-percent">${m.value}%</span>
+      </div>
+    `).join('');
+  },
+
+  renderTeamDistribution(teamMetrics) {
+    if (!teamMetrics.teams_by_type) {
+      return '<p class="text-muted">Немає даних для відображення</p>';
+    }
+
+    return `
+      <div class="distribution-list">
+        ${Object.entries(teamMetrics.teams_by_type).map(([type, count]) => `
+          <div class="distribution-item">
+            <span class="dist-label">${type}</span>
+            <div class="dist-bar">
+              <div class="dist-fill" style="width: ${(count / teamMetrics.teams_count) * 100}%"></div>
+            </div>
+            <span class="dist-value">${count}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  },
+
+  renderRACIStatus(teamMetrics) {
+    const completed = teamMetrics.raci_completed || 0;
+    const total = teamMetrics.teams_count || 0;
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    return `
+      <div class="raci-status">
+        <div class="raci-progress">
+          <div class="raci-progress-bar">
+            <div class="raci-progress-fill" style="width: ${percentage}%"></div>
+          </div>
+          <span class="raci-progress-text">${completed} з ${total} команд (${percentage}%)</span>
+        </div>
+      </div>
+    `;
+  },
+
+  async exportAnalytics(clientId) {
+    try {
+      const response = await apiCall(`/clients/${clientId}/analytics/export`, {
+        method: 'POST'
+      });
+      showNotification('Аналітика експортована', 'success');
+    } catch (error) {
+      showNotification('Помилка експорту', 'error');
     }
   },
 

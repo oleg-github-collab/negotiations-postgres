@@ -6863,3 +6863,618 @@
   message: '❌ Failed to start TeamPulse Turbo server',
   timestamp: '2025-09-29 07:49:23'
 }
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 10:49:13'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 10:49:14'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:23:27'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:23:28'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (development)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:23:28'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:23:28'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:23:28'
+}
+{
+  message: '🔒 Security features enabled: NO',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:23:28'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:23:28'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:13'
+}
+{
+  message: 'DATABASE_URL is not set. Falling back to local Postgres connection.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:13'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:14'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (production)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:14'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:14'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:14'
+}
+{
+  message: '🔒 Security features enabled: YES',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:14'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:14'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:26'
+}
+{
+  message: 'DATABASE_URL is not set. Falling back to local Postgres connection.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:26'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 12:26:26'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:18'
+}
+{
+  message: 'DATABASE_URL is not set. Falling back to local Postgres connection.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:19'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:19'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (production)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:19'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:19'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:19'
+}
+{
+  message: '🔒 Security features enabled: YES',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:19'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 16:27:19'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:13:35'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:13:37'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:19:01'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:19:04'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (development)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:19:04'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:19:04'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:19:04'
+}
+{
+  message: '🔒 Security features enabled: NO',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:19:04'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-08 17:19:04'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 255.593032,
+  details: {
+    requestId: '41cfb627-d5e9-4311-a7de-23384e4b059d',
+    method: 'GET',
+    path: '/health',
+    statusCode: 200,
+    contentLength: '405'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-08 17:59:43'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User login successful',
+  details: {
+    username: 'janeDVDops',
+    ip: '127.0.0.1',
+    sessionToken: '6u0v9cyk95hst4gw938vrd'
+  },
+  timestamp: '2025-10-08 18:04:06',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/login',
+  userAgent: 'curl/8.7.1',
+  ip: '127.0.0.1',
+  responseTime: 21,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '24e7e570-6543-4c84-b664-6a28b7a0465a',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-08 18:04:06'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 24.931856,
+  details: {
+    requestId: '24e7e570-6543-4c84-b664-6a28b7a0465a',
+    method: 'POST',
+    path: '/api/v1/auth/login',
+    statusCode: 200,
+    contentLength: '104'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-08 18:04:06'
+}
+{
+  service: 'teampulse-turbo',
+  duration: 2719,
+  sql: '\n' +
+    '      INSERT INTO clients (\n' +
+    '        company,\n' +
+    '        negotiator,\n' +
+    '        sector,\n' +
+    '        company_size,\n' +
+    '        negotiation_type,\n' +
+    '        deal_value,\n' +
+    '        timeline,\n' +
+    '        goal,\n' +
+    '        decision_criteria,\n' +
+    '        constraints,\n' +
+    '        competitors,\n' +
+    '        client_type,\n' +
+    '        is_active,\n' +
+    '        notes\n' +
+    "      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'prospect', true, $12)\n" +
+    '      RETURNING *\n' +
+    '    ',
+  level: 'warn',
+  message: 'Slow database query detected',
+  timestamp: '2025-10-08 19:15:40'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Prospect created',
+  details: {
+    prospectId: undefined,
+    company: undefined,
+    ip: '127.0.0.1',
+    user: 'janeDVDops'
+  },
+  timestamp: '2025-10-08 19:15:40',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2749.222515,
+  details: {
+    requestId: '1c0e2c1f-186f-4188-b531-a17f1026f6aa',
+    method: 'POST',
+    path: '/api/v1/prospects',
+    statusCode: 201,
+    contentLength: '741'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-08 19:15:40'
+}
+{
+  service: 'teampulse-turbo',
+  duration: 1022,
+  sql: '\n' +
+    '      SELECT\n' +
+    '        c.*,\n' +
+    '        COUNT(DISTINCT a.id) as analysis_count,\n' +
+    '        MAX(a.created_at) as last_analysis_date,\n' +
+    '        COALESCE(\n' +
+    '          jsonb_agg(\n' +
+    '            DISTINCT jsonb_build_object(\n' +
+    "              'id', a.id,\n" +
+    "              'title', a.title,\n" +
+    "              'created_at', a.created_at,\n" +
+    "              'risk_level', a.barometer->>'risk_level'\n" +
+    '            )\n' +
+    '          ) FILTER (WHERE a.id IS NOT NULL),\n' +
+    "          '[]'::jsonb\n" +
+    '        ) as recent_analyses\n' +
+    '      FROM clients c\n' +
+    '      LEFT JOIN analyses a ON c.id = a.client_id\n' +
+    "      WHERE client_type = 'prospect'\n" +
+    '      GROUP BY c.id\n' +
+    '      ORDER BY created_at DESC\n' +
+    '      LIMIT $1 OFFSET $2\n' +
+    '    ',
+  level: 'warn',
+  message: 'Slow database query detected',
+  timestamp: '2025-10-08 19:15:41'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1030.000846,
+  details: {
+    requestId: '470958d3-1a68-424e-8bd4-0de101b741b5',
+    method: 'GET',
+    path: '/api/v1/prospects',
+    statusCode: 200,
+    contentLength: '874'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-08 19:15:41'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Validation failed',
+  details: {
+    ip: '127.0.0.1',
+    errors: [
+      {
+        type: 'field',
+        value: '100-500',
+        msg: 'Розмір компанії має бути одним з: startup, small, medium, large',
+        path: 'company_size',
+        location: 'body'
+      }
+    ],
+    body: {
+      company: 'Active Client Ltd',
+      negotiator: 'Jane Smith',
+      sector: 'Finance',
+      company_size: '100-500',
+      client_type: 'active',
+      is_active: true
+    },
+    params: {},
+    query: {}
+  },
+  timestamp: '2025-10-08 19:15:41',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 29.14948,
+  details: {
+    requestId: 'f87af13d-9ca5-434c-a041-4c78457c5c04',
+    method: 'POST',
+    path: '/api/v1/clients',
+    statusCode: 400,
+    contentLength: '214'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-08 19:15:41'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 421.819042,
+  details: {
+    requestId: '37b46ac8-ec70-42cd-9963-050a2374566d',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 200,
+    contentLength: '1151'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-08 19:15:42'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/stats',
+  userAgent: 'curl/8.7.1',
+  ip: '127.0.0.1',
+  responseTime: 2,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '3e5a0ed4-6d02-4534-883e-148ef4325ad8',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-08 19:15:42'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 4.182345,
+  details: {
+    requestId: '3e5a0ed4-6d02-4534-883e-148ef4325ad8',
+    method: 'GET',
+    path: '/api/v1/stats',
+    statusCode: 200,
+    contentLength: '334'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-08 19:15:42'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:05'
+}
+{
+  message: 'DATABASE_URL is not set. Falling back to local Postgres connection.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:05'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:06'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (production)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:06'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:06'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:06'
+}
+{
+  message: '🔒 Security features enabled: YES',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:06'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:42:06'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: 'DATABASE_URL is not set. Falling back to local Postgres connection.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (production)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: '🔒 Security features enabled: YES',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:50'
+}
+{
+  message: 'Received SIGTERM, starting graceful shutdown...',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:43:58'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:50'
+}
+{
+  message: 'DATABASE_URL is not set. Falling back to local Postgres connection.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:52'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:52'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (production)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:52'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:52'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:52'
+}
+{
+  message: '🔒 Security features enabled: YES',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:52'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-19 23:49:52'
+}

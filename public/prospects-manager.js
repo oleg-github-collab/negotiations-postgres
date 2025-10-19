@@ -544,10 +544,722 @@
       console.log('Open menu for prospect:', prospectId);
     },
 
-    viewAnalysis(analysisId) {
-      // TODO: Open analysis detail view
-      console.log('View analysis:', analysisId);
-      ModalManager.open('analysis-detail-modal');
+    async viewAnalysis(analysisId) {
+      try {
+        // Load full analysis with transcript and highlights
+        const analysis = await apiCall(`/negotiations/analysis/${analysisId}`);
+
+        if (!analysis || !analysis.success) {
+          showToast('Не вдалося завантажити аналіз', 'error');
+          return;
+        }
+
+        // Render analysis in modal with transcript highlights
+        this.renderAnalysisModal(analysis.data);
+      } catch (error) {
+        console.error('Error loading analysis:', error);
+        showToast('Помилка завантаження аналізу', 'error');
+      }
+    },
+
+    renderAnalysisModal(analysis) {
+      // Create or get modal
+      let modal = document.getElementById('analysis-detail-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'analysis-detail-modal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+      }
+
+      // Parse barometer data for adequacy meter
+      const barometer = analysis.barometer || {};
+      const adequacyScore = this.calculateAdequacyScore(barometer);
+      const riskLevel = barometer.risk_level || 'unknown';
+
+      // Get transcript with highlights
+      const transcript = analysis.transcript || '';
+      const highlightedTranscript = this.renderTranscriptWithHighlights(
+        transcript,
+        analysis.highlights || []
+      );
+
+      modal.innerHTML = `
+        <div class="modal-overlay" onclick="hideModal('analysis-detail-modal')"></div>
+        <div class="modal-content modal-xl">
+          <div class="modal-header">
+            <h2>
+              <i class="fas fa-chart-line"></i>
+              ${this.escapeHtml(analysis.title || 'Аналіз переговорів')}
+            </h2>
+            <button class="modal-close-btn" onclick="hideModal('analysis-detail-modal')">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <!-- БАРОМЕТР АДЕКВАТНОСТІ КЛІЄНТА -->
+            <div class="adequacy-barometer">
+              <h3>
+                <i class="fas fa-tachometer-alt"></i>
+                Барометр адекватності клієнта та легкості роботи
+              </h3>
+              <div class="barometer-display">
+                <div class="barometer-gauge">
+                  <div class="gauge-arc">
+                    <div class="gauge-fill" style="--gauge-value: ${adequacyScore}%"></div>
+                  </div>
+                  <div class="gauge-center">
+                    <span class="gauge-value">${adequacyScore}</span>
+                    <span class="gauge-label">/ 100</span>
+                  </div>
+                </div>
+                <div class="barometer-metrics">
+                  ${this.renderBarometerMetrics(barometer)}
+                </div>
+              </div>
+              <div class="barometer-interpretation">
+                ${this.renderAdequacyInterpretation(adequacyScore, barometer)}
+              </div>
+            </div>
+
+            <!-- РИЗИК РІВЕНЬ -->
+            <div class="risk-section">
+              <h3><i class="fas fa-shield-alt"></i> Оцінка ризику</h3>
+              ${this.renderRiskBadge(riskLevel)}
+              ${barometer.risk_factors ? `
+                <div class="risk-factors">
+                  <h4>Фактори ризику:</h4>
+                  <ul>
+                    ${barometer.risk_factors.map(f => `<li>${this.escapeHtml(f)}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- КЛЮЧОВІ ІНСАЙТИ -->
+            ${analysis.summary?.key_points ? `
+              <div class="key-insights">
+                <h3><i class="fas fa-lightbulb"></i> Ключові інсайти</h3>
+                <div class="insights-content">
+                  ${this.escapeHtml(analysis.summary.key_points)}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- ПОВНИЙ ТРАНСКРИПТ З ВИДІЛЕННЯМИ -->
+            <div class="transcript-section">
+              <div class="transcript-header">
+                <h3>
+                  <i class="fas fa-file-alt"></i>
+                  Повний транскрипт переговорів
+                </h3>
+                <div class="transcript-tools">
+                  <button class="btn btn-sm btn-secondary" onclick="ProspectsManager.toggleHighlights()">
+                    <i class="fas fa-highlighter"></i>
+                    ${analysis.highlights?.length || 0} виділень
+                  </button>
+                  <button class="btn btn-sm btn-primary" onclick="ProspectsManager.showCognitiveBiases(${analysis.id})">
+                    <i class="fas fa-brain"></i>
+                    Викривлення
+                  </button>
+                  <button class="btn btn-sm btn-primary" onclick="ProspectsManager.askAIAssistant(${analysis.id})">
+                    <i class="fas fa-robot"></i>
+                    Поради AI
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="ProspectsManager.copyTranscript()">
+                    <i class="fas fa-copy"></i>
+                    Копіювати
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="ProspectsManager.downloadTranscript(${analysis.id})">
+                    <i class="fas fa-download"></i>
+                    Завантажити
+                  </button>
+                </div>
+              </div>
+              <div class="transcript-content" id="transcript-content">
+                ${highlightedTranscript}
+              </div>
+
+              <!-- Когнітивні викривлення (показується при активації) -->
+              <div class="cognitive-biases-panel" id="cognitive-biases-panel" style="display: none;">
+                <div class="biases-loading">
+                  <i class="fas fa-brain fa-spin"></i>
+                  <span>Аналізую когнітивні викривлення...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- РЕКОМЕНДАЦІЇ -->
+            ${analysis.recommendations ? `
+              <div class="recommendations-section">
+                <h3><i class="fas fa-tasks"></i> Рекомендації</h3>
+                <div class="recommendations-list">
+                  ${this.renderRecommendations(analysis.recommendations)}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="hideModal('analysis-detail-modal')">
+              Закрити
+            </button>
+            <button class="btn btn-primary" onclick="ProspectsManager.exportAnalysis(${analysis.id})">
+              <i class="fas fa-file-pdf"></i>
+              Експорт в PDF
+            </button>
+          </div>
+        </div>
+      `;
+
+      showModal('analysis-detail-modal');
+    },
+
+    renderTranscriptWithHighlights(transcript, highlights = []) {
+      if (!transcript) {
+        return '<p class="text-muted">Транскрипт недоступний</p>';
+      }
+
+      let html = this.escapeHtml(transcript);
+
+      // Apply highlights from AI analysis
+      if (highlights.length > 0) {
+        // Sort highlights by position (descending) to avoid index shifting
+        const sortedHighlights = [...highlights].sort((a, b) => b.start - a.start);
+
+        sortedHighlights.forEach(highlight => {
+          const { start, end, text, type, note } = highlight;
+
+          const highlightClass = this.getHighlightClass(type);
+          const beforeText = html.substring(0, start);
+          const highlightedText = html.substring(start, end);
+          const afterText = html.substring(end);
+
+          html = beforeText +
+                 `<mark class="${highlightClass}" data-note="${this.escapeHtml(note || '')}" title="${this.escapeHtml(note || '')}">${highlightedText}</mark>` +
+                 afterText;
+        });
+      }
+
+      // Convert newlines to <br> for proper display
+      html = html.replace(/\n/g, '<br>');
+
+      return `<div class="transcript-text">${html}</div>`;
+    },
+
+    getHighlightClass(type) {
+      const classMap = {
+        'red_flag': 'highlight-danger',
+        'positive': 'highlight-success',
+        'warning': 'highlight-warning',
+        'important': 'highlight-info',
+        'question': 'highlight-question',
+        'objection': 'highlight-objection',
+        'commitment': 'highlight-commitment'
+      };
+      return classMap[type] || 'highlight-default';
+    },
+
+    calculateAdequacyScore(barometer) {
+      // Calculate adequacy score from various factors
+      let score = 50; // Start with neutral
+
+      // Positive factors
+      if (barometer.communication_clarity === 'high') score += 15;
+      if (barometer.communication_clarity === 'medium') score += 5;
+
+      if (barometer.responsiveness === 'high') score += 15;
+      if (barometer.responsiveness === 'medium') score += 5;
+
+      if (barometer.decision_making === 'clear') score += 10;
+      if (barometer.budget_awareness === 'realistic') score += 10;
+
+      // Negative factors
+      if (barometer.risk_level === 'high') score -= 20;
+      if (barometer.risk_level === 'critical') score -= 30;
+      if (barometer.red_flags && barometer.red_flags.length > 0) {
+        score -= barometer.red_flags.length * 5;
+      }
+
+      // Clamp between 0 and 100
+      return Math.max(0, Math.min(100, score));
+    },
+
+    renderBarometerMetrics(barometer) {
+      const metrics = [
+        { icon: 'fa-comments', label: 'Комунікація', value: barometer.communication_clarity || 'unknown' },
+        { icon: 'fa-bolt', label: 'Відгук', value: barometer.responsiveness || 'unknown' },
+        { icon: 'fa-balance-scale', label: 'Рішення', value: barometer.decision_making || 'unknown' },
+        { icon: 'fa-dollar-sign', label: 'Бюджет', value: barometer.budget_awareness || 'unknown' },
+        { icon: 'fa-handshake', label: 'Співпраця', value: barometer.cooperation_level || 'unknown' }
+      ];
+
+      return metrics.map(m => `
+        <div class="metric-item">
+          <i class="fas ${m.icon}"></i>
+          <span class="metric-label">${m.label}:</span>
+          <span class="metric-value metric-${m.value}">${this.formatMetricValue(m.value)}</span>
+        </div>
+      `).join('');
+    },
+
+    formatMetricValue(value) {
+      const valueMap = {
+        'high': 'Високий',
+        'medium': 'Середній',
+        'low': 'Низький',
+        'clear': 'Чітке',
+        'unclear': 'Нечітке',
+        'realistic': 'Реалістичний',
+        'unrealistic': 'Нереалістичний',
+        'unknown': 'Невідомо'
+      };
+      return valueMap[value] || value;
+    },
+
+    renderAdequacyInterpretation(score, barometer) {
+      let interpretation = '';
+      let color = '';
+      let icon = '';
+
+      if (score >= 80) {
+        color = 'success';
+        icon = 'fa-smile';
+        interpretation = '<strong>Відмінний клієнт!</strong> Високий рівень адекватності, чітка комунікація, легко працювати.';
+      } else if (score >= 60) {
+        color = 'info';
+        icon = 'fa-meh';
+        interpretation = '<strong>Добрий клієнт.</strong> Прийнятний рівень співпраці, можливі деякі виклики.';
+      } else if (score >= 40) {
+        color = 'warning';
+        icon = 'fa-frown';
+        interpretation = '<strong>Складний клієнт.</strong> Потребує додаткової уваги та чіткої комунікації.';
+      } else {
+        color = 'danger';
+        icon = 'fa-dizzy';
+        interpretation = '<strong>Дуже складний клієнт!</strong> Високі ризики, рекомендується обережність.';
+      }
+
+      return `
+        <div class="interpretation interpretation-${color}">
+          <i class="fas ${icon}"></i>
+          <p>${interpretation}</p>
+        </div>
+      `;
+    },
+
+    renderRecommendations(recommendations) {
+      if (!recommendations || recommendations.length === 0) {
+        return '<p class="text-muted">Немає рекомендацій</p>';
+      }
+
+      return recommendations.map(rec => `
+        <div class="recommendation-item">
+          <i class="fas fa-check-circle"></i>
+          <span>${this.escapeHtml(rec)}</span>
+        </div>
+      `).join('');
+    },
+
+    toggleHighlights() {
+      const content = document.getElementById('transcript-content');
+      if (content) {
+        content.classList.toggle('highlights-hidden');
+      }
+    },
+
+    copyTranscript() {
+      const content = document.getElementById('transcript-content');
+      if (content) {
+        const text = content.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('Транскрипт скопійовано', 'success');
+        }).catch(() => {
+          showToast('Помилка копіювання', 'error');
+        });
+      }
+    },
+
+    async downloadTranscript(analysisId) {
+      try {
+        const response = await apiCall(`/negotiations/analysis/${analysisId}/export`);
+        // Handle download
+        showToast('Завантаження розпочато', 'success');
+      } catch (error) {
+        showToast('Помилка завантаження', 'error');
+      }
+    },
+
+    async exportAnalysis(analysisId) {
+      try {
+        const response = await apiCall(`/negotiations/analysis/${analysisId}/export-pdf`, {
+          method: 'POST'
+        });
+        showToast('PDF експортовано', 'success');
+      } catch (error) {
+        showToast('Помилка експорту', 'error');
+      }
+    },
+
+    // ============================================
+    // КОГНІТИВНІ ВИКРИВЛЕННЯ
+    // ============================================
+
+    async showCognitiveBiases(analysisId) {
+      const panel = document.getElementById('cognitive-biases-panel');
+      if (!panel) return;
+
+      // Toggle panel
+      if (panel.style.display !== 'none') {
+        panel.style.display = 'none';
+        return;
+      }
+
+      panel.style.display = 'block';
+      panel.innerHTML = '<div class="biases-loading"><i class="fas fa-brain fa-spin"></i><span>Аналізую когнітивні викривлення...</span></div>';
+
+      try {
+        // Get analysis data
+        const analysis = await apiCall(`/negotiations/analysis/${analysisId}`);
+        const transcript = (analysis.data || analysis).transcript || '';
+
+        // Call AI to analyze cognitive biases
+        const biasesResponse = await apiCall('/ai/analyze-biases', {
+          method: 'POST',
+          body: JSON.stringify({
+            transcript,
+            analysis_id: analysisId
+          })
+        });
+
+        const biases = biasesResponse.biases || [];
+
+        // Render biases
+        panel.innerHTML = this.renderCognitiveBiases(biases);
+      } catch (error) {
+        console.error('Failed to analyze biases:', error);
+        panel.innerHTML = '<div class="error-state">Помилка аналізу когнітивних викривлень</div>';
+      }
+    },
+
+    renderCognitiveBiases(biases) {
+      if (!biases || biases.length === 0) {
+        return '<div class="empty-state-small"><p>Когнітивних викривлень не виявлено</p></div>';
+      }
+
+      const biasCategories = {
+        'confirmation_bias': { icon: 'fa-check-circle', name: 'Підтверджувальна упередженість', color: '#ff6b6b' },
+        'anchoring': { icon: 'fa-anchor', name: 'Ефект якоря', color: '#ffd93d' },
+        'availability_heuristic': { icon: 'fa-lightbulb', name: 'Евристика доступності', color: '#6bcf7f' },
+        'sunk_cost_fallacy': { icon: 'fa-money-bill-wave', name: 'Ілюзія невідновних витрат', color: '#667eea' },
+        'framing_effect': { icon: 'fa-frame', name: 'Ефект обрамлення', color: '#ba7deb' },
+        'overconfidence': { icon: 'fa-crown', name: 'Надмірна впевненість', color: '#ff8c00' },
+        'groupthink': { icon: 'fa-users', name: 'Групове мислення', color: '#00bfff' },
+        'halo_effect': { icon: 'fa-star', name: 'Ефект ореолу', color: '#ffd700' },
+        'recency_bias': { icon: 'fa-clock', name: 'Ефект новизни', color: '#ff1493' },
+        'status_quo_bias': { icon: 'fa-balance-scale', name: 'Упередженість статус-кво', color: '#4682b4' }
+      };
+
+      return `
+        <div class="cognitive-biases-content">
+          <div class="biases-header">
+            <h4>
+              <i class="fas fa-brain"></i>
+              Виявлені когнітивні викривлення (${biases.length})
+            </h4>
+            <p class="biases-description">
+              Детальний психологічний аналіз прийняття рішень та мислення під час переговорів
+            </p>
+          </div>
+
+          <div class="biases-grid">
+            ${biases.map(bias => {
+              const config = biasCategories[bias.type] || {
+                icon: 'fa-exclamation-triangle',
+                name: bias.type,
+                color: '#999'
+              };
+
+              return `
+                <div class="bias-card" style="border-left: 4px solid ${config.color}">
+                  <div class="bias-header">
+                    <div class="bias-icon" style="background: ${config.color}20; color: ${config.color}">
+                      <i class="fas ${config.icon}"></i>
+                    </div>
+                    <div class="bias-title">
+                      <h5>${config.name}</h5>
+                      <span class="bias-severity bias-severity-${bias.severity}">
+                        ${this.getBiasSeverityLabel(bias.severity)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="bias-content">
+                    <p class="bias-description">${this.escapeHtml(bias.description)}</p>
+
+                    ${bias.quote ? `
+                      <div class="bias-quote">
+                        <i class="fas fa-quote-left"></i>
+                        <span>${this.escapeHtml(bias.quote)}</span>
+                      </div>
+                    ` : ''}
+
+                    ${bias.impact ? `
+                      <div class="bias-impact">
+                        <strong>Вплив:</strong>
+                        <p>${this.escapeHtml(bias.impact)}</p>
+                      </div>
+                    ` : ''}
+
+                    ${bias.mitigation ? `
+                      <div class="bias-mitigation">
+                        <strong>Як нейтралізувати:</strong>
+                        <p>${this.escapeHtml(bias.mitigation)}</p>
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="biases-summary">
+            <h5><i class="fas fa-chart-pie"></i> Загальна оцінка</h5>
+            <p>Виявлено ${biases.length} когнітивних викривлень, які можуть впливати на об'єктивність прийняття рішень.
+            Рекомендуємо врахувати ці моменти при подальших переговорах.</p>
+          </div>
+        </div>
+      `;
+    },
+
+    getBiasSeverityLabel(severity) {
+      const labels = {
+        'low': 'Низький вплив',
+        'medium': 'Помірний вплив',
+        'high': 'Високий вплив',
+        'critical': 'Критичний вплив'
+      };
+      return labels[severity] || severity;
+    },
+
+    // ============================================
+    // AI ASSISTANT (GPT-4o поради)
+    // ============================================
+
+    async askAIAssistant(analysisId) {
+      // Create AI Assistant modal
+      let modal = document.getElementById('ai-assistant-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'ai-assistant-modal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div class="modal-overlay" onclick="hideModal('ai-assistant-modal')"></div>
+        <div class="modal-content modal-lg">
+          <div class="modal-header">
+            <h2>
+              <i class="fas fa-robot"></i>
+              AI Асистент переговорів
+            </h2>
+            <button class="modal-close-btn" onclick="hideModal('ai-assistant-modal')">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="ai-chat-container" id="ai-chat-container">
+              <div class="ai-welcome">
+                <div class="ai-avatar">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <h3>Вітаю! Я ваш AI-консультант</h3>
+                <p>Задайте мені будь-яке питання про переговори, стратегію, тактику або попросіть пораду щодо конкретної ситуації.</p>
+
+                <div class="ai-quick-questions">
+                  <h4>Швидкі питання:</h4>
+                  <button class="quick-question-btn" onclick="ProspectsManager.askQuickQuestion(${analysisId}, 'Як покращити свою позицію в переговорах?')">
+                    Як покращити позицію?
+                  </button>
+                  <button class="quick-question-btn" onclick="ProspectsManager.askQuickQuestion(${analysisId}, 'Які червоні прапорці я маю враховувати?')">
+                    Червоні прапорці
+                  </button>
+                  <button class="quick-question-btn" onclick="ProspectsManager.askQuickQuestion(${analysisId}, 'Яка оптимальна стратегія для цього клієнта?')">
+                    Оптимальна стратегія
+                  </button>
+                  <button class="quick-question-btn" onclick="ProspectsManager.askQuickQuestion(${analysisId}, 'Як мені відповісти на їхні заперечення?')">
+                    Відповідь на заперечення
+                  </button>
+                </div>
+              </div>
+
+              <div class="ai-messages" id="ai-messages"></div>
+            </div>
+
+            <div class="ai-input-container">
+              <textarea
+                id="ai-question-input"
+                class="ai-question-input"
+                placeholder="Задайте питання або попросіть пораду..."
+                rows="3"
+              ></textarea>
+              <button class="btn btn-primary btn-send-ai" onclick="ProspectsManager.sendAIQuestion(${analysisId})">
+                <i class="fas fa-paper-plane"></i>
+                Надіслати
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      showModal('ai-assistant-modal');
+
+      // Focus input
+      setTimeout(() => {
+        document.getElementById('ai-question-input')?.focus();
+      }, 100);
+
+      // Add Enter to send
+      const input = document.getElementById('ai-question-input');
+      if (input) {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && e.ctrlKey) {
+            this.sendAIQuestion(analysisId);
+          }
+        });
+      }
+    },
+
+    async askQuickQuestion(analysisId, question) {
+      const input = document.getElementById('ai-question-input');
+      if (input) {
+        input.value = question;
+      }
+      await this.sendAIQuestion(analysisId);
+    },
+
+    async sendAIQuestion(analysisId) {
+      const input = document.getElementById('ai-question-input');
+      const messagesContainer = document.getElementById('ai-messages');
+
+      if (!input || !messagesContainer) return;
+
+      const question = input.value.trim();
+      if (!question) {
+        showToast('Введіть питання', 'warning');
+        return;
+      }
+
+      // Add user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'ai-message ai-message-user';
+      userMsg.innerHTML = `
+        <div class="message-content">
+          <p>${this.escapeHtml(question)}</p>
+        </div>
+        <div class="message-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+      `;
+      messagesContainer.appendChild(userMsg);
+
+      // Clear input
+      input.value = '';
+
+      // Add loading message
+      const loadingMsg = document.createElement('div');
+      loadingMsg.className = 'ai-message ai-message-assistant';
+      loadingMsg.innerHTML = `
+        <div class="message-avatar">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="message-content message-loading">
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <span>Думаю...</span>
+        </div>
+      `;
+      messagesContainer.appendChild(loadingMsg);
+
+      // Scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      try {
+        // Get analysis context
+        const analysis = await apiCall(`/negotiations/analysis/${analysisId}`);
+
+        // Send to AI
+        const response = await apiCall('/ai/ask-advice', {
+          method: 'POST',
+          body: JSON.stringify({
+            question,
+            analysis_id: analysisId,
+            transcript: (analysis.data || analysis).transcript,
+            context: {
+              company: this.selectedProspect?.company,
+              negotiator: this.selectedProspect?.negotiator,
+              barometer: (analysis.data || analysis).barometer
+            }
+          })
+        });
+
+        // Remove loading
+        loadingMsg.remove();
+
+        // Add AI response
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'ai-message ai-message-assistant';
+        aiMsg.innerHTML = `
+          <div class="message-avatar">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="message-content">
+            ${this.formatAIResponse(response.answer || response.advice)}
+          </div>
+        `;
+        messagesContainer.appendChild(aiMsg);
+
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      } catch (error) {
+        console.error('AI question failed:', error);
+        loadingMsg.remove();
+
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'ai-message ai-message-error';
+        errorMsg.innerHTML = `
+          <div class="message-avatar">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="message-content">
+            <p>Вибачте, сталася помилка. Спробуйте ще раз.</p>
+          </div>
+        `;
+        messagesContainer.appendChild(errorMsg);
+      }
+    },
+
+    formatAIResponse(text) {
+      // Convert markdown-like formatting to HTML
+      let html = this.escapeHtml(text);
+
+      // Bold
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // Lists
+      html = html.replace(/^- (.*?)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+
+      // Numbered lists
+      html = html.replace(/^\d+\. (.*?)$/gm, '<li>$1</li>');
+
+      // Paragraphs
+      html = html.replace(/\n\n/g, '</p><p>');
+      html = `<p>${html}</p>`;
+
+      return html;
     },
 
     // ============================================

@@ -1,6 +1,6 @@
 /**
- * Application Initialization and Integration Manager - FIXED
- * No inline handlers, proper module initialization
+ * Application Initialization and Integration Manager
+ * Ensures all systems are connected and working properly
  */
 
 const AppInit = {
@@ -89,34 +89,25 @@ const AppInit = {
 
         // Initialize DataValidator if available
         if (window.DataValidator) {
-            if (typeof DataValidator.init === 'function') {
-                DataValidator.init();
-            }
+            DataValidator.init();
             this.modules.validator = DataValidator;
         }
 
         // Initialize APIClient if available
         if (window.APIClient) {
             APIClient.baseURL = this.baseURL;
-            if (typeof APIClient.init === 'function') {
-                APIClient.init();
-            }
             this.modules.apiClient = APIClient;
         }
 
         // Initialize ErrorHandler if available
         if (window.ErrorHandler) {
-            if (typeof ErrorHandler.setupGlobalErrorHandlers === 'function') {
-                ErrorHandler.setupGlobalErrorHandlers();
-            }
+            ErrorHandler.setupGlobalErrorHandlers();
             this.modules.errorHandler = ErrorHandler;
         }
 
         // Initialize AutoSave if available
         if (window.AutoSave) {
-            if (typeof AutoSave.init === 'function') {
-                AutoSave.init();
-            }
+            AutoSave.init();
             this.modules.autoSave = AutoSave;
         }
 
@@ -130,25 +121,25 @@ const AppInit = {
         console.log('🎨 Initializing UI components...');
 
         // Initialize ProspectsManager
-        if (window.ProspectsManager && typeof ProspectsManager.init === 'function') {
+        if (window.ProspectsManager) {
             ProspectsManager.init();
             this.modules.prospects = ProspectsManager;
         }
 
         // Initialize KanbanBoard
-        if (window.KanbanBoard && typeof KanbanBoard.init === 'function') {
+        if (window.KanbanBoard) {
             KanbanBoard.init();
             this.modules.kanban = KanbanBoard;
         }
 
         // Initialize TeamHub
-        if (window.TeamHub && typeof TeamHub.init === 'function') {
+        if (window.TeamHub) {
             TeamHub.init();
             this.modules.teamHub = TeamHub;
         }
 
         // Initialize TeamManagement
-        if (window.TeamManagement && typeof TeamManagement.init === 'function') {
+        if (window.TeamManagement) {
             TeamManagement.init();
             this.modules.teamManagement = TeamManagement;
         }
@@ -169,13 +160,9 @@ const AppInit = {
 
             // Load data based on active tab
             if (currentTab === 'prospects' && this.modules.prospects) {
-                if (typeof this.modules.prospects.loadProspects === 'function') {
-                    await this.modules.prospects.loadProspects();
-                }
+                await this.modules.prospects.loadProspects();
             } else if (currentTab === 'clients' && this.modules.teamHub) {
-                if (typeof this.modules.teamHub.loadActiveClients === 'function') {
-                    await this.modules.teamHub.loadActiveClients();
-                }
+                await this.modules.teamHub.loadClients();
             }
 
             console.log('✅ Initial data loaded');
@@ -212,13 +199,13 @@ const AppInit = {
             });
         });
 
-        // Search button - opens Command Palette or Advanced Search
+        // Search button - opens Command Palette
         const searchBtn = document.getElementById('search-btn');
         if (searchBtn) {
             searchBtn.addEventListener('click', () => {
-                if (window.CommandPalette && typeof CommandPalette.open === 'function') {
+                if (window.CommandPalette) {
                     CommandPalette.open();
-                } else if (window.AdvancedSearch && typeof AdvancedSearch.open === 'function') {
+                } else if (window.AdvancedSearch) {
                     AdvancedSearch.open('prospect');
                 }
             });
@@ -228,7 +215,7 @@ const AppInit = {
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
-                if (window.logout && typeof window.logout === 'function') {
+                if (window.logout) {
                     window.logout();
                 }
             });
@@ -268,43 +255,46 @@ const AppInit = {
         console.log('✨ Initializing advanced features...');
 
         // Initialize Command Palette
-        if (window.CommandPalette && typeof CommandPalette.init === 'function') {
+        if (window.CommandPalette) {
             CommandPalette.init();
             this.modules.commandPalette = CommandPalette;
         }
 
         // Initialize Advanced Search
-        if (window.AdvancedSearch && typeof AdvancedSearch.init === 'function') {
+        if (window.AdvancedSearch) {
             AdvancedSearch.init();
             this.modules.advancedSearch = AdvancedSearch;
         }
 
         // Initialize Bulk Operations
-        if (window.BulkOperations && typeof BulkOperations.init === 'function') {
+        if (window.BulkOperations) {
             BulkOperations.init();
             this.modules.bulkOperations = BulkOperations;
         }
 
         // Initialize Keyboard Shortcuts
-        if (window.KeyboardShortcuts && typeof KeyboardShortcuts.init === 'function') {
+        if (window.KeyboardShortcuts) {
             KeyboardShortcuts.init();
             this.modules.keyboardShortcuts = KeyboardShortcuts;
         }
 
-        // Initialize Onboarding Tour (but don't auto-start)
-        if (window.OnboardingTour && typeof OnboardingTour.init === 'function') {
+        // Initialize Onboarding Tour
+        if (window.OnboardingTour) {
             OnboardingTour.init();
             this.modules.onboardingTour = OnboardingTour;
 
-            // Check if user is new (DO NOT auto-start, just check)
+            // Check if user is new
             const hasSeenTour = localStorage.getItem('hasSeenWelcomeTour');
             if (!hasSeenTour) {
-                console.log('💡 New user detected. Tour available via "?" key');
+                // Show tour after a short delay
+                setTimeout(() => {
+                    OnboardingTour.startTour('welcome');
+                }, 1000);
             }
         }
 
         // Initialize RichTextEditor
-        if (window.RichTextEditor && typeof RichTextEditor.init === 'function') {
+        if (window.RichTextEditor) {
             RichTextEditor.init();
             this.modules.richTextEditor = RichTextEditor;
         }
@@ -321,15 +311,14 @@ const AppInit = {
         try {
             switch (tabName) {
                 case 'prospects':
-                    if (this.modules.prospects && typeof this.modules.prospects.loadProspects === 'function') {
+                    if (this.modules.prospects) {
                         await this.modules.prospects.loadProspects();
                     }
                     break;
 
                 case 'clients':
-                    if (this.modules.teamHub && typeof this.modules.teamHub.loadActiveClients === 'function') {
-                        await this.modules.teamHub.loadActiveClients();
-                        this.modules.teamHub.render();
+                    if (this.modules.teamHub) {
+                        await this.modules.teamHub.loadClients();
                     }
                     break;
             }
@@ -347,13 +336,13 @@ const AppInit = {
 
         // Create settings modal
         const modal = document.createElement('div');
-        modal.className = 'settings-modal modal active';
+        modal.className = 'settings-modal';
         modal.innerHTML = `
             <div class="modal-overlay"></div>
             <div class="modal-content">
                 <div class="modal-header">
                     <h2><i class="fas fa-cog"></i> Налаштування</h2>
-                    <button class="modal-close-btn">
+                    <button class="modal-close-btn" onclick="this.closest('.settings-modal').remove()">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -364,21 +353,25 @@ const AppInit = {
                             <input type="checkbox" id="vim-mode-setting" ${window.KeyboardShortcuts?.vimMode ? 'checked' : ''}>
                             <span>Vim режим навігації</span>
                         </label>
+                        <label class="setting-item">
+                            <input type="checkbox" id="show-onboarding-setting">
+                            <span>Показати інтро при наступному вході</span>
+                        </label>
                     </div>
                     <div class="settings-section">
                         <h3>Дані</h3>
-                        <button class="btn-secondary clear-cache-btn">
+                        <button class="btn-secondary" onclick="AppInit.clearCache()">
                             <i class="fas fa-trash"></i>
                             Очистити кеш
                         </button>
-                        <button class="btn-secondary reset-onboarding-btn">
+                        <button class="btn-secondary" onclick="AppInit.resetOnboarding()">
                             <i class="fas fa-redo"></i>
                             Скинути інтро
                         </button>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-primary close-settings-btn">
+                    <button class="btn-primary" onclick="this.closest('.settings-modal').remove()">
                         Закрити
                     </button>
                 </div>
@@ -392,39 +385,20 @@ const AppInit = {
         if (vimModeSetting) {
             vimModeSetting.addEventListener('change', (e) => {
                 if (window.KeyboardShortcuts) {
-                    KeyboardShortcuts.vimMode = e.target.checked;
-                    if (typeof KeyboardShortcuts.saveUserPreferences === 'function') {
-                        KeyboardShortcuts.saveUserPreferences();
+                    if (e.target.checked) {
+                        KeyboardShortcuts.vimMode = true;
+                    } else {
+                        KeyboardShortcuts.vimMode = false;
                     }
+                    KeyboardShortcuts.saveUserPreferences();
                 }
             });
         }
 
-        const clearCacheBtn = modal.querySelector('.clear-cache-btn');
-        if (clearCacheBtn) {
-            clearCacheBtn.addEventListener('click', () => this.clearCache());
-        }
-
-        const resetOnboardingBtn = modal.querySelector('.reset-onboarding-btn');
-        if (resetOnboardingBtn) {
-            resetOnboardingBtn.addEventListener('click', () => this.resetOnboarding());
-        }
-
-        const closeBtn = modal.querySelector('.close-settings-btn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => modal.remove());
-        }
-
-        const modalCloseBtn = modal.querySelector('.modal-close-btn');
-        if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => modal.remove());
-        }
-
         // Close on overlay click
-        const overlay = modal.querySelector('.modal-overlay');
-        if (overlay) {
-            overlay.addEventListener('click', () => modal.remove());
-        }
+        modal.querySelector('.modal-overlay').addEventListener('click', () => {
+            modal.remove();
+        });
     },
 
     /**
@@ -432,9 +406,8 @@ const AppInit = {
      */
     showNotifications() {
         console.log('🔔 Opening notifications...');
-        if (window.showToast) {
-            showToast('Notifications feature - Coming soon!', 'info');
-        }
+        // Placeholder for notifications feature
+        alert('Notifications feature - Coming soon!');
     },
 
     /**
@@ -443,7 +416,7 @@ const AppInit = {
     showCreateClientModal() {
         console.log('➕ Opening create client modal...');
 
-        if (window.showModal && typeof showModal === 'function') {
+        if (window.showModal) {
             showModal('create-client-modal');
         } else {
             console.warn('showModal function not available');
@@ -465,20 +438,14 @@ const AppInit = {
             }
 
             // Clear API cache
-            if (window.APIClient && APIClient.cache) {
+            if (window.APIClient) {
                 APIClient.cache.clear();
             }
 
-            if (window.showToast) {
-                showToast('Кеш очищено!', 'success');
-            } else {
-                alert('Кеш очищено!');
-            }
+            alert('Кеш очищено!');
         } catch (error) {
             console.error('Error clearing cache:', error);
-            if (window.showToast) {
-                showToast('Помилка очищення кешу', 'error');
-            }
+            alert('Помилка очищення кешу');
         }
     },
 
@@ -491,23 +458,19 @@ const AppInit = {
         localStorage.removeItem('hasSeenWelcomeTour');
         localStorage.removeItem('hasSeenProspectsTour');
         localStorage.removeItem('hasSeenTeamHubTour');
-        localStorage.removeItem('teampulse_tour_dismissed');
 
-        if (window.showToast) {
-            showToast('Інтро скинуто! Перезавантажте сторінку.', 'success');
-        } else {
-            alert('Інтро скинуто! Перезавантажте сторінку.');
-        }
+        alert('Інтро скинуто! Перезавантажте сторінку для повторного показу.');
     },
 
     /**
      * Show error message
      */
     showError(message) {
-        if (window.showNotification && typeof showNotification === 'function') {
+        if (window.showNotification) {
             showNotification(message, 'error');
         } else {
             console.error(message);
+            alert(message);
         }
     },
 
@@ -515,46 +478,41 @@ const AppInit = {
      * Show initialization error
      */
     showInitializationError(error) {
-        const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a1a2e;
-            border: 2px solid #f44336;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
-            text-align: center;
-            z-index: 10000;
-            color: white;
-        `;
-        errorDiv.innerHTML = `
-            <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #f44336; margin-bottom: 20px;"></i>
-            <h2 style="margin: 0 0 15px 0; color: white;">Помилка ініціалізації</h2>
-            <p style="margin: 0 0 20px 0; color: rgba(255,255,255,0.7);">
-                Не вдалося завантажити додаток. Будь ласка, перезавантажте сторінку.
-            </p>
-            <button class="btn-primary reload-btn" style="
-                padding: 12px 24px;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                border: none;
-                border-radius: 8px;
+        const errorMessage = `
+            <div style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #1a1a2e;
+                border: 2px solid #f44336;
+                border-radius: 12px;
+                padding: 30px;
+                max-width: 500px;
+                text-align: center;
+                z-index: 10000;
                 color: white;
-                font-weight: 600;
-                cursor: pointer;
             ">
-                Перезавантажити
-            </button>
+                <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #f44336; margin-bottom: 20px;"></i>
+                <h2 style="margin: 0 0 15px 0; color: white;">Помилка ініціалізації</h2>
+                <p style="margin: 0 0 20px 0; color: rgba(255,255,255,0.7);">
+                    Не вдалося завантажити додаток. Будь ласка, перезавантажте сторінку.
+                </p>
+                <button onclick="location.reload()" style="
+                    padding: 12px 24px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border: none;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">
+                    Перезавантажити
+                </button>
+            </div>
         `;
 
-        document.body.appendChild(errorDiv);
-
-        const reloadBtn = errorDiv.querySelector('.reload-btn');
-        if (reloadBtn) {
-            reloadBtn.addEventListener('click', () => location.reload());
-        }
+        document.body.insertAdjacentHTML('beforeend', errorMessage);
     }
 };
 

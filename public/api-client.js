@@ -481,11 +481,21 @@ const APIClient = {
   // ============================================
 
   normalizeURL(url) {
-    // Add base URL if not absolute
-    if (!url.startsWith('http') && !url.startsWith('/api')) {
-      url = `${this.baseURL}${url.startsWith('/') ? url : '/' + url}`;
+    // Don't modify if already a full URL
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
     }
-    return url;
+
+    // Remove any existing /api or /api/v1 prefix to avoid duplication
+    let cleanUrl = url.replace(/^\/api\/v1/, '').replace(/^\/api/, '');
+
+    // Ensure leading slash
+    if (!cleanUrl.startsWith('/')) {
+      cleanUrl = '/' + cleanUrl;
+    }
+
+    // Add base URL
+    return `${this.baseURL}${cleanUrl}`;
   },
 
   getRequestKey(config) {
@@ -527,23 +537,55 @@ if (document.readyState === 'loading') {
 // Expose globally
 window.APIClient = APIClient;
 
-// Backward compatibility with existing apiCall function
+// ============================================
+// GLOBAL apiCall - Backward Compatibility
+// ============================================
+
+/**
+ * Global apiCall function for backward compatibility
+ * Provides simple API for all modules
+ *
+ * @param {string} url - Endpoint URL (e.g., '/prospects', '/clients')
+ * @param {Object} options - Request options
+ * @returns {Promise<Object>} Response data
+ */
 window.apiCall = async (url, options = {}) => {
   try {
     const method = options.method || 'GET';
-    const body = options.body ? JSON.parse(options.body) : undefined;
+
+    // Handle body - if string, parse it, otherwise use as-is
+    let body = options.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        // If not valid JSON, keep as string
+      }
+    }
 
     const response = await APIClient.request(url, {
       method,
       body,
       headers: options.headers,
-      ...options
+      cache: options.cache,
+      retry: options.retry,
+      timeout: options.timeout
     });
 
+    // Return just the data for simpler usage
     return response.data;
   } catch (error) {
+    // Re-throw with better error message
+    console.error(`apiCall failed [${options.method || 'GET'} ${url}]:`, error);
+
+    // If 401, redirect to login
+    if (error.status === 401) {
+      console.log('🔐 Session expired, redirecting to login');
+      window.location.href = '/login';
+    }
+
     throw error;
   }
 };
 
-console.log('✅ API Client loaded successfully');
+console.log('✅ API Client loaded with global apiCall()');
