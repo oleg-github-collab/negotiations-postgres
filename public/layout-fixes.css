@@ -1,0 +1,774 @@
+/* ============================================
+   LAYOUT FIXES - Виправлення накладок та overflow
+   Цей файл виправляє всі проблеми з розміщенням елементів
+   ============================================ */
+
+/* ============================================
+   GLOBAL OVERFLOW FIX
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ============================================
+   APP CONTAINER FIX
+   ============================================ */
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ============================================
+   TOP NAVIGATION FIX
+   ============================================ */
+
+.top-nav {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 100;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.nav-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   MAIN CONTENT FIX
+   ============================================ */
+
+.main-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  max-width: 100vw;
+  height: 100%;
+}
+
+.tab-panel {
+  display: none;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* ============================================
+   VIEW TOGGLE FIX
+   ============================================ */
+
+.view-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  max-width: calc(100vw - 80px);
+}
+
+/* ============================================
+   MODAL FIXES
+   ============================================ */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: var(--z-modal-backdrop, 900);
+  padding: 20px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  z-index: var(--z-modal, 1000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modal-content {
+  background: var(--bg-dark-secondary, #1a1a1a);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  border-radius: 20px;
+  max-width: 600px;
+  width: calc(100% - 40px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  margin: auto;
+}
+
+.modal-lg {
+  max-width: 800px;
+}
+
+.modal-xl {
+  max-width: 1000px;
+}
+
+.modal-header {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.modal-body {
+  padding: 28px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  max-height: 100%;
+}
+
+.modal-footer {
+  padding: 20px 28px;
+  border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* ============================================
+   GRID LAYOUTS FIX
+   ============================================ */
+
+.prospects-grid,
+.teamhub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.kanban-columns {
+  display: flex;
+  gap: 20px;
+  padding: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  align-items: flex-start;
+  max-width: 100%;
+}
+
+.kanban-column {
+  flex: 0 0 320px;
+  min-width: 320px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 200px);
+}
+
+.kanban-column-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 200px;
+  max-height: 100%;
+}
+
+/* ============================================
+   CARD FIXES
+   ============================================ */
+
+.prospect-card,
+.client-card,
+.kanban-card {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.prospect-card-header,
+.client-card-header,
+.kanban-card-header {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.prospect-name,
+.client-company,
+.card-info h4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* ============================================
+   FORM FIXES
+   ============================================ */
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.form-group {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============================================
+   TEAMHUB FIXES
+   ============================================ */
+
+.teamhub-container {
+  padding: 24px;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+.teamhub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.teamhub-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.teamhub-search input {
+  width: 300px;
+  max-width: 100%;
+}
+
+/* ============================================
+   TABLE FIXES
+   ============================================ */
+
+.table-container,
+.teamhub-list {
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table,
+.clients-table,
+.raci-table {
+  width: 100%;
+  min-width: 600px;
+}
+
+/* ============================================
+   UPLOAD SECTION FIXES
+   ============================================ */
+
+.upload-section {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.upload-tabs {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* Tablet - 768px */
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .modal-lg,
+  .modal-xl {
+    max-width: 100%;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .prospects-grid,
+  .teamhub-grid {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .teamhub-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .teamhub-toolbar {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .teamhub-search input {
+    width: 100%;
+  }
+
+  .teamhub-filters {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .view-toggle {
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    max-width: calc(100vw - 80px);
+  }
+
+  .kanban-columns {
+    padding: 16px;
+  }
+
+  .kanban-column {
+    flex: 0 0 280px;
+    min-width: 280px;
+    max-width: 280px;
+  }
+}
+
+/* Mobile - 480px */
+@media (max-width: 480px) {
+  .modal {
+    padding: 0;
+  }
+
+  .modal-content {
+    border-radius: 0;
+    max-height: 100vh;
+    height: 100vh;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 20px;
+  }
+
+  .prospects-grid,
+  .teamhub-grid {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .kanban-column {
+    flex: 0 0 260px;
+    min-width: 260px;
+    max-width: 260px;
+  }
+
+  .images-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-nav {
+    padding: 12px 16px;
+  }
+
+  .nav-tabs {
+    gap: 4px;
+  }
+
+  .nav-tab {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .view-toggle {
+    bottom: 16px;
+    right: 16px;
+    max-width: calc(100vw - 64px);
+  }
+}
+
+/* Extra small - 360px */
+@media (max-width: 360px) {
+  .prospects-grid,
+  .teamhub-grid {
+    padding: 8px;
+    gap: 12px;
+  }
+
+  .kanban-column {
+    flex: 0 0 240px;
+    min-width: 240px;
+    max-width: 240px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+}
+
+/* ============================================
+   Z-INDEX HIERARCHY FIX
+   ============================================ */
+
+/* Ensure proper stacking order */
+.animated-bg {
+  z-index: -1;
+}
+
+.app-container {
+  z-index: 1;
+}
+
+.top-nav {
+  z-index: 100;
+}
+
+.view-toggle {
+  z-index: 10;
+}
+
+.toast-container {
+  z-index: 1200;
+}
+
+.modal-backdrop {
+  z-index: 900;
+}
+
+.modal {
+  z-index: 1000;
+}
+
+.language-toggle {
+  z-index: 200;
+}
+
+/* ============================================
+   SCROLLBAR IMPROVEMENTS
+   ============================================ */
+
+/* Custom scrollbar for all scrollable containers */
+.tab-panel::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar,
+.kanban-column-body::-webkit-scrollbar,
+.teamhub-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tab-panel::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track,
+.kanban-column-body::-webkit-scrollbar-track,
+.teamhub-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.tab-panel::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb,
+.kanban-column-body::-webkit-scrollbar-thumb,
+.teamhub-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.tab-panel::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover,
+.kanban-column-body::-webkit-scrollbar-thumb:hover,
+.teamhub-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   PREVENT TEXT OVERFLOW
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6, p, span, div {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ============================================
+   KANBAN BOARD SPECIFIC FIXES
+   ============================================ */
+
+#kanban-board {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#kanban-board.active {
+  display: flex;
+}
+
+.kanban-header {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* ============================================
+   PROSPECTS PANEL FIXES
+   ============================================ */
+
+#prospects-panel {
+  position: relative;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#prospects-list,
+#teamhub-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+}
+
+/* ============================================
+   BULK TOOLBAR FIX
+   ============================================ */
+
+.bulk-toolbar {
+  width: calc(100% - 40px);
+  max-width: calc(100% - 40px);
+  margin: 0 20px 20px 20px;
+  overflow: hidden;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   ONBOARDING MODAL FIXES
+   ============================================ */
+
+.onboarding-progress {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.onboarding-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .onboarding-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   RACI MATRIX FIXES
+   ============================================ */
+
+.raci-table.ultra {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.workload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .workload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .raci-table.ultra {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+.loading-state {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* ============================================
+   EMPTY STATES
+   ============================================ */
+
+.empty-state {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* ============================================
+   PRINT FIXES
+   ============================================ */
+
+@media print {
+  .app-container,
+  .modal-content {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  .top-nav,
+  .view-toggle,
+  .modal-backdrop,
+  .language-toggle {
+    display: none !important;
+  }
+}
