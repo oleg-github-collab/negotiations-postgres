@@ -420,6 +420,10 @@ const TeamHub = {
               <i class="fas fa-table"></i>
               RACI матриця
             </button>
+            <button class="btn-success btn-sm" onclick="TeamHub.viewSalaryAnalytics(${team.id})">
+              <i class="fas fa-chart-pie"></i>
+              Зарплати
+            </button>
           </div>
         </div>
       `;
@@ -470,6 +474,12 @@ const TeamHub = {
   },
 
   showRACIMatrix(team) {
+    // Track current team ID for auto-save
+    if (!this.selectedClient) {
+      this.selectedClient = {};
+    }
+    this.selectedClient.currentTeamId = team.id;
+
     let modal = document.getElementById('raci-matrix-modal');
     if (!modal) {
       modal = document.createElement('div');
@@ -489,9 +499,12 @@ const TeamHub = {
             <i class="fas fa-table"></i>
             RACI матриця: ${this.escapeHtml(team.name)}
           </h2>
-          <button class="modal-close-btn" onclick="hideModal('raci-matrix-modal')">
-            <i class="fas fa-times"></i>
-          </button>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="raci-save-indicator"></span>
+            <button class="modal-close-btn" onclick="hideModal('raci-matrix-modal')">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
 
         <div class="modal-body">
@@ -506,7 +519,7 @@ const TeamHub = {
             </button>
             <button class="btn btn-primary" onclick="TeamHub.saveRACI(${team.id})">
               <i class="fas fa-save"></i>
-              Зберегти
+              Зберегти зміни
             </button>
           </div>
 
@@ -518,7 +531,7 @@ const TeamHub = {
             <h4>Легенда RACI:</h4>
             <div class="legend-items">
               <span class="legend-item"><strong>R</strong> - Responsible (Відповідальний за виконання)</span>
-              <span class="legend-item"><strong>A</strong> - Accountable (Підзвітний, приймає рішення)</span>
+              <span class="legend-item"><strong>A</strong> - Accountable (Підзвітний, приймає рішення, має бути ОДИН)</span>
               <span class="legend-item"><strong>C</strong> - Consulted (Консультант, радник)</span>
               <span class="legend-item"><strong>I</strong> - Informed (Інформований)</span>
             </div>
@@ -539,45 +552,437 @@ const TeamHub = {
       return '<p class="text-muted">Додайте задачі для побудови RACI матриці</p>';
     }
 
+    // Calculate workload for each member
+    const workload = this.calculateWorkload(tasks, members);
+    const validation = this.validateAllTasks(tasks, members);
+
     return `
-      <table class="raci-table">
+      <!-- Validation Summary -->
+      ${this.renderValidationSummary(validation, tasks.length)}
+
+      <!-- Workload Heatmap -->
+      <div class="raci-workload-heatmap">
+        <h4><i class="fas fa-chart-bar"></i> Навантаження команди</h4>
+        <div class="workload-grid">
+          ${members.map(member => {
+            const load = workload.get(member.id) || { responsible: 0, accountable: 0, total: 0 };
+            const color = this.getWorkloadColor(load.total);
+            return `
+              <div class="workload-card" style="border-left: 4px solid ${color}">
+                <div class="workload-member">
+                  <div class="member-avatar">${this.getInitials(member.name)}</div>
+                  <div class="member-info">
+                    <strong>${this.escapeHtml(member.name)}</strong>
+                    <small>${this.escapeHtml(member.role || '')}</small>
+                  </div>
+                </div>
+                <div class="workload-stats">
+                  <div class="workload-stat">
+                    <span class="stat-label">R:</span>
+                    <span class="stat-value">${load.responsible}</span>
+                  </div>
+                  <div class="workload-stat">
+                    <span class="stat-label">A:</span>
+                    <span class="stat-value">${load.accountable}</span>
+                  </div>
+                  <div class="workload-stat total">
+                    <span class="stat-label">Всього:</span>
+                    <span class="stat-value">${load.total}</span>
+                  </div>
+                </div>
+                <div class="workload-bar">
+                  <div class="workload-fill" style="width: ${Math.min(100, (load.total / tasks.length) * 100)}%; background: ${color}"></div>
+                </div>
+                <span class="workload-label ${this.getWorkloadSeverity(load.total, tasks.length)}">${this.getWorkloadLabel(load.total, tasks.length)}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- RACI Matrix Table -->
+      <table class="raci-table ultra">
         <thead>
           <tr>
-            <th class="task-column">Задача / Рішення</th>
+            <th class="task-column">
+              <div class="column-header">
+                <i class="fas fa-tasks"></i>
+                <span>Задача / Рішення</span>
+              </div>
+            </th>
             ${members.map(m => `
               <th class="member-column">
                 <div class="member-header">
                   <div class="member-avatar">${this.getInitials(m.name)}</div>
-                  <span>${this.escapeHtml(m.name)}</span>
-                  <small>${this.escapeHtml(m.role || '')}</small>
+                  <div class="member-info">
+                    <span class="member-name">${this.escapeHtml(m.name)}</span>
+                    <small class="member-role">${this.escapeHtml(m.role || '')}</small>
+                  </div>
                 </div>
               </th>
             `).join('')}
           </tr>
         </thead>
-        <tbody>
-          ${tasks.map(task => `
-            <tr class="raci-row" data-task-id="${task.id}">
-              <td class="task-name">${this.escapeHtml(task.name)}</td>
-              ${members.map(member => {
-                const raciValue = this.getRACIValue(task, member);
-                return `
-                  <td class="raci-cell">
-                    <select class="raci-select" data-task-id="${task.id}" data-member-id="${member.id}" onchange="TeamHub.updateRACIValue(${task.id}, ${member.id}, this.value)">
-                      <option value="">—</option>
-                      <option value="R" ${raciValue === 'R' ? 'selected' : ''}>R</option>
-                      <option value="A" ${raciValue === 'A' ? 'selected' : ''}>A</option>
-                      <option value="C" ${raciValue === 'C' ? 'selected' : ''}>C</option>
-                      <option value="I" ${raciValue === 'I' ? 'selected' : ''}>I</option>
-                    </select>
-                  </td>
-                `;
-              }).join('')}
-            </tr>
-          `).join('')}
+        <tbody id="raci-matrix-body">
+          ${tasks.map(task => {
+            const taskValidation = this.validateTaskRaci(task, members);
+            return `
+              <tr class="raci-row ${taskValidation.isValid ? 'valid' : 'invalid'}" data-task-id="${task.id}">
+                <td class="task-name">
+                  <div class="task-info">
+                    <span>${this.escapeHtml(task.name)}</span>
+                    ${!taskValidation.isValid ? `
+                      <span class="validation-icon" title="${taskValidation.errors.join(', ')}">
+                        <i class="fas fa-exclamation-triangle"></i>
+                      </span>
+                    ` : `
+                      <span class="validation-icon valid" title="Валідація пройдена">
+                        <i class="fas fa-check-circle"></i>
+                      </span>
+                    `}
+                  </div>
+                </td>
+                ${members.map(member => {
+                  const raciValue = this.getRACIValue(task, member);
+                  const roles = raciValue ? raciValue.split('') : [];
+                  return `
+                    <td class="raci-cell" data-task-id="${task.id}" data-member-id="${member.id}">
+                      <div class="raci-badges">
+                        ${['R', 'A', 'C', 'I'].map(role => `
+                          <button
+                            class="raci-badge ${roles.includes(role) ? 'active' : ''}"
+                            data-role="${role}"
+                            onclick="TeamHub.toggleRACIBadge(${task.id}, ${member.id}, '${role}')"
+                            title="${this.getRACITitle(role)}">
+                            ${role}
+                          </button>
+                        `).join('')}
+                      </div>
+                    </td>
+                  `;
+                }).join('')}
+              </tr>
+            `;
+          }).join('')}
         </tbody>
       </table>
     `;
+  },
+
+  // RACI Helper: Calculate workload per member
+  calculateWorkload(tasks, members) {
+    const workload = new Map();
+
+    members.forEach(member => {
+      workload.set(member.id, { responsible: 0, accountable: 0, consulted: 0, informed: 0, total: 0 });
+    });
+
+    tasks.forEach(task => {
+      if (!task.raci) return;
+
+      task.raci.forEach(assignment => {
+        const load = workload.get(assignment.member_id);
+        if (!load) return;
+
+        const roles = assignment.role ? assignment.role.split('') : [];
+        roles.forEach(role => {
+          if (role === 'R') load.responsible++;
+          if (role === 'A') load.accountable++;
+          if (role === 'C') load.consulted++;
+          if (role === 'I') load.informed++;
+        });
+
+        load.total = load.responsible + load.accountable + load.consulted + load.informed;
+      });
+    });
+
+    return workload;
+  },
+
+  // RACI Helper: Get workload color
+  getWorkloadColor(totalLoad) {
+    if (totalLoad === 0) return '#6c757d'; // Gray - no load
+    if (totalLoad <= 3) return '#51cf66'; // Green - light
+    if (totalLoad <= 6) return '#4facfe'; // Blue - moderate
+    if (totalLoad <= 10) return '#ffa94d'; // Orange - heavy
+    return '#ff6b6b'; // Red - overloaded
+  },
+
+  // RACI Helper: Get workload label
+  getWorkloadLabel(totalLoad, taskCount) {
+    const percentage = (totalLoad / taskCount) * 100;
+    if (totalLoad === 0) return 'Немає навантаження';
+    if (percentage <= 30) return 'Легке навантаження';
+    if (percentage <= 60) return 'Помірне навантаження';
+    if (percentage <= 85) return 'Високе навантаження';
+    return 'Перевантажений';
+  },
+
+  // RACI Helper: Get workload severity class
+  getWorkloadSeverity(totalLoad, taskCount) {
+    const percentage = (totalLoad / taskCount) * 100;
+    if (totalLoad === 0) return 'none';
+    if (percentage <= 30) return 'light';
+    if (percentage <= 60) return 'moderate';
+    if (percentage <= 85) return 'heavy';
+    return 'overloaded';
+  },
+
+  // RACI Helper: Validate single task
+  validateTaskRaci(task, members) {
+    const errors = [];
+    const accountableCount = (task.raci || []).filter(r => r.role && r.role.includes('A')).length;
+    const responsibleCount = (task.raci || []).filter(r => r.role && r.role.includes('R')).length;
+
+    if (accountableCount === 0) {
+      errors.push('Відсутній Accountable (A)');
+    } else if (accountableCount > 1) {
+      errors.push('Забагато Accountable (має бути 1)');
+    }
+
+    if (responsibleCount === 0) {
+      errors.push('Відсутній Responsible (R)');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors: errors,
+      accountableCount: accountableCount,
+      responsibleCount: responsibleCount
+    };
+  },
+
+  // RACI Helper: Validate all tasks
+  validateAllTasks(tasks, members) {
+    let validCount = 0;
+    let invalidCount = 0;
+    const issues = [];
+
+    tasks.forEach(task => {
+      const validation = this.validateTaskRaci(task, members);
+      if (validation.isValid) {
+        validCount++;
+      } else {
+        invalidCount++;
+        issues.push({
+          taskName: task.name,
+          errors: validation.errors
+        });
+      }
+    });
+
+    return {
+      validCount: validCount,
+      invalidCount: invalidCount,
+      totalCount: tasks.length,
+      percentage: tasks.length > 0 ? Math.round((validCount / tasks.length) * 100) : 0,
+      issues: issues
+    };
+  },
+
+  // RACI Helper: Render validation summary
+  renderValidationSummary(validation, totalTasks) {
+    const isAllValid = validation.invalidCount === 0;
+    const statusClass = isAllValid ? 'success' : validation.percentage >= 50 ? 'warning' : 'danger';
+
+    return `
+      <div class="raci-validation-summary ${statusClass}">
+        <div class="validation-header">
+          <div class="validation-icon">
+            <i class="fas fa-${isAllValid ? 'check-circle' : 'exclamation-triangle'}"></i>
+          </div>
+          <div class="validation-info">
+            <h4>Валідація RACI матриці</h4>
+            <p>${validation.validCount} з ${validation.totalCount} задач пройшли валідацію (${validation.percentage}%)</p>
+          </div>
+          <div class="validation-progress">
+            <div class="circular-progress" data-progress="${validation.percentage}">
+              <svg width="80" height="80">
+                <circle cx="40" cy="40" r="35" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"></circle>
+                <circle cx="40" cy="40" r="35" fill="none" stroke="${isAllValid ? '#51cf66' : validation.percentage >= 50 ? '#ffa94d' : '#ff6b6b'}"
+                        stroke-width="6" stroke-dasharray="${2 * Math.PI * 35}"
+                        stroke-dashoffset="${2 * Math.PI * 35 * (1 - validation.percentage / 100)}"
+                        transform="rotate(-90 40 40)"></circle>
+              </svg>
+              <span class="progress-text">${validation.percentage}%</span>
+            </div>
+          </div>
+        </div>
+        ${validation.issues.length > 0 ? `
+          <div class="validation-issues">
+            <button class="toggle-issues-btn" onclick="this.parentElement.querySelector('.issues-list').classList.toggle('show')">
+              <i class="fas fa-chevron-down"></i>
+              Показати проблеми (${validation.issues.length})
+            </button>
+            <div class="issues-list">
+              ${validation.issues.map(issue => `
+                <div class="issue-item">
+                  <i class="fas fa-exclamation-circle"></i>
+                  <strong>${this.escapeHtml(issue.taskName)}:</strong>
+                  <span>${issue.errors.join(', ')}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  },
+
+  // RACI Helper: Get role title
+  getRACITitle(role) {
+    const titles = {
+      'R': 'Responsible - Відповідальний за виконання',
+      'A': 'Accountable - Підзвітний, приймає рішення (має бути 1)',
+      'C': 'Consulted - Консультант, радник',
+      'I': 'Informed - Інформований'
+    };
+    return titles[role] || '';
+  },
+
+  // RACI Action: Toggle badge
+  async toggleRACIBadge(taskId, memberId, role) {
+    const cell = document.querySelector(`.raci-cell[data-task-id="${taskId}"][data-member-id="${memberId}"]`);
+    if (!cell) return;
+
+    const badge = cell.querySelector(`.raci-badge[data-role="${role}"]`);
+    if (!badge) return;
+
+    const isActive = badge.classList.contains('active');
+
+    // Get current RACI value
+    const currentKey = `${taskId}-${memberId}`;
+    const currentChange = this.raciChanges.get(currentKey);
+    let currentRoles = currentChange ? currentChange.role.split('') : [];
+
+    // Find original value if no changes yet
+    if (!currentChange) {
+      const task = this.selectedClient?.teams?.find(t => t.tasks?.find(tk => tk.id === taskId))?.tasks?.find(tk => tk.id === taskId);
+      if (task && task.raci) {
+        const assignment = task.raci.find(r => r.member_id === memberId);
+        if (assignment && assignment.role) {
+          currentRoles = assignment.role.split('');
+        }
+      }
+    }
+
+    // Toggle role
+    if (isActive) {
+      currentRoles = currentRoles.filter(r => r !== role);
+      badge.classList.remove('active');
+    } else {
+      // Special validation for 'A' - only one per task
+      if (role === 'A') {
+        const allCells = document.querySelectorAll(`.raci-cell[data-task-id="${taskId}"]`);
+        allCells.forEach(c => {
+          const aBadge = c.querySelector('.raci-badge[data-role="A"]');
+          if (aBadge && aBadge !== badge) {
+            aBadge.classList.remove('active');
+            // Also update other members' RACI values
+            const otherMemberId = parseInt(c.dataset.memberId);
+            const otherKey = `${taskId}-${otherMemberId}`;
+            const otherChange = this.raciChanges.get(otherKey);
+            if (otherChange) {
+              otherChange.role = otherChange.role.split('').filter(r => r !== 'A').join('');
+              this.raciChanges.set(otherKey, otherChange);
+            }
+          }
+        });
+      }
+
+      if (!currentRoles.includes(role)) {
+        currentRoles.push(role);
+      }
+      badge.classList.add('active');
+    }
+
+    // Sort roles: R, A, C, I
+    const roleOrder = { 'R': 0, 'A': 1, 'C': 2, 'I': 3 };
+    currentRoles.sort((a, b) => roleOrder[a] - roleOrder[b]);
+
+    // Update changes map
+    const newValue = currentRoles.join('');
+    this.raciChanges.set(currentKey, { taskId, memberId, role: newValue });
+
+    // Auto-save after 5 seconds (debounced for better performance)
+    clearTimeout(this.raciAutoSaveTimeout);
+    this.raciAutoSaveTimeout = setTimeout(() => {
+      this.updateValidationDisplay(taskId);
+      this.autoSaveRACI();
+    }, 5000);
+
+    console.log('RACI toggled:', { taskId, memberId, role, newValue });
+  },
+
+  // RACI Action: Update validation display
+  updateValidationDisplay(taskId) {
+    const row = document.querySelector(`.raci-row[data-task-id="${taskId}"]`);
+    if (!row) return;
+
+    // Get all members and rebuild task RACI from current state
+    const cells = row.querySelectorAll('.raci-cell');
+    const taskRaci = [];
+
+    cells.forEach(cell => {
+      const memberId = parseInt(cell.dataset.memberId);
+      const activeBadges = cell.querySelectorAll('.raci-badge.active');
+      const roles = Array.from(activeBadges).map(b => b.dataset.role).join('');
+      if (roles) {
+        taskRaci.push({ member_id: memberId, role: roles });
+      }
+    });
+
+    const mockTask = { id: taskId, raci: taskRaci };
+    const validation = this.validateTaskRaci(mockTask, []);
+
+    // Update row class
+    row.classList.toggle('valid', validation.isValid);
+    row.classList.toggle('invalid', !validation.isValid);
+
+    // Update validation icon
+    const validationIcon = row.querySelector('.validation-icon');
+    if (validationIcon) {
+      if (validation.isValid) {
+        validationIcon.className = 'validation-icon valid';
+        validationIcon.title = 'Валідація пройдена';
+        validationIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+      } else {
+        validationIcon.className = 'validation-icon';
+        validationIcon.title = validation.errors.join(', ');
+        validationIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+      }
+    }
+  },
+
+  // RACI Action: Auto-save
+  async autoSaveRACI() {
+    if (this.raciChanges.size === 0) return;
+
+    try {
+      const teamId = this.selectedClient?.currentTeamId; // You'll need to track this
+      if (!teamId) {
+        console.warn('Cannot auto-save: no team ID');
+        return;
+      }
+
+      const changes = Array.from(this.raciChanges.values());
+      await apiCall(`/teams/${teamId}/raci`, {
+        method: 'POST',
+        body: JSON.stringify({ assignments: changes })
+      });
+
+      // Show subtle notification
+      const saveIndicator = document.querySelector('.raci-save-indicator');
+      if (saveIndicator) {
+        saveIndicator.textContent = '✓ Збережено ' + new Date().toLocaleTimeString('uk-UA');
+        saveIndicator.classList.add('show');
+        setTimeout(() => saveIndicator.classList.remove('show'), 2000);
+      }
+
+      console.log('✅ RACI auto-saved');
+    } catch (error) {
+      console.error('❌ Auto-save failed:', error);
+    }
   },
 
   getRACIValue(task, member) {
@@ -875,6 +1280,20 @@ const TeamHub = {
       "'": '&#039;'
     };
     return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
+  },
+
+  // Salary Analytics Integration
+  async viewSalaryAnalytics(teamId) {
+    try {
+      if (window.SalaryAnalytics && typeof SalaryAnalytics.init === 'function') {
+        await SalaryAnalytics.init(teamId);
+      } else {
+        showNotification('Модуль аналітики зарплат недоступний', 'error');
+      }
+    } catch (error) {
+      console.error('Failed to load salary analytics:', error);
+      showNotification('Не вдалося завантажити аналітику зарплат', 'error');
+    }
   }
 };
 

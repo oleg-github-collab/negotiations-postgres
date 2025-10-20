@@ -307,10 +307,25 @@
         }
     }
 
-    // Open position details
+    // Open position details - Launch BestHireKanban
     function openPosition(positionId) {
         console.log('Opening position:', positionId);
-        showNotification('Деталі позиції (в розробці)', 'info');
+
+        // Check if BestHireKanban is available
+        if (!window.BestHireKanban) {
+            console.error('BestHireKanban module not loaded');
+            showNotification('Модуль Kanban не завантажений', 'error');
+            return;
+        }
+
+        // Initialize and show Kanban board for this position
+        try {
+            window.BestHireKanban.init(positionId);
+            showNotification('Kanban board завантажено', 'success');
+        } catch (error) {
+            console.error('Failed to open Kanban:', error);
+            showNotification('Помилка відкриття Kanban board', 'error');
+        }
     }
 
     // Utility Functions

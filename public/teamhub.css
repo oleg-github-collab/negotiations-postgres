@@ -511,3 +511,473 @@
     flex-direction: column;
   }
 }
+
+/* ============================================
+   ULTRA RACI MATRIX STYLES
+   ============================================ */
+
+/* Validation Summary */
+.raci-validation-summary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.raci-validation-summary.success {
+  border-color: rgba(81, 207, 102, 0.3);
+  background: rgba(81, 207, 102, 0.05);
+}
+
+.raci-validation-summary.warning {
+  border-color: rgba(255, 169, 77, 0.3);
+  background: rgba(255, 169, 77, 0.05);
+}
+
+.raci-validation-summary.danger {
+  border-color: rgba(255, 107, 107, 0.3);
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.validation-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.validation-icon {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.raci-validation-summary.success .validation-icon {
+  color: #51cf66;
+}
+
+.raci-validation-summary.warning .validation-icon {
+  color: #ffa94d;
+}
+
+.raci-validation-summary.danger .validation-icon {
+  color: #ff6b6b;
+}
+
+.validation-info {
+  flex: 1;
+}
+
+.validation-info h4 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.validation-info p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.validation-progress {
+  position: relative;
+}
+
+.circular-progress {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.validation-issues {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.toggle-issues-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.toggle-issues-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.toggle-issues-btn i {
+  margin-right: 8px;
+  transition: transform 0.2s;
+}
+
+.issues-list {
+  display: none;
+  margin-top: 12px;
+  padding-left: 28px;
+}
+
+.issues-list.show {
+  display: block;
+}
+
+.issue-item {
+  padding: 8px 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.issue-item i {
+  color: #ff6b6b;
+  margin-right: 8px;
+}
+
+/* Workload Heatmap */
+.raci-workload-heatmap {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.raci-workload-heatmap h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.raci-workload-heatmap h4 i {
+  margin-right: 8px;
+  color: #4facfe;
+}
+
+.workload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.workload-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s;
+}
+
+.workload-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.workload-member {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.workload-member .member-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.workload-member .member-info strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.workload-member .member-info small {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.workload-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.workload-stat {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+
+.workload-stat .stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  display: block;
+}
+
+.workload-stat .stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  display: block;
+  margin-top: 4px;
+}
+
+.workload-stat.total {
+  background: var(--primary-gradient);
+}
+
+.workload-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.workload-fill {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.workload-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  display: block;
+}
+
+.workload-label.none { color: #6c757d; }
+.workload-label.light { color: #51cf66; }
+.workload-label.moderate { color: #4facfe; }
+.workload-label.heavy { color: #ffa94d; }
+.workload-label.overloaded { color: #ff6b6b; }
+
+/* Ultra RACI Table */
+.raci-table.ultra {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.raci-table.ultra thead {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.raci-table.ultra th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--glass-border);
+}
+
+.raci-table.ultra .column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.raci-table.ultra .column-header i {
+  color: #4facfe;
+}
+
+.raci-table.ultra .member-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.raci-table.ultra .member-header .member-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.raci-table.ultra .member-header .member-info {
+  text-align: center;
+}
+
+.raci-table.ultra .member-header .member-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.raci-table.ultra .member-header .member-role {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+}
+
+.raci-table.ultra tbody tr {
+  transition: background 0.2s;
+}
+
+.raci-table.ultra tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.raci-table.ultra tbody tr.valid {
+  background: rgba(81, 207, 102, 0.05);
+}
+
+.raci-table.ultra tbody tr.invalid {
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.raci-table.ultra td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.raci-table.ultra .task-name {
+  font-weight: 500;
+  min-width: 250px;
+}
+
+.task-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.task-info .validation-icon {
+  font-size: 18px;
+  color: #ff6b6b;
+}
+
+.task-info .validation-icon.valid {
+  color: #51cf66;
+}
+
+/* RACI Badges */
+.raci-badges {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.raci-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.raci-badge:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.05);
+}
+
+.raci-badge.active {
+  border-color: currentColor;
+  color: white;
+  transform: scale(1.1);
+}
+
+.raci-badge[data-role="R"].active {
+  background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+  box-shadow: 0 4px 12px rgba(81, 207, 102, 0.3);
+}
+
+.raci-badge[data-role="A"].active {
+  background: linear-gradient(135deg, #4facfe 0%, #00a8ff 100%);
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+}
+
+.raci-badge[data-role="C"].active {
+  background: linear-gradient(135deg, #ffa94d 0%, #ff8c00 100%);
+  box-shadow: 0 4px 12px rgba(255, 169, 77, 0.3);
+}
+
+.raci-badge[data-role="I"].active {
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
+}
+
+/* Save indicator */
+.raci-save-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(81, 207, 102, 0.9);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.raci-save-indicator.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .workload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .raci-table.ultra {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .raci-badges {
+    flex-direction: column;
+  }
+
+  .raci-badge {
+    width: 100%;
+  }
+}

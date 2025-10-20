@@ -1246,4 +1246,161 @@ r.post('/intelligence/ingest', async (req, res) => {
   }
 });
 
+// ============================================
+// SALARY ANALYTICS ENDPOINT
+// ============================================
+
+r.get('/:teamId/salary-analytics', async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    logger.info(`Fetching salary analytics for team ${teamId}`);
+
+    // Get team with members
+    const teamQuery = await pool.query(
+      `SELECT
+        t.id, t.name, t.description, t.client_id,
+        c.company as client_name
+      FROM teams t
+      LEFT JOIN clients c ON t.client_id = c.id
+      WHERE t.id = $1 AND t.user_id = $2`,
+      [teamId, req.user.id]
+    );
+
+    if (teamQuery.rows.length === 0) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+
+    const team = teamQuery.rows[0];
+
+    // Get members with salary data
+    const membersQuery = await pool.query(
+      `SELECT
+        id, name, role, email,
+        compensation_amount as salary,
+        seniority_level as experience,
+        skills
+      FROM team_members
+      WHERE team_id = $1
+      ORDER BY compensation_amount DESC NULLS LAST`,
+      [teamId]
+    );
+
+    const members = membersQuery.rows;
+
+    // Calculate statistics
+    const salaries = members.map(m => m.salary || 0).filter(s => s > 0);
+    const total_budget = salaries.reduce((sum, s) => sum + s, 0);
+    const average_salary = salaries.length > 0 ? total_budget / salaries.length : 0;
+    const min_salary = salaries.length > 0 ? Math.min(...salaries) : 0;
+    const max_salary = salaries.length > 0 ? Math.max(...salaries) : 0;
+
+    // Calculate role statistics
+    const roleStats = {};
+    members.forEach(m => {
+      if (!m.role) return;
+      if (!roleStats[m.role]) {
+        roleStats[m.role] = { salaries: [], count: 0 };
+      }
+      if (m.salary > 0) {
+        roleStats[m.role].salaries.push(m.salary);
+      }
+      roleStats[m.role].count++;
+    });
+
+    const role_statistics = Object.entries(roleStats).map(([role, data]) => ({
+      role: role,
+      count: data.count,
+      average_salary: data.salaries.length > 0
+        ? data.salaries.reduce((a, b) => a + b, 0) / data.salaries.length
+        : 0,
+      min_salary: data.salaries.length > 0 ? Math.min(...data.salaries) : 0,
+      max_salary: data.salaries.length > 0 ? Math.max(...data.salaries) : 0
+    }));
+
+    // Mock market values (in real app, fetch from external API)
+    const membersWithMarket = members.map(m => ({
+      ...m,
+      market_value: m.salary ? m.salary * (0.95 + Math.random() * 0.15) : 0 // ±10% variation
+    }));
+
+    // Budget allocation by role
+    const budget_allocation = {};
+    Object.entries(roleStats).forEach(([role, data]) => {
+      const roleTotal = data.salaries.reduce((a, b) => a + b, 0);
+      budget_allocation[role] = roleTotal;
+    });
+
+    // Mock salary history for charts (last 12 months)
+    const salary_history = [];
+    const currentDate = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const date = new Date(currentDate);
+      date.setMonth(date.getMonth() - i);
+      const month = date.toLocaleDateString('uk-UA', { month: 'short', year: 'numeric' });
+
+      const baseAmount = total_budget * (1 - i * 0.02); // 2% growth per month backwards
+      const actual = i <= 0 ? total_budget : baseAmount;
+      const forecast = i < 0 ? null : total_budget * (1 + (12 - i) * 0.025); // 2.5% forecast growth
+
+      salary_history.push({
+        month: month,
+        actual: Math.round(actual),
+        forecast: forecast ? Math.round(forecast) : null
+      });
+    }
+
+    // Mock market data by role
+    const market_data = {
+      roles: role_statistics.map(rs => ({
+        name: rs.role,
+        our_salary: rs.average_salary,
+        market_median: rs.average_salary * (0.9 + Math.random() * 0.2),
+        difference: Math.round((Math.random() - 0.5) * 30), // -15% to +15%
+        percentile_min: 25,
+        percentile_max: 75,
+        our_percentile: 40 + Math.random() * 20 // 40-60 percentile
+      }))
+    };
+
+    const analyticsData = {
+      team_id: teamId,
+      team_name: team.name,
+      client_name: team.client_name,
+      total_budget: total_budget,
+      average_salary: average_salary,
+      total_members: members.length,
+      budget_used_percent: 75 + Math.random() * 20, // Mock: 75-95%
+      budget_trend: Math.round((Math.random() - 0.3) * 10), // Slight negative to positive trend
+      salary_trend: Math.round((Math.random() - 0.2) * 8),
+      headcount_trend: Math.round((Math.random() - 0.1) * 15),
+      members: membersWithMarket,
+      role_statistics: role_statistics,
+      budget_allocation: budget_allocation,
+      salary_history: salary_history,
+      market_data: market_data,
+      budget: {
+        total: total_budget,
+        used: total_budget,
+        remaining: 0,
+        currency: 'UAH'
+      }
+    };
+
+    logger.info('Salary analytics fetched successfully');
+
+    res.json({
+      success: true,
+      data: analyticsData
+    });
+
+  } catch (error) {
+    logger.error('Failed to fetch salary analytics', { error: error.message });
+    res.status(500).json({
+      error: 'Failed to fetch salary analytics',
+      details: error.message
+    });
+  }
+});
+
 export default r;

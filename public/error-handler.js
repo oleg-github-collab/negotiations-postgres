@@ -634,6 +634,200 @@ const ErrorHandler = {
     } catch (e) {
       console.error('Failed to clear localStorage:', e);
     }
+  },
+
+  // ============================================
+  // MODULE ERROR BOUNDARIES
+  // Prevent one module failure from crashing the entire app
+  // ============================================
+
+  /**
+   * Wrap a module initialization function with error boundary
+   * If module fails to load, log error and show user-friendly message
+   * @param {Function} moduleInitFn - Module initialization function
+   * @param {String} moduleName - Name of the module for error reporting
+   * @param {Boolean} critical - If true, show error to user; if false, fail silently
+   */
+  async wrapModuleInit(moduleInitFn, moduleName, critical = false) {
+    try {
+      await moduleInitFn();
+      console.log(`✅ Module loaded: ${moduleName}`);
+      return { success: true };
+    } catch (error) {
+      console.error(`❌ Module failed to load: ${moduleName}`, error);
+
+      this.logError({
+        type: 'module_init_failure',
+        module: moduleName,
+        message: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
+
+      if (critical) {
+        this.showErrorNotification(
+          `Модуль "${moduleName}" не завантажився`,
+          'Спробуйте перезавантажити сторінку'
+        );
+      }
+
+      return { success: false, error };
+    }
+  },
+
+  /**
+   * Wrap a module function execution with error boundary
+   * If function fails, log error and return fallback value
+   * @param {Function} fn - Function to execute
+   * @param {String} functionName - Name of the function for error reporting
+   * @param {*} fallbackValue - Value to return on error
+   * @param {Boolean} showError - Whether to show error notification to user
+   */
+  async safeExecute(fn, functionName, fallbackValue = null, showError = false) {
+    try {
+      return await fn();
+    } catch (error) {
+      console.error(`❌ Function failed: ${functionName}`, error);
+
+      this.logError({
+        type: 'function_execution_failure',
+        function: functionName,
+        message: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
+
+      if (showError) {
+        this.showErrorNotification(
+          'Операція не виконалася',
+          error.message || 'Спробуйте ще раз'
+        );
+      }
+
+      return fallbackValue;
+    }
+  },
+
+  /**
+   * Wrap API calls with comprehensive error handling
+   * Handles network errors, timeouts, authentication, and server errors
+   * @param {Function} apiCallFn - API call function
+   * @param {Object} options - Options for error handling
+   */
+  async safeApiCall(apiCallFn, options = {}) {
+    const {
+      retryable = true,
+      maxRetries = 3,
+      timeout = 30000,
+      showError = true,
+      fallbackValue = null,
+      operationName = 'API call'
+    } = options;
+
+    const executeWithTimeout = async () => {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout')), timeout)
+      );
+
+      return Promise.race([apiCallFn(), timeoutPromise]);
+    };
+
+    let lastError;
+    let attempts = 0;
+
+    while (attempts < (retryable ? maxRetries : 1)) {
+      attempts++;
+
+      try {
+        const result = await executeWithTimeout();
+
+        // Reset retry counter on success
+        if (retryable && this.retryAttempts.has(operationName)) {
+          this.retryAttempts.delete(operationName);
+        }
+
+        return result;
+      } catch (error) {
+        lastError = error;
+
+        // Check if error is retryable
+        const isRetryable = retryable && (
+          error.message?.includes('timeout') ||
+          error.message?.includes('network') ||
+          error.status === 429 || // Rate limit
+          error.status === 503 || // Service unavailable
+          error.status === 504    // Gateway timeout
+        );
+
+        if (isRetryable && attempts < maxRetries) {
+          const delay = Math.min(1000 * Math.pow(2, attempts - 1), 10000);
+          console.log(`⏳ Retrying ${operationName} (attempt ${attempts}/${maxRetries}) in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          continue;
+        }
+
+        // Log error
+        this.logError({
+          type: 'api_call_failure',
+          operation: operationName,
+          attempts,
+          message: error.message,
+          status: error.status,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+        });
+
+        // Show error to user if configured
+        if (showError) {
+          let errorMessage = 'Помилка виконання запиту';
+
+          if (error.status === 401 || error.status === 403) {
+            errorMessage = 'Немає доступу. Увійдіть знову.';
+          } else if (error.status === 404) {
+            errorMessage = 'Дані не знайдено';
+          } else if (error.status === 429) {
+            errorMessage = 'Занадто багато запитів. Спробуйте пізніше.';
+          } else if (error.status >= 500) {
+            errorMessage = 'Помилка сервера. Спробуйте пізніше.';
+          } else if (error.message?.includes('timeout')) {
+            errorMessage = 'Запит занадто довгий. Перевірте з\'єднання.';
+          }
+
+          this.showErrorNotification(errorMessage, error.message);
+        }
+
+        break;
+      }
+    }
+
+    return fallbackValue;
+  },
+
+  /**
+   * Create a module-specific error boundary wrapper
+   * Returns wrapped versions of all module functions
+   */
+  createModuleBoundary(moduleName, moduleObject) {
+    const wrapped = {};
+
+    Object.keys(moduleObject).forEach(key => {
+      const value = moduleObject[key];
+
+      if (typeof value === 'function') {
+        wrapped[key] = async (...args) => {
+          return this.safeExecute(
+            () => value.apply(moduleObject, args),
+            `${moduleName}.${key}`,
+            undefined,
+            false // Don't show error by default
+          );
+        };
+      } else {
+        wrapped[key] = value;
+      }
+    });
+
+    return wrapped;
   }
 };
 

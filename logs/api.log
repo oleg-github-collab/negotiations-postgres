@@ -966,3 +966,11 @@
 {"level":"info","message":"🤖 AI Model: gpt-4o","service":"teampulse-turbo","timestamp":"2025-10-19 23:49:52"}
 {"level":"info","message":"🔒 Security features enabled: YES","service":"teampulse-turbo","timestamp":"2025-10-19 23:49:52"}
 {"level":"info","message":"📝 Logging level: info","service":"teampulse-turbo","timestamp":"2025-10-19 23:49:52"}
+{"level":"warn","message":"DATABASE_URL not provided. Falling back to local Postgres connection string.","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}
+{"level":"warn","message":"DATABASE_URL is not set. Falling back to local Postgres connection.","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}
+{"level":"info","message":"PostgreSQL schema initialized","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}
+{"level":"info","message":"🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (production)","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}
+{"level":"info","message":"📊 Daily token limit: 512,000","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}
+{"level":"info","message":"🤖 AI Model: gpt-4o","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}
+{"level":"info","message":"🔒 Security features enabled: YES","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}
+{"level":"info","message":"📝 Logging level: info","service":"teampulse-turbo","timestamp":"2025-10-20 02:20:28"}

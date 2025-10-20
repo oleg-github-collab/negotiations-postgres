@@ -97,6 +97,123 @@ const OnboardingTour = {
           position: 'top'
         }
       ]
+    },
+
+    raci: {
+      id: 'raci',
+      name: 'RACI Matrix - Ultra Edition',
+      steps: [
+        {
+          target: '.raci-tab-btn',
+          title: 'RACI Matrix',
+          content: 'Чітко визначайте ролі та відповідальність для кожної задачі з інтерактивною матрицею.',
+          position: 'bottom'
+        },
+        {
+          target: '.raci-cell:first-child',
+          title: 'Click-to-toggle інтерфейс',
+          content: 'Клікайте на комірки для перемикання між R (Responsible), A (Accountable), C (Consulted), I (Informed).',
+          position: 'top'
+        },
+        {
+          target: '.raci-validation',
+          title: 'Автоматична валідація',
+          content: 'Система підсвічує помилки: кожна задача повинна мати рівно 1 Accountable та хоча б 1 Responsible.',
+          position: 'bottom'
+        },
+        {
+          target: '.raci-add-task',
+          title: 'Додавання задач',
+          content: 'Додайте нову задачу або учасника для розширення матриці.',
+          position: 'left'
+        },
+        {
+          target: null,
+          title: 'Auto-save',
+          content: 'Всі зміни автоматично зберігаються через 5 секунд. Працюйте без турбот про збереження!',
+          position: 'center'
+        }
+      ]
+    },
+
+    salaryAnalytics: {
+      id: 'salary-analytics',
+      name: 'Salary Analytics Dashboard',
+      steps: [
+        {
+          target: '.salary-analytics-tab',
+          title: 'Salary Analytics',
+          content: 'Комплексна аналітика зарплат з AI-insights та візуалізацією даних.',
+          position: 'bottom'
+        },
+        {
+          target: '.salary-chart',
+          title: 'Інтерактивні графіки',
+          content: 'Розподіл зарплат, порівняння по позиціях та тренди з Chart.js візуалізацією.',
+          position: 'top'
+        },
+        {
+          target: '.ai-insights-card',
+          title: 'AI Insights',
+          content: 'GPT-4o аналізує ваші дані та генерує рекомендації для оптимізації бюджету.',
+          position: 'left'
+        },
+        {
+          target: '.salary-stats-grid',
+          title: 'Статистика',
+          content: 'Медіана, середнє, міжквартильний розмах та інші метрики для кожної позиції.',
+          position: 'top'
+        },
+        {
+          target: '.export-salary-data',
+          title: 'Експорт даних',
+          content: 'Експортуйте аналітику в CSV або PDF для звітності.',
+          position: 'left'
+        }
+      ]
+    },
+
+    bestHireKanban: {
+      id: 'best-hire-kanban',
+      name: 'Best Hire Kanban Pipeline',
+      steps: [
+        {
+          target: '.position-card:first-child',
+          title: 'Позиція клієнта',
+          content: 'Клікніть на позицію щоб відкрити Kanban board з кандидатами.',
+          position: 'top'
+        },
+        {
+          target: null,
+          title: '7-Stage Pipeline',
+          content: 'Kanban board з 7 етапами: Applied → Screening → Interview → Assessment → Offer → Hired → Rejected.',
+          position: 'center'
+        },
+        {
+          target: null,
+          title: 'AI Candidate Scoring',
+          content: 'Кожен кандидат автоматично оцінюється AI на основі резюме, досвіду та вимог позиції.',
+          position: 'center'
+        },
+        {
+          target: null,
+          title: 'Resume Parsing',
+          content: 'Завантажте резюме (PDF/зображення) і GPT-4o Vision автоматично витягне всю інформацію.',
+          position: 'center'
+        },
+        {
+          target: null,
+          title: 'Drag & Drop',
+          content: 'Перетягуйте кандидатів між етапами. Зміни відразу синхронізуються з сервером.',
+          position: 'center'
+        },
+        {
+          target: null,
+          title: 'Parallel AI Processing',
+          content: 'Bulk scoring використовує паралельну обробку для миттєвої оцінки всіх кандидатів.',
+          position: 'center'
+        }
+      ]
     }
   },
 
