@@ -225,9 +225,19 @@ class OfflineSyncManager {
    * Get sync queue
    */
   async getSyncQueue() {
-    const tx = this.db.transaction(['syncQueue'], 'readonly');
-    const store = tx.objectStore('syncQueue');
-    return await store.getAll();
+    try {
+      const tx = this.db.transaction(['syncQueue'], 'readonly');
+      const store = tx.objectStore('syncQueue');
+      const request = store.getAll();
+
+      return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    } catch (error) {
+      console.error('Failed to get sync queue:', error);
+      return [];
+    }
   }
 
   /**

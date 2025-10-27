@@ -18,6 +18,7 @@ import fs from 'fs';
 import logger, { logError, logSecurity, logAPI, logDetailedError, logClientError, logRailwayDeploy } from './utils/logger.js';
 import { apiLimiter, loginLimiter, analysisLimiter } from './middleware/rateLimiter.js';
 import { validateSecurityHeaders } from './middleware/validators.js';
+import { cspOverride } from './middleware/cspOverride.js';
 
 import analyzeRoutes from './routes/analyze.js';
 import clientsRoutes from './routes/clients.js';
@@ -76,6 +77,9 @@ if (isProduction) {
 // Security & middleware
 app.use(validateSecurityHeaders);
 
+// Override CSP to allow external resources
+app.use(cspOverride);
+
 app.use(
   cors({
     origin: isProduction
@@ -91,21 +95,7 @@ app.use(requestContext);
 // Enhanced security headers for production
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
-        fontSrc: ["'self'", "data:", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
-        scriptSrcElem: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-        scriptSrcAttr: ["'unsafe-inline'"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
-        objectSrc: ["'none'"],
-        mediaSrc: ["'self'"],
-        frameSrc: ["'none'"]
-      }
-    },
+    contentSecurityPolicy: false, // Disabled - using custom CSP middleware
     crossOriginEmbedderPolicy: false,
     hsts: {
       maxAge: 31536000,
