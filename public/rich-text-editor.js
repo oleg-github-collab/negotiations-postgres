@@ -9,9 +9,15 @@ const RichTextEditor = {
 
   // Initialize editor in a container
   init(containerId, initialContent = '', options = {}) {
+    // Check if containerId is valid
+    if (!containerId || containerId === 'undefined') {
+      console.warn('RichTextEditor: Invalid container ID provided');
+      return null;
+    }
+
     const container = document.getElementById(containerId);
     if (!container) {
-      console.error(`Container ${containerId} not found`);
+      console.warn(`RichTextEditor: Container ${containerId} not found in DOM`);
       return null;
     }
 

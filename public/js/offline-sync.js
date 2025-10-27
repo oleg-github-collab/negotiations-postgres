@@ -251,8 +251,13 @@ class OfflineSyncManager {
     this.emit('syncStart');
 
     try {
-      const queue = await this.getSyncQueue();
+      const queue = await this.getSyncQueue() || [];
       console.log(`Syncing ${queue.length} operations...`);
+
+      if (!Array.isArray(queue)) {
+        console.warn('Sync queue is not an array, skipping sync');
+        return;
+      }
 
       for (const operation of queue) {
         try {

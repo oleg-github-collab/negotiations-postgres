@@ -626,3 +626,31 @@
   message: 'Application Error',
   timestamp: '2025-10-08 17:13:37'
 }
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'listen EADDRINUSE: address already in use 0.0.0.0:3000',
+    stack: 'Error: listen EADDRINUSE: address already in use 0.0.0.0:3000\n' +
+      '    at Server.setupListenHandle [as _listen2] (node:net:1908:16)\n' +
+      '    at listenInCluster (node:net:1965:12)\n' +
+      '    at doListen (node:net:2139:7)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)',
+    name: 'Error'
+  },
+  context: {
+    type: 'uncaughtException',
+    errorId: 'uatv72hfohl',
+    pid: 59538,
+    memory: {
+      rss: 87580672,
+      heapTotal: 40026112,
+      heapUsed: 29275688,
+      external: 3714729,
+      arrayBuffers: 109002
+    },
+    uptime: 2.063863679
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-10-27 21:10:57'
+}
