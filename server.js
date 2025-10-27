@@ -92,18 +92,8 @@ app.use(
 
 app.use(requestContext);
 
-// Enhanced security headers for production
-app.use(
-  helmet({
-    contentSecurityPolicy: false, // Disabled - using custom CSP middleware
-    crossOriginEmbedderPolicy: false,
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true
-    }
-  })
-);
+// Helmet disabled - using custom security headers
+// app.use(helmet()); // DISABLED - conflicts with CSP override
 // compression — вимкнути для SSE
 const shouldCompress = (req, res) => {
   if (req.path.startsWith('/api/analyze')) return false;
