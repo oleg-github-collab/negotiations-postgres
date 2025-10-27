@@ -1,10 +1,128 @@
 /* ============================================
-   LAYOUT FIXES - Виправлення накладок та overflow
-   Цей файл виправляє всі проблеми з розміщенням елементів
+   ⚡ ULTRA LAYOUT FIXES ⚡ - Версія 2.0
+   Комплексне виправлення всіх проблем інтерфейсу
+
+   ✅ Виправлення накладок та overflow
+   ✅ Критична корекція z-index конфліктів
+   ✅ Оптимізація всіх модальних вікон
+   ✅ Ідеальний responsive дизайн
+   ✅ Виправлення scrollbar проблем
+   ✅ Усунення text overflow
+   ✅ Perfect pixel positioning
    ============================================ */
 
 /* ============================================
-   GLOBAL OVERFLOW FIX
+   КРИТИЧНИЙ Z-INDEX STACK
+   Правильна ієрархія шарів (НАЙВАЖЛИВІШЕ!)
+   ============================================ */
+
+/* Шар -1: Фон */
+.animated-bg {
+  z-index: -1 !important;
+}
+
+/* Шар 1-10: Базовий контент */
+.app-container {
+  z-index: 1 !important;
+}
+
+.view-toggle {
+  z-index: 10 !important;
+}
+
+/* Шар 100-500: Навігація та UI елементи */
+.top-nav {
+  z-index: 100 !important;
+}
+
+.language-toggle {
+  z-index: 200 !important;
+}
+
+.autosave-indicators {
+  z-index: 300 !important;
+}
+
+/* Шар 900-999: Backdrop елементи */
+.modal-backdrop,
+.advanced-search-overlay,
+.confirmation-backdrop,
+.shortcuts-backdrop,
+.command-palette-backdrop,
+.modal-overlay,
+.loading-overlay {
+  z-index: 900 !important;
+}
+
+/* Шар 1000-1999: Модальні вікна та діалоги */
+.modal,
+.advanced-search-container,
+.confirmation-dialog,
+.shortcuts-modal,
+.settings-modal,
+.confirm-dialog {
+  z-index: 1000 !important;
+}
+
+.modal-content,
+.advanced-search-panel,
+.confirmation-content,
+.shortcuts-content {
+  z-index: 1001 !important;
+  position: relative;
+}
+
+/* Шар 9999-10000: Tour і Guides */
+.tour-overlay {
+  z-index: 9999 !important;
+}
+
+.tour-highlight {
+  z-index: 9999 !important;
+}
+
+.tour-tooltip,
+.tour-banner {
+  z-index: 10000 !important;
+}
+
+/* Шар 10000-11000: Command Palette */
+.command-palette {
+  z-index: 10000 !important;
+}
+
+.command-palette-container {
+  z-index: 10001 !important;
+  position: relative;
+}
+
+.command-toast {
+  z-index: 10002 !important;
+}
+
+.context-tooltip {
+  z-index: 10003 !important;
+}
+
+/* Шар 11000-12000: Autosave індикатори */
+.autosave-indicator {
+  z-index: 11000 !important;
+}
+
+.raci-save-indicator {
+  z-index: 11500 !important;
+}
+
+/* Шар 12000+: Нотифікації (Найвищий пріоритет) */
+.toast-container,
+.toast-notification,
+.notifications-container,
+.notification {
+  z-index: 12000 !important;
+}
+
+/* ============================================
+   GLOBAL OVERFLOW & BOX-SIZING
    ============================================ */
 
 * {
@@ -16,15 +134,16 @@ html, body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  position: relative;
 }
 
 body {
-  position: relative;
   min-height: 100vh;
+  max-height: 100vh;
 }
 
 /* ============================================
-   APP CONTAINER FIX
+   APP CONTAINER - PERFECT VIEWPORT FIT
    ============================================ */
 
 .app-container {
@@ -39,16 +158,15 @@ body {
 }
 
 /* ============================================
-   TOP NAVIGATION FIX
+   TOP NAVIGATION - NO OVERFLOW
    ============================================ */
 
 .top-nav {
   flex-shrink: 0;
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow: hidden;
   position: relative;
-  z-index: 100;
 }
 
 .nav-tabs {
@@ -73,7 +191,7 @@ body {
 }
 
 /* ============================================
-   MAIN CONTENT FIX
+   MAIN CONTENT - PERFECT HEIGHT
    ============================================ */
 
 .main-content {
@@ -82,6 +200,7 @@ body {
   position: relative;
   max-width: 100vw;
   height: 100%;
+  min-height: 0;
 }
 
 .tab-panel {
@@ -98,21 +217,21 @@ body {
 }
 
 /* ============================================
-   VIEW TOGGLE FIX
+   VIEW TOGGLE - ALWAYS VISIBLE
    ============================================ */
 
 .view-toggle {
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 10;
   max-width: calc(100vw - 80px);
 }
 
 /* ============================================
-   MODAL FIXES
+   MODAL FIXES - КРИТИЧНІ ВИПРАВЛЕННЯ
    ============================================ */
 
+/* Modal Backdrop */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -123,10 +242,13 @@ body {
   max-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: var(--z-modal-backdrop, 900);
   padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Modal Container */
 .modal {
   position: fixed;
   top: 0;
@@ -135,7 +257,6 @@ body {
   height: 100vh;
   max-width: 100vw;
   max-height: 100vh;
-  z-index: var(--z-modal, 1000);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,6 +265,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Modal Content */
 .modal-content {
   background: var(--bg-dark-secondary, #1a1a1a);
   border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
@@ -167,11 +289,13 @@ body {
   max-width: 1000px;
 }
 
+/* Modal Parts */
 .modal-header {
   padding: 24px 28px;
   border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
   flex-shrink: 0;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .modal-body {
@@ -180,6 +304,7 @@ body {
   overflow-x: hidden;
   flex: 1;
   max-height: 100%;
+  min-height: 0;
 }
 
 .modal-footer {
@@ -187,21 +312,144 @@ body {
   border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
   flex-shrink: 0;
   overflow: hidden;
+  max-width: 100%;
 }
 
 /* ============================================
-   GRID LAYOUTS FIX
+   ADVANCED SEARCH MODAL FIXES
+   ============================================ */
+
+.advanced-search-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.advanced-search-panel {
+  position: relative;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: auto;
+}
+
+.advanced-search-panel > div:not(.search-header):not(.entity-type-selector):not(.search-actions) {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ============================================
+   COMMAND PALETTE FIXES
+   ============================================ */
+
+.command-palette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.command-palette-container {
+  width: 640px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.command-palette-results {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ============================================
+   TOUR & TOOLTIPS FIXES
+   ============================================ */
+
+.tour-tooltip {
+  position: fixed;
+  width: 380px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tour-tooltip-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+.tour-banner {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 420px;
+  max-width: calc(100vw - 40px);
+}
+
+/* ============================================
+   GRID LAYOUTS - PERFECT RESPONSIVE
    ============================================ */
 
 .prospects-grid,
 .teamhub-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: 20px;
   padding: 20px;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible;
+}
+
+/* ============================================
+   KANBAN BOARD - HORIZONTAL SCROLL FIX
+   ============================================ */
+
+#kanban-board {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#kanban-board.active {
+  display: flex;
+}
+
+.kanban-header {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .kanban-columns {
@@ -213,6 +461,7 @@ body {
   flex: 1;
   align-items: flex-start;
   max-width: 100%;
+  min-height: 0;
 }
 
 .kanban-column {
@@ -221,19 +470,19 @@ body {
   max-width: 320px;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 200px);
+  max-height: 100%;
 }
 
 .kanban-column-body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: 200px;
+  min-height: 0;
   max-height: 100%;
 }
 
 /* ============================================
-   CARD FIXES
+   CARD COMPONENTS - TEXT OVERFLOW FIX
    ============================================ */
 
 .prospect-card,
@@ -253,7 +502,9 @@ body {
 
 .prospect-name,
 .client-company,
-.card-info h4 {
+.card-info h4,
+.file-name,
+.saved-filter-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -261,7 +512,7 @@ body {
 }
 
 /* ============================================
-   FORM FIXES
+   FORM ELEMENTS - PERFECT WIDTH
    ============================================ */
 
 .form-row {
@@ -281,14 +532,18 @@ body {
 
 .form-group input,
 .form-group select,
-.form-group textarea {
+.form-group textarea,
+.criterion-input,
+.criterion-select,
+.range-input,
+.date-input {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
 
 /* ============================================
-   TEAMHUB FIXES
+   TEAMHUB - NO HORIZONTAL SCROLL
    ============================================ */
 
 .teamhub-container {
@@ -328,7 +583,7 @@ body {
 }
 
 /* ============================================
-   TABLE FIXES
+   TABLE COMPONENTS - HORIZONTAL SCROLL
    ============================================ */
 
 .table-container,
@@ -347,8 +602,14 @@ body {
   min-width: 600px;
 }
 
+.raci-table.ultra {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 /* ============================================
-   UPLOAD SECTION FIXES
+   UPLOAD SECTIONS - FLEX WRAP
    ============================================ */
 
 .upload-section {
@@ -365,22 +626,249 @@ body {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .images-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
   gap: 12px;
   width: 100%;
   max-width: 100%;
 }
 
 /* ============================================
-   RESPONSIVE BREAKPOINTS
+   NOTIFICATION SYSTEMS - POSITIONING
    ============================================ */
 
-/* Tablet - 768px */
+.toast-notification,
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 300px;
+  max-width: min(500px, calc(100vw - 40px));
+}
+
+.notifications-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  max-width: min(400px, calc(100vw - 40px));
+}
+
+/* ============================================
+   BULK TOOLBAR - WIDTH FIX
+   ============================================ */
+
+.bulk-toolbar {
+  width: calc(100% - 40px);
+  max-width: calc(100% - 40px);
+  margin: 0 20px 20px 20px;
+  overflow: hidden;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   ONBOARDING MODAL - GRID FIX
+   ============================================ */
+
+.onboarding-progress {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.onboarding-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================
+   WORKLOAD & RACI GRIDS
+   ============================================ */
+
+.workload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================
+   RICH TEXT EDITOR - OVERFLOW FIX
+   ============================================ */
+
+.rich-editor-content {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.team-editor {
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   MEMBER LISTS - GRID RESPONSIVE
+   ============================================ */
+
+.member-item {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================
+   SEARCH CRITERIA - GRID FIX
+   ============================================ */
+
+.search-criteria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.multi-select-container,
+.saved-filters-list,
+.search-history-list {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   EMPTY & LOADING STATES
+   ============================================ */
+
+.empty-state,
+.loading-state {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* ============================================
+   PROSPECTS PANEL - OVERFLOW FIX
+   ============================================ */
+
+#prospects-panel,
+#clients-panel {
+  position: relative;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#prospects-list,
+#teamhub-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+}
+
+/* ============================================
+   TEXT OVERFLOW PREVENTION
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6, p, span, div, label {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* ============================================
+   CUSTOM SCROLLBARS - BEAUTIFUL
+   ============================================ */
+
+.tab-panel::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar,
+.kanban-column-body::-webkit-scrollbar,
+.teamhub-container::-webkit-scrollbar,
+.command-palette-results::-webkit-scrollbar,
+.tour-tooltip-body::-webkit-scrollbar,
+.rich-editor-content::-webkit-scrollbar,
+.team-editor::-webkit-scrollbar,
+.multi-select-container::-webkit-scrollbar,
+.saved-filters-list::-webkit-scrollbar,
+.search-history-list::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tab-panel::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track,
+.kanban-column-body::-webkit-scrollbar-track,
+.teamhub-container::-webkit-scrollbar-track,
+.command-palette-results::-webkit-scrollbar-track,
+.tour-tooltip-body::-webkit-scrollbar-track,
+.rich-editor-content::-webkit-scrollbar-track,
+.team-editor::-webkit-scrollbar-track,
+.multi-select-container::-webkit-scrollbar-track,
+.saved-filters-list::-webkit-scrollbar-track,
+.search-history-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.tab-panel::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb,
+.kanban-column-body::-webkit-scrollbar-thumb,
+.teamhub-container::-webkit-scrollbar-thumb,
+.command-palette-results::-webkit-scrollbar-thumb,
+.tour-tooltip-body::-webkit-scrollbar-thumb,
+.rich-editor-content::-webkit-scrollbar-thumb,
+.team-editor::-webkit-scrollbar-thumb,
+.multi-select-container::-webkit-scrollbar-thumb,
+.saved-filters-list::-webkit-scrollbar-thumb,
+.search-history-list::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.tab-panel::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover,
+.kanban-column-body::-webkit-scrollbar-thumb:hover,
+.teamhub-container::-webkit-scrollbar-thumb:hover,
+.command-palette-results::-webkit-scrollbar-thumb:hover,
+.tour-tooltip-body::-webkit-scrollbar-thumb:hover,
+.rich-editor-content::-webkit-scrollbar-thumb:hover,
+.team-editor::-webkit-scrollbar-thumb:hover,
+.multi-select-container::-webkit-scrollbar-thumb:hover,
+.saved-filters-list::-webkit-scrollbar-thumb:hover,
+.search-history-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS - TABLET (768px)
+   ============================================ */
+
 @media (max-width: 768px) {
+  /* Модальні вікна на весь екран */
   .modal-content {
     max-width: 100%;
     max-height: 100vh;
@@ -393,16 +881,71 @@ body {
     max-width: 100%;
   }
 
+  /* Advanced Search */
+  .advanced-search-panel {
+    width: 95%;
+    max-height: 90vh;
+    border-radius: 16px;
+  }
+
+  .search-criteria {
+    grid-template-columns: 1fr;
+  }
+
+  .entity-type-selector {
+    flex-direction: column;
+  }
+
+  .search-actions {
+    flex-direction: column;
+  }
+
+  /* Command Palette */
+  .command-palette-container {
+    width: 95vw;
+  }
+
+  /* Tour */
+  .tour-tooltip {
+    width: 90vw;
+  }
+
+  .tour-banner {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  /* Shortcuts */
+  .shortcuts-content {
+    width: 95vw;
+  }
+
+  .shortcut-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Forms */
   .form-row {
     grid-template-columns: 1fr;
   }
 
+  /* Grids */
   .prospects-grid,
   .teamhub-grid {
     grid-template-columns: 1fr;
     padding: 16px;
   }
 
+  .onboarding-features,
+  .workload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* TeamHub */
   .teamhub-header {
     flex-direction: column;
     align-items: stretch;
@@ -428,6 +971,7 @@ body {
     width: 100%;
   }
 
+  /* View Toggle */
   .view-toggle {
     top: auto;
     bottom: 20px;
@@ -435,6 +979,7 @@ body {
     max-width: calc(100vw - 80px);
   }
 
+  /* Kanban */
   .kanban-columns {
     padding: 16px;
   }
@@ -444,10 +989,70 @@ body {
     min-width: 280px;
     max-width: 280px;
   }
+
+  /* RACI Table */
+  .raci-table.ultra {
+    display: block;
+    overflow-x: auto;
+  }
+
+  /* Members */
+  .member-item {
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+  }
+
+  .member-drag-handle,
+  .member-avatar-large {
+    display: none;
+  }
+
+  .member-advanced {
+    grid-column: 1 / -1;
+  }
+
+  /* Notifications */
+  .toast-notification,
+  .notifications-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  /* Confirmation */
+  .confirmation-content {
+    width: 95%;
+  }
+
+  /* Rich Editor */
+  .rich-editor-toolbar {
+    justify-content: flex-start;
+  }
+
+  .toolbar-divider {
+    display: none;
+  }
+
+  /* Confirmation footer */
+  .confirmation-footer,
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .confirmation-footer button,
+  .modal-footer .btn-secondary,
+  .modal-footer .btn-primary {
+    width: 100%;
+  }
 }
 
-/* Mobile - 480px */
+/* ============================================
+   RESPONSIVE BREAKPOINTS - MOBILE (480px)
+   ============================================ */
+
 @media (max-width: 480px) {
+  /* Modal повністю на екран */
   .modal {
     padding: 0;
   }
@@ -456,6 +1061,7 @@ body {
     border-radius: 0;
     max-height: 100vh;
     height: 100vh;
+    width: 100vw;
   }
 
   .modal-header,
@@ -464,6 +1070,7 @@ body {
     padding: 20px;
   }
 
+  /* Grids */
   .prospects-grid,
   .teamhub-grid {
     grid-template-columns: 1fr;
@@ -471,16 +1078,19 @@ body {
     gap: 16px;
   }
 
+  /* Kanban */
   .kanban-column {
     flex: 0 0 260px;
     min-width: 260px;
     max-width: 260px;
   }
 
+  /* Images */
   .images-grid {
     grid-template-columns: 1fr;
   }
 
+  /* Navigation */
   .top-nav {
     padding: 12px 16px;
   }
@@ -499,6 +1109,7 @@ body {
     height: 36px;
   }
 
+  /* View Toggle */
   .view-toggle {
     bottom: 16px;
     right: 16px;
@@ -506,7 +1117,10 @@ body {
   }
 }
 
-/* Extra small - 360px */
+/* ============================================
+   RESPONSIVE BREAKPOINTS - TINY (360px)
+   ============================================ */
+
 @media (max-width: 360px) {
   .prospects-grid,
   .teamhub-grid {
@@ -537,224 +1151,7 @@ body {
 }
 
 /* ============================================
-   Z-INDEX HIERARCHY FIX
-   ============================================ */
-
-/* Ensure proper stacking order */
-.animated-bg {
-  z-index: -1;
-}
-
-.app-container {
-  z-index: 1;
-}
-
-.top-nav {
-  z-index: 100;
-}
-
-.view-toggle {
-  z-index: 10;
-}
-
-.toast-container {
-  z-index: 1200;
-}
-
-.modal-backdrop {
-  z-index: 900;
-}
-
-.modal {
-  z-index: 1000;
-}
-
-.language-toggle {
-  z-index: 200;
-}
-
-/* ============================================
-   SCROLLBAR IMPROVEMENTS
-   ============================================ */
-
-/* Custom scrollbar for all scrollable containers */
-.tab-panel::-webkit-scrollbar,
-.modal-body::-webkit-scrollbar,
-.kanban-column-body::-webkit-scrollbar,
-.teamhub-container::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.tab-panel::-webkit-scrollbar-track,
-.modal-body::-webkit-scrollbar-track,
-.kanban-column-body::-webkit-scrollbar-track,
-.teamhub-container::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-}
-
-.tab-panel::-webkit-scrollbar-thumb,
-.modal-body::-webkit-scrollbar-thumb,
-.kanban-column-body::-webkit-scrollbar-thumb,
-.teamhub-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.tab-panel::-webkit-scrollbar-thumb:hover,
-.modal-body::-webkit-scrollbar-thumb:hover,
-.kanban-column-body::-webkit-scrollbar-thumb:hover,
-.teamhub-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* ============================================
-   PREVENT TEXT OVERFLOW
-   ============================================ */
-
-h1, h2, h3, h4, h5, h6, p, span, div {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* ============================================
-   KANBAN BOARD SPECIFIC FIXES
-   ============================================ */
-
-#kanban-board {
-  height: 100%;
-  max-height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-#kanban-board.active {
-  display: flex;
-}
-
-.kanban-header {
-  flex-shrink: 0;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-/* ============================================
-   PROSPECTS PANEL FIXES
-   ============================================ */
-
-#prospects-panel {
-  position: relative;
-  height: 100%;
-  max-height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-#prospects-list,
-#teamhub-container {
-  width: 100%;
-  max-width: 100%;
-  overflow: visible;
-}
-
-/* ============================================
-   BULK TOOLBAR FIX
-   ============================================ */
-
-.bulk-toolbar {
-  width: calc(100% - 40px);
-  max-width: calc(100% - 40px);
-  margin: 0 20px 20px 20px;
-  overflow: hidden;
-}
-
-.bulk-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* ============================================
-   ONBOARDING MODAL FIXES
-   ============================================ */
-
-.onboarding-progress {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-
-.onboarding-features {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  width: 100%;
-  max-width: 100%;
-}
-
-@media (max-width: 768px) {
-  .onboarding-features {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ============================================
-   RACI MATRIX FIXES
-   ============================================ */
-
-.raci-table.ultra {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.workload-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  width: 100%;
-  max-width: 100%;
-}
-
-@media (max-width: 768px) {
-  .workload-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .raci-table.ultra {
-    display: block;
-    overflow-x: auto;
-  }
-}
-
-/* ============================================
-   LOADING STATES
-   ============================================ */
-
-.loading-state {
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-/* ============================================
-   EMPTY STATES
-   ============================================ */
-
-.empty-state {
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-/* ============================================
-   PRINT FIXES
+   PRINT OPTIMIZATION
    ============================================ */
 
 @media print {
@@ -768,7 +1165,74 @@ h1, h2, h3, h4, h5, h6, p, span, div {
   .top-nav,
   .view-toggle,
   .modal-backdrop,
-  .language-toggle {
+  .language-toggle,
+  .toast-notification,
+  .notifications-container,
+  .command-palette,
+  .tour-overlay {
     display: none !important;
   }
+
+  body {
+    background: white !important;
+  }
 }
+
+/* ============================================
+   ACCESSIBILITY - REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* GPU acceleration for transforms */
+.modal-content,
+.command-palette-container,
+.tour-tooltip,
+.notification {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Contain layout shifts */
+.prospect-card,
+.client-card,
+.kanban-card {
+  contain: layout style paint;
+}
+
+/* ============================================
+   FINAL CRITICAL FIXES
+   ============================================ */
+
+/* Ensure no element breaks viewport */
+* {
+  max-width: 100vw;
+}
+
+/* Fix for Safari iOS */
+@supports (-webkit-touch-callout: none) {
+  .app-container {
+    height: -webkit-fill-available;
+  }
+
+  body {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* ============================================
+   END OF ULTRA LAYOUT FIXES v2.0
+   ============================================ */
