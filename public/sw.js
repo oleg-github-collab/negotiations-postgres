@@ -4,7 +4,7 @@
  * Enterprise-grade offline capabilities
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v2.1.0'; // FORCE CACHE UPDATE
 const CACHE_NAME = `teampulse-cache-${CACHE_VERSION}`;
 
 // Assets to cache immediately

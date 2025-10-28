@@ -351,6 +351,34 @@ const ensureOpenAI = (res) => {
   return true;
 };
 
+// List all teams
+r.get('/', async (req, res) => {
+  try {
+    const teams = await all(`
+      SELECT
+        t.*,
+        c.company AS client_name,
+        COUNT(DISTINCT tm.id) AS member_count
+      FROM teams t
+      LEFT JOIN clients c ON t.client_id = c.id
+      LEFT JOIN team_members tm ON t.id = tm.team_id
+      GROUP BY t.id, c.company
+      ORDER BY t.updated_at DESC
+    `);
+
+    res.json({
+      success: true,
+      teams: teams || []
+    });
+  } catch (error) {
+    logError('Failed to fetch teams', { error: error.message, stack: error.stack });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch teams'
+    });
+  }
+});
+
 // Enhanced team creation endpoint with better validation
 r.post('/', validateTeamCreate, async (req, res) => {
   const start = performance.now();

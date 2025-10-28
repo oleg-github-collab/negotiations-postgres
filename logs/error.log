@@ -654,3 +654,107 @@
   message: 'Application Error',
   timestamp: '2025-10-27 21:10:57'
 }
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'write EPIPE',
+    stack: 'Error: write EPIPE\n' +
+      '    at afterWriteDispatched (node:internal/stream_base_commons:161:15)\n' +
+      '    at writeGeneric (node:internal/stream_base_commons:152:3)\n' +
+      '    at Socket._writeGeneric (node:net:958:11)\n' +
+      '    at Socket._write (node:net:970:8)\n' +
+      '    at writeOrBuffer (node:internal/streams/writable:572:12)\n' +
+      '    at _write (node:internal/streams/writable:501:10)\n' +
+      '    at Writable.write (node:internal/streams/writable:510:10)\n' +
+      '    at Console.log (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/lib/winston/transports/console.js:87:23)\n' +
+      '    at Console._write (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/modern.js:103:17)\n' +
+      '    at doWrite (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:390:139)\n' +
+      '    at writeOrBuffer (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:381:5)\n' +
+      '    at Writable.write (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:302:11)\n' +
+      '    at DerivedLogger.ondata (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/node_modules/readable-stream/lib/_stream_readable.js:629:20)\n' +
+      '    at DerivedLogger.emit (node:events:536:35)\n' +
+      '    at addChunk (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/node_modules/readable-stream/lib/_stream_readable.js:279:12)\n' +
+      '    at readableAddChunk (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/node_modules/readable-stream/lib/_stream_readable.js:262:11)',
+    name: 'Error'
+  },
+  context: {
+    type: 'uncaughtException',
+    errorId: 'it9qrjdvzb',
+    pid: 82110,
+    memory: {
+      rss: 90341376,
+      heapTotal: 39497728,
+      heapUsed: 27517392,
+      external: 3714729,
+      arrayBuffers: 109002
+    },
+    uptime: 17.111806384
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-10-28 00:25:10'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'test',
+    url: '/test',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-28T00:16:40.254Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-28 01:16:40',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  error: { message: undefined, stack: undefined, name: undefined },
+  context: {
+    error: 'column c.name does not exist',
+    stack: 'error: column c.name does not exist\n' +
+      '    at /Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/pg-pool/index.js:45:11\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+      '    at async query (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:553:18)\n' +
+      '    at async all (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:572:18)\n' +
+      '    at async file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/routes/teams.js:357:19'
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-10-28 01:45:01'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'test',
+    url: '/test',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-28T00:45:01.230Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-28 01:45:01',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'test',
+    url: '/test',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-28T00:55:49.107Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-28 01:55:49',
+  level: 'error',
+  message: 'Client-Side Error'
+}

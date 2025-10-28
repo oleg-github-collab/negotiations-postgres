@@ -340,7 +340,34 @@ app.get('/api/usage', authMiddleware, async (req, res) => {
   }
 });
 
-// Client error logging endpoint
+// Client error logging endpoints
+app.post('/api/errors', (req, res) => {
+  const { error, url, line, column, stack } = req.body;
+  logClientError({
+    error: error?.toString() || 'Unknown error',
+    url,
+    line,
+    column,
+    stack,
+    timestamp: new Date().toISOString()
+  }, req);
+  res.status(200).json({ logged: true });
+});
+
+app.post('/api/v1/errors', (req, res) => {
+  const { error, url, line, column, stack } = req.body;
+  logClientError({
+    error: error?.toString() || 'Unknown error',
+    url,
+    line,
+    column,
+    stack,
+    timestamp: new Date().toISOString()
+  }, req);
+  res.status(200).json({ logged: true });
+});
+
+// Legacy endpoint
 app.post('/api/log-error', (req, res) => {
   const { error, url, line, column, stack } = req.body;
   logClientError({
