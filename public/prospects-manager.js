@@ -539,43 +539,52 @@
 
     openConvertModal(prospectId) {
       try {
-        console.log('🔄 Opening convert modal for prospect:', prospectId);
+        console.log('🔄 [PROSPECTS] Opening convert modal for prospect:', prospectId);
 
+        // Знайти prospect
         this.selectedProspect = this.prospects.find(p => p.id === prospectId);
         if (!this.selectedProspect) {
-          console.warn('⚠️ Prospect not found:', prospectId);
+          console.error('❌ Prospect not found:', prospectId);
+          alert('Потенційного клієнта не знайдено');
           return;
         }
 
-        // Check if ModalManager is available
-        if (typeof window.ModalManager === 'undefined') {
-          console.error('❌ ModalManager not available');
-          alert('Помилка: модулі не завантажені. Перезавантажте сторінку.');
-          return;
-        }
+        console.log('✅ Prospect found:', this.selectedProspect.company);
 
-        // Set prospect data in convert modal
-        const modal = document.getElementById('convert-modal');
-        if (!modal) {
-          console.error('❌ Convert modal not found in DOM');
-          alert('Помилка: модальне вікно не знайдено');
-          return;
-        }
+        // Зачекати, щоб modals.html точно завантажився
+        setTimeout(() => {
+          const modal = document.getElementById('convert-modal');
+          if (!modal) {
+            console.error('❌ Convert modal not found in DOM');
+            alert('Модальне вікно не знайдено. Перезавантажте сторінку.');
+            return;
+          }
 
-        const prospectName = modal.querySelector('#convert-prospect-name');
-        if (prospectName) {
-          prospectName.textContent = this.selectedProspect.company;
-        }
+          console.log('✅ Convert modal found in DOM');
 
-        console.log('✅ Opening convert modal');
-        window.ModalManager.open('convert-modal');
+          // Встановити дані prospect в модалку
+          const prospectName = modal.querySelector('#convert-prospect-name');
+          if (prospectName) {
+            prospectName.textContent = this.selectedProspect.company;
+            console.log('✅ Set prospect name in modal');
+          }
+
+          // ВІДКРИТИ МОДАЛКУ через SimpleModal
+          console.log('🔵 Calling SimpleModal.open("convert-modal")');
+
+          if (typeof window.SimpleModal !== 'undefined') {
+            window.SimpleModal.open('convert-modal');
+          } else if (typeof window.showModal === 'function') {
+            window.showModal('convert-modal');
+          } else {
+            console.error('❌ No modal system available');
+            alert('Система модальних вікон не завантажена. Перезавантажте сторінку.');
+          }
+        }, 100);
+
       } catch (error) {
-        console.error('❌ Error opening convert modal:', error);
-        if (window.showToast) {
-          window.showToast('Помилка відкриття форми конвертації', 'error');
-        } else {
-          alert('Помилка відкриття форми конвертації: ' + error.message);
-        }
+        console.error('❌ Error in openConvertModal:', error);
+        alert('Помилка відкриття форми конвертації: ' + error.message);
       }
     },
 

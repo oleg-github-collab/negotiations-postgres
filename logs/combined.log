@@ -12212,3 +12212,9 @@
   service: 'teampulse-turbo',
   timestamp: '2025-10-29 01:56:50'
 }
+{
+  message: 'Received SIGTERM, starting graceful shutdown...',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 02:33:16'
+}

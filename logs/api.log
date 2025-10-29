@@ -1397,3 +1397,4 @@
 {"level":"info","message":"127.0.0.1 - - [29/Oct/2025:00:56:50 +0000] \"GET /prospects-manager.js HTTP/1.1\" 200 53460 \"-\" \"-\"","service":"teampulse-turbo","timestamp":"2025-10-29 01:56:50"}
 {"details":{"contentLength":20222,"method":"GET","path":"/app-init.js","requestId":"b6903dcb-613c-4656-a9b0-bf577a2d823f","statusCode":200},"duration":3.485085,"level":"info","message":"Performance Metric","operation":"http_request","service":"teampulse-turbo","timestamp":"2025-10-29 01:56:50"}
 {"level":"info","message":"127.0.0.1 - - [29/Oct/2025:00:56:50 +0000] \"GET /app-init.js HTTP/1.1\" 200 20222 \"-\" \"-\"","service":"teampulse-turbo","timestamp":"2025-10-29 01:56:50"}
+{"level":"info","message":"Received SIGTERM, starting graceful shutdown...","service":"teampulse-turbo","timestamp":"2025-10-29 02:33:16"}
