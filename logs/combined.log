@@ -8735,3 +8735,2528 @@
   message: 'Performance Metric',
   timestamp: '2025-10-28 01:55:49'
 }
+{
+  message: 'Received SIGTERM, starting graceful shutdown...',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-28 01:56:24'
+}
+{
+  message: 'DATABASE_URL not provided. Falling back to local Postgres connection string.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:43'
+}
+{
+  message: 'DATABASE_URL is not set. Falling back to local Postgres connection.',
+  level: 'warn',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:45'
+}
+{
+  message: 'PostgreSQL schema initialized',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:46'
+}
+{
+  message: '🚀 TeamPulse Turbo v3.0 running on 0.0.0.0:3000 (production)',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:46'
+}
+{
+  message: '📊 Daily token limit: 512,000',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:47'
+}
+{
+  message: '🤖 AI Model: gpt-4o',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:47'
+}
+{
+  message: '🔒 Security features enabled: YES',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:47'
+}
+{
+  message: '📝 Logging level: info',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:16:47'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 103.903972,
+  details: {
+    requestId: 'c426b3bc-9962-4027-b2b5-e18130a036be',
+    method: 'GET',
+    path: '/health',
+    statusCode: 200,
+    contentLength: '401'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:17:28'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:17:28 +0000] "GET /health HTTP/1.1" 200 401 "-" "curl/8.7.1"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:17:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.008119,
+  details: {
+    requestId: '42b6f994-dca0-45f0-9593-e91450d7e5c6',
+    method: 'GET',
+    path: '/',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:32'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:32 +0000] "GET / HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:32'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 6.16673,
+  details: {
+    requestId: '952d8047-0214-45b6-9dd0-8a7a774ea1ce',
+    method: 'GET',
+    path: '/sw.js',
+    statusCode: 200,
+    contentLength: 7915
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:32'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:32 +0000] "GET /sw.js HTTP/1.1" 200 7915 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:32'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.009858,
+  details: {
+    requestId: '21774300-87e1-42eb-8e3f-8c2d428e76e3',
+    method: 'GET',
+    path: '/manifest.json',
+    statusCode: 200,
+    contentLength: 2267
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:32'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:32 +0000] "GET /manifest.json HTTP/1.1" 200 2267 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:32'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.824912,
+  details: {
+    requestId: 'e9989152-823f-494a-b2ef-2e865de1e358',
+    method: 'GET',
+    path: '/ui-improvements.css',
+    statusCode: 200,
+    contentLength: 6827
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /ui-improvements.css HTTP/1.1" 200 6827 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/info',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 2,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '626415f0-1b4b-4532-a737-4b193836435c',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.842179,
+  details: {
+    requestId: '626415f0-1b4b-4532-a737-4b193836435c',
+    method: 'GET',
+    path: '/api/v1/info',
+    statusCode: 200,
+    contentLength: '239'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/info HTTP/1.1" 200 239 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 18.949156,
+  details: {
+    requestId: '4194de54-dfbe-42ab-a1d6-3d4cf8973d69',
+    method: 'GET',
+    path: '/health',
+    statusCode: 200,
+    contentLength: '402'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /health HTTP/1.1" 200 402 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.257069,
+  details: {
+    requestId: '951fe9ec-03d9-4ba2-91f3-ed74ef6c3cc2',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Login attempt failed',
+  details: { username: 'janeDVDops', ip: '127.0.0.1' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/login',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 18,
+  statusCode: 401,
+  contentLength: undefined,
+  requestId: '4c441421-50be-4576-a85e-10ad317ec0b4',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 19.319969,
+  details: {
+    requestId: '4c441421-50be-4576-a85e-10ad317ec0b4',
+    method: 'POST',
+    path: '/api/v1/auth/login',
+    statusCode: 401,
+    contentLength: '78'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "POST /api/v1/auth/login HTTP/1.1" 401 78 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.547546,
+  details: {
+    requestId: '031f07a9-3cf3-4175-918a-dedfe05f6802',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.24425,
+  details: {
+    requestId: '8e0defe1-558e-4128-a4e3-0b31850c3abb',
+    method: 'GET',
+    path: '/api/v1/prospects',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/prospects HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.452109,
+  details: {
+    requestId: '782db580-f131-4c50-91b4-db8e578b85d7',
+    method: 'GET',
+    path: '/api/v1/teams',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/teams HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'POST' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.844537,
+  details: {
+    requestId: 'e7399ce7-5f00-429d-bfbb-4875d6a79f6f',
+    method: 'POST',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "POST /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.273152,
+  details: {
+    requestId: '8e5880f8-28a9-402a-b541-f83a6d3a9d31',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: '404 - Resource not found',
+  details: {
+    ip: '127.0.0.1',
+    method: 'GET',
+    url: '/api/v1/nonexistent',
+    userAgent: undefined,
+    referer: undefined
+  },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/nonexistent',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 2,
+  statusCode: 404,
+  contentLength: undefined,
+  requestId: '3c7ddc91-ffae-4ba5-9888-c46a53c9c14d',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.360747,
+  details: {
+    requestId: '3c7ddc91-ffae-4ba5-9888-c46a53c9c14d',
+    method: 'GET',
+    path: '/api/v1/nonexistent',
+    statusCode: 404,
+    contentLength: '69'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/nonexistent HTTP/1.1" 404 69 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-28T23:18:33.167Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-29 00:18:33',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/errors',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 2,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '1bdecfc8-524a-4b27-b675-0a1a112fe864',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.183013,
+  details: {
+    requestId: '1bdecfc8-524a-4b27-b675-0a1a112fe864',
+    method: 'POST',
+    path: '/api/v1/errors',
+    statusCode: 200,
+    contentLength: '15'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "POST /api/v1/errors HTTP/1.1" 200 15 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: {
+    ip: '127.0.0.1',
+    userAgent: undefined,
+    path: '/999999999',
+    method: 'GET'
+  },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.441332,
+  details: {
+    requestId: 'b58da90d-3761-4018-96bc-aef69a6cde14',
+    method: 'GET',
+    path: '/api/v1/clients/999999999',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/clients/999999999 HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User logout',
+  details: { ip: '127.0.0.1', sessionToken: undefined },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/logout',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 2,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: 'ab5227c9-b233-4c24-97ad-44dc3cc028f1',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.72253,
+  details: {
+    requestId: 'ab5227c9-b233-4c24-97ad-44dc3cc028f1',
+    method: 'POST',
+    path: '/api/v1/auth/logout',
+    statusCode: 200,
+    contentLength: '52'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "POST /api/v1/auth/logout HTTP/1.1" 200 52 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:18:33',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.370669,
+  details: {
+    requestId: '5e9b7db6-d45c-4d24-8a60-0cac79e16d32',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:18:33 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:18:33'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.745863,
+  details: {
+    requestId: 'b850f0e6-0c0f-4af1-b0b5-8eb66a8e453c',
+    method: 'HEAD',
+    path: '/',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:24:45'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:24:45 +0000] "HEAD / HTTP/1.1" 302 28 "-" "curl/8.7.1"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:24:45'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 0.889864,
+  details: {
+    requestId: '5660ce57-48e1-4622-aae4-757a18e7d41f',
+    method: 'GET',
+    path: '/',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET / HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.111239,
+  details: {
+    requestId: '7d8af160-5f53-4e85-b865-6cb7825c2d86',
+    method: 'GET',
+    path: '/sw.js',
+    statusCode: 200,
+    contentLength: 7915
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /sw.js HTTP/1.1" 200 7915 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.125909,
+  details: {
+    requestId: '27ffde3f-bc4d-4f4d-99c2-93006c2a1696',
+    method: 'GET',
+    path: '/manifest.json',
+    statusCode: 200,
+    contentLength: 2267
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /manifest.json HTTP/1.1" 200 2267 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 4.015715,
+  details: {
+    requestId: 'c53f763a-901a-43f9-bdb5-a3c1e9e96c8f',
+    method: 'GET',
+    path: '/ui-improvements.css',
+    statusCode: 200,
+    contentLength: 6827
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /ui-improvements.css HTTP/1.1" 200 6827 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/info',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '75c915de-b9ff-4e97-a491-e1a0f4be9def',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.224711,
+  details: {
+    requestId: '75c915de-b9ff-4e97-a491-e1a0f4be9def',
+    method: 'GET',
+    path: '/api/v1/info',
+    statusCode: 200,
+    contentLength: '239'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /api/v1/info HTTP/1.1" 200 239 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 70.679405,
+  details: {
+    requestId: '6fc467b5-8973-4480-a6ac-ba4e3660f605',
+    method: 'GET',
+    path: '/health',
+    statusCode: 200,
+    contentLength: '402'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /health HTTP/1.1" 200 402 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:27:59',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.053092,
+  details: {
+    requestId: '7ea39aee-d79c-44b9-b3a5-a86cdb82d6cd',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User login successful',
+  details: {
+    username: 'janeDVDops',
+    ip: '127.0.0.1',
+    sessionToken: '3pkc1puzuze3tgnz7ag0qa'
+  },
+  timestamp: '2025-10-29 00:27:59',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/login',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '93ea512a-5271-4240-be30-49ee8a128765',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.965916,
+  details: {
+    requestId: '93ea512a-5271-4240-be30-49ee8a128765',
+    method: 'POST',
+    path: '/api/v1/auth/login',
+    statusCode: 200,
+    contentLength: '104'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "POST /api/v1/auth/login HTTP/1.1" 200 104 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 28.540346,
+  details: {
+    requestId: '0deb68d4-a595-461c-9b4d-691fd902ec3d',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 200,
+    contentLength: '1150'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /api/v1/clients HTTP/1.1" 200 1150 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 4.037842,
+  details: {
+    requestId: '2fe3936a-800f-41c6-9e7d-127466e9a0dd',
+    method: 'GET',
+    path: '/api/v1/prospects',
+    statusCode: 200,
+    contentLength: '871'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /api/v1/prospects HTTP/1.1" 200 871 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.397028,
+  details: {
+    requestId: '951f36f9-3ef9-4ed8-adb0-b4abc07ff9f8',
+    method: 'GET',
+    path: '/api/v1/teams',
+    statusCode: 200,
+    contentLength: '27'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "GET /api/v1/teams HTTP/1.1" 200 27 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Validation failed',
+  details: {
+    ip: '127.0.0.1',
+    errors: [
+      {
+        type: 'field',
+        value: 'Medium',
+        msg: 'Розмір компанії має бути одним з: startup, small, medium, large',
+        path: 'company_size',
+        location: 'body'
+      },
+      {
+        type: 'field',
+        value: 'Partnership',
+        msg: 'Тип переговорів має бути одним з: sales, partnership, contract, investment, acquisition, licensing, other',
+        path: 'negotiation_type',
+        location: 'body'
+      }
+    ],
+    body: {
+      company: 'Test Company Flow',
+      negotiator: 'Test Negotiator',
+      sector: 'Technology',
+      company_size: 'Medium',
+      negotiation_type: 'Partnership',
+      deal_value: '$100K-$500K',
+      timeline: '3-6 months',
+      goal: 'Strategic partnership',
+      decision_criteria: 'ROI, Timeline'
+    },
+    params: {},
+    query: {}
+  },
+  timestamp: '2025-10-29 00:27:59',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 10.127568,
+  details: {
+    requestId: 'b30456a4-d195-4b09-8e81-fbdec19dad39',
+    method: 'POST',
+    path: '/api/v1/clients',
+    statusCode: 400,
+    contentLength: '409'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:27:59 +0000] "POST /api/v1/clients HTTP/1.1" 400 409 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 5.374638,
+  details: {
+    requestId: 'f32eafe4-020e-4b9e-857b-911e0d797c7a',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 200,
+    contentLength: '1149'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:27:59'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:28:00 +0000] "GET /api/v1/clients HTTP/1.1" 200 1149 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  event: '404 - Resource not found',
+  details: {
+    ip: '127.0.0.1',
+    method: 'GET',
+    url: '/api/v1/nonexistent',
+    userAgent: undefined,
+    referer: undefined
+  },
+  timestamp: '2025-10-29 00:28:00',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/nonexistent',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 4,
+  statusCode: 404,
+  contentLength: undefined,
+  requestId: 'ed2344eb-e139-4ee1-93e6-8b52064054c9',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 4.758544,
+  details: {
+    requestId: 'ed2344eb-e139-4ee1-93e6-8b52064054c9',
+    method: 'GET',
+    path: '/api/v1/nonexistent',
+    statusCode: 404,
+    contentLength: '69'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:28:00 +0000] "GET /api/v1/nonexistent HTTP/1.1" 404 69 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-28T23:28:00.144Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-29 00:28:00',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/errors',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 0,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: 'f59b3a5a-c6f5-49f3-9859-03686181a279',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.274846,
+  details: {
+    requestId: 'f59b3a5a-c6f5-49f3-9859-03686181a279',
+    method: 'POST',
+    path: '/api/v1/errors',
+    statusCode: 200,
+    contentLength: '15'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:28:00 +0000] "POST /api/v1/errors HTTP/1.1" 200 15 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Attempt to access non-existent client',
+  details: { clientId: 999999999, ip: '127.0.0.1', userAgent: undefined },
+  timestamp: '2025-10-29 00:28:00',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 7.631976,
+  details: {
+    requestId: '434adf8b-b378-482f-afb1-6acea34e6c7a',
+    method: 'GET',
+    path: '/api/v1/clients/999999999',
+    statusCode: 404,
+    contentLength: '44'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:28:00 +0000] "GET /api/v1/clients/999999999 HTTP/1.1" 404 44 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User logout',
+  details: { ip: '127.0.0.1', sessionToken: '3pkc1puzuze3tgnz7ag0qa' },
+  timestamp: '2025-10-29 00:28:00',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/logout',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '13110a1a-bfec-465c-a2bc-f424347cd234',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.871984,
+  details: {
+    requestId: '13110a1a-bfec-465c-a2bc-f424347cd234',
+    method: 'POST',
+    path: '/api/v1/auth/logout',
+    statusCode: 200,
+    contentLength: '52'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:28:00 +0000] "POST /api/v1/auth/logout HTTP/1.1" 200 52 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:28:00',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 0.935891,
+  details: {
+    requestId: '0d959a1c-df74-478d-a4a5-c98dfc2e59ce',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:28:00 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:28:00'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User login successful',
+  details: {
+    username: 'janeDVDops',
+    ip: '127.0.0.1',
+    sessionToken: 'z26ajtjc3nd53luxskc4ao'
+  },
+  timestamp: '2025-10-29 00:57:25',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/login',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 2,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '62b98791-66bc-4c4b-986e-8b72058b80fd',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:57:25'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.585541,
+  details: {
+    requestId: '62b98791-66bc-4c4b-986e-8b72058b80fd',
+    method: 'POST',
+    path: '/api/v1/auth/login',
+    statusCode: 200,
+    contentLength: '104'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:57:25'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:57:25 +0000] "POST /api/v1/auth/login HTTP/1.1" 200 104 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:57:25'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Validation failed',
+  details: {
+    ip: '127.0.0.1',
+    errors: [
+      {
+        type: 'field',
+        value: 'Medium',
+        msg: 'Розмір компанії має бути одним з: startup, small, medium, large',
+        path: 'company_size',
+        location: 'body'
+      },
+      {
+        type: 'field',
+        value: 'Partnership',
+        msg: 'Тип переговорів має бути одним з: sales, partnership, contract, investment, acquisition, licensing, other',
+        path: 'negotiation_type',
+        location: 'body'
+      }
+    ],
+    body: {
+      company: 'Test Company Flow',
+      negotiator: 'Test Negotiator',
+      sector: 'Technology',
+      company_size: 'Medium',
+      negotiation_type: 'Partnership',
+      deal_value: '$100K-$500K',
+      timeline: '3-6 months',
+      goal: 'Strategic partnership',
+      decision_criteria: 'ROI, Timeline'
+    },
+    params: {},
+    query: {}
+  },
+  timestamp: '2025-10-29 00:57:25',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 7.632281,
+  details: {
+    requestId: '0562f933-d400-4f0b-b9b8-88ed457501f0',
+    method: 'POST',
+    path: '/api/v1/clients',
+    statusCode: 400,
+    contentLength: '409'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:57:25'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:57:25 +0000] "POST /api/v1/clients HTTP/1.1" 400 409 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:57:25'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 0.808517,
+  details: {
+    requestId: 'c36f9efb-df4f-404f-9a84-ff39faa626e2',
+    method: 'GET',
+    path: '/',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET / HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 9.93156,
+  details: {
+    requestId: '1295041a-16cd-4776-9fb5-e1f76b805550',
+    method: 'GET',
+    path: '/sw.js',
+    statusCode: 200,
+    contentLength: 7915
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /sw.js HTTP/1.1" 200 7915 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.437503,
+  details: {
+    requestId: '5d5cf1c0-74ad-424a-943b-3186c85f0a69',
+    method: 'GET',
+    path: '/manifest.json',
+    statusCode: 200,
+    contentLength: 2267
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /manifest.json HTTP/1.1" 200 2267 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 6.332869,
+  details: {
+    requestId: '24a326c4-ace5-4202-9757-f337851a1c47',
+    method: 'GET',
+    path: '/ui-improvements.css',
+    statusCode: 200,
+    contentLength: 6827
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /ui-improvements.css HTTP/1.1" 200 6827 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/info',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 0,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: 'b0364606-7dca-496b-a794-df3336624221',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.162122,
+  details: {
+    requestId: 'b0364606-7dca-496b-a794-df3336624221',
+    method: 'GET',
+    path: '/api/v1/info',
+    statusCode: 200,
+    contentLength: '239'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/info HTTP/1.1" 200 239 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 58.258722,
+  details: {
+    requestId: '5af6d163-7c9e-4c21-bee1-d35545d75e36',
+    method: 'GET',
+    path: '/health',
+    statusCode: 200,
+    contentLength: '404'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /health HTTP/1.1" 200 404 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:58:07',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.382259,
+  details: {
+    requestId: '9a91b599-da26-40ba-bc9d-40564c0da7ae',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User login successful',
+  details: {
+    username: 'janeDVDops',
+    ip: '127.0.0.1',
+    sessionToken: 'cymz76dq4w6934hm13ve1'
+  },
+  timestamp: '2025-10-29 00:58:07',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/login',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '37e6fdfa-5e4f-4f83-b90a-f8b9b56f4bcd',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.731811,
+  details: {
+    requestId: '37e6fdfa-5e4f-4f83-b90a-f8b9b56f4bcd',
+    method: 'POST',
+    path: '/api/v1/auth/login',
+    statusCode: 200,
+    contentLength: '104'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "POST /api/v1/auth/login HTTP/1.1" 200 104 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 60.173919,
+  details: {
+    requestId: 'f8ce0f76-0e5f-4776-9e10-df9a1cd7c435',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 200,
+    contentLength: '1150'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/clients HTTP/1.1" 200 1150 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.817351,
+  details: {
+    requestId: '459e7314-dc6c-41f1-8ab6-abcc4efb5a9b',
+    method: 'GET',
+    path: '/api/v1/prospects',
+    statusCode: 200,
+    contentLength: '871'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/prospects HTTP/1.1" 200 871 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.376865,
+  details: {
+    requestId: 'c1652777-0bd4-49f3-a451-53a548e46687',
+    method: 'GET',
+    path: '/api/v1/teams',
+    statusCode: 200,
+    contentLength: '27'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/teams HTTP/1.1" 200 27 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 23.95203,
+  details: {
+    requestId: 'f16fbbc9-4cbc-4028-bd96-3acaf931e56d',
+    method: 'POST',
+    path: '/api/v1/clients',
+    statusCode: 201,
+    contentLength: '1443'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "POST /api/v1/clients HTTP/1.1" 201 1443 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 6.440588,
+  details: {
+    requestId: '13261a28-61bb-44ab-b398-5164084c83fe',
+    method: 'GET',
+    path: '/api/v1/clients/2',
+    statusCode: 200,
+    contentLength: '1113'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/clients/2 HTTP/1.1" 200 1113 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 56.182351,
+  details: {
+    requestId: '59851007-d0eb-4dc2-94f2-84ea2781d2be',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 200,
+    contentLength: '2180'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/clients HTTP/1.1" 200 2180 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  event: '404 - Resource not found',
+  details: {
+    ip: '127.0.0.1',
+    method: 'POST',
+    url: '/api/v1/clients/2/analyses',
+    userAgent: undefined,
+    referer: undefined
+  },
+  timestamp: '2025-10-29 00:58:07',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/clients/2/analyses',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 404,
+  contentLength: undefined,
+  requestId: '71f18113-5c2f-4c26-927a-0f367c2d8a30',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.346556,
+  details: {
+    requestId: '71f18113-5c2f-4c26-927a-0f367c2d8a30',
+    method: 'POST',
+    path: '/api/v1/clients/2/analyses',
+    statusCode: 404,
+    contentLength: '69'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "POST /api/v1/clients/2/analyses HTTP/1.1" 404 69 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.942572,
+  details: {
+    requestId: '23cdf1d9-c0d2-4aa1-a0d3-ce3ff574a74a',
+    method: 'GET',
+    path: '/api/v1/clients/2',
+    statusCode: 200,
+    contentLength: '1113'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/clients/2 HTTP/1.1" 200 1113 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  event: '404 - Resource not found',
+  details: {
+    ip: '127.0.0.1',
+    method: 'GET',
+    url: '/api/v1/nonexistent',
+    userAgent: undefined,
+    referer: undefined
+  },
+  timestamp: '2025-10-29 00:58:07',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/nonexistent',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 8,
+  statusCode: 404,
+  contentLength: undefined,
+  requestId: '5a9b2370-5566-4096-af0d-fb1fe8680376',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 8.396761,
+  details: {
+    requestId: '5a9b2370-5566-4096-af0d-fb1fe8680376',
+    method: 'GET',
+    path: '/api/v1/nonexistent',
+    statusCode: 404,
+    contentLength: '69'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:07 +0000] "GET /api/v1/nonexistent HTTP/1.1" 404 69 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:07'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-28T23:58:07.999Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-29 00:58:08',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/errors',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 14,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '5e0fe3df-1c8f-41ba-93ca-cb88cb2b4572',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 22.564049,
+  details: {
+    requestId: '5e0fe3df-1c8f-41ba-93ca-cb88cb2b4572',
+    method: 'POST',
+    path: '/api/v1/errors',
+    statusCode: 200,
+    contentLength: '15'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:08 +0000] "POST /api/v1/errors HTTP/1.1" 200 15 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Attempt to access non-existent client',
+  details: { clientId: 999999999, ip: '127.0.0.1', userAgent: undefined },
+  timestamp: '2025-10-29 00:58:08',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 214.029868,
+  details: {
+    requestId: 'ae85d6dc-d146-4eb0-bae8-7f55e2cb8790',
+    method: 'GET',
+    path: '/api/v1/clients/999999999',
+    statusCode: 404,
+    contentLength: '44'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:08 +0000] "GET /api/v1/clients/999999999 HTTP/1.1" 404 44 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User logout',
+  details: { ip: '127.0.0.1', sessionToken: 'cymz76dq4w6934hm13ve1' },
+  timestamp: '2025-10-29 00:58:08',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/logout',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '48fd84e2-1cb4-4158-83ac-bef34897925e',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.881281,
+  details: {
+    requestId: '48fd84e2-1cb4-4158-83ac-bef34897925e',
+    method: 'POST',
+    path: '/api/v1/auth/logout',
+    statusCode: 200,
+    contentLength: '52'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:08 +0000] "POST /api/v1/auth/logout HTTP/1.1" 200 52 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:58:08',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.077167,
+  details: {
+    requestId: 'ab6b8df7-8f04-43af-9532-79a2d773073b',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:58:08 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:58:08'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 0.681411,
+  details: {
+    requestId: 'bcfbbc9e-359d-44fb-8051-5930e96e6a23',
+    method: 'GET',
+    path: '/',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET / HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 6.263233,
+  details: {
+    requestId: '6b4235de-9fcf-4825-be43-a41d5a9f80cc',
+    method: 'GET',
+    path: '/sw.js',
+    statusCode: 200,
+    contentLength: 7915
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /sw.js HTTP/1.1" 200 7915 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.757171,
+  details: {
+    requestId: '8d4a9642-14ff-48b8-af0c-3eeb7b4e4ecd',
+    method: 'GET',
+    path: '/manifest.json',
+    statusCode: 200,
+    contentLength: 2267
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /manifest.json HTTP/1.1" 200 2267 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.173368,
+  details: {
+    requestId: 'a8840094-5bbb-4223-8b79-123513791d77',
+    method: 'GET',
+    path: '/ui-improvements.css',
+    statusCode: 200,
+    contentLength: 6827
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /ui-improvements.css HTTP/1.1" 200 6827 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/info',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 0,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '4b0a7197-9065-41b2-8c36-e790c31cd839',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 0.994432,
+  details: {
+    requestId: '4b0a7197-9065-41b2-8c36-e790c31cd839',
+    method: 'GET',
+    path: '/api/v1/info',
+    statusCode: 200,
+    contentLength: '239'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/info HTTP/1.1" 200 239 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 55.970796,
+  details: {
+    requestId: 'a5c387c4-e493-47fe-98ef-be0d7b362297',
+    method: 'GET',
+    path: '/health',
+    statusCode: 200,
+    contentLength: '404'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /health HTTP/1.1" 200 404 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:59:16',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.939201,
+  details: {
+    requestId: '6168da9f-43dd-438d-856f-b30f461bc0e0',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User login successful',
+  details: {
+    username: 'janeDVDops',
+    ip: '127.0.0.1',
+    sessionToken: 'fmkj0jrf5wgc8np7t7xi5m'
+  },
+  timestamp: '2025-10-29 00:59:16',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/login',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '18afd639-899b-4dbc-873c-5aff0ae56281',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.62415,
+  details: {
+    requestId: '18afd639-899b-4dbc-873c-5aff0ae56281',
+    method: 'POST',
+    path: '/api/v1/auth/login',
+    statusCode: 200,
+    contentLength: '104'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "POST /api/v1/auth/login HTTP/1.1" 200 104 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 28.487028,
+  details: {
+    requestId: '1494616a-3598-4330-869d-4290b6a61c1a',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 200,
+    contentLength: '2180'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/clients HTTP/1.1" 200 2180 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.52342,
+  details: {
+    requestId: '5eefbb23-2fac-4831-9a48-b0f6a2d83e15',
+    method: 'GET',
+    path: '/api/v1/prospects',
+    statusCode: 200,
+    contentLength: '871'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/prospects HTTP/1.1" 200 871 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.368556,
+  details: {
+    requestId: 'dc333028-b3b1-410c-bb4c-ea7cc3a98026',
+    method: 'GET',
+    path: '/api/v1/teams',
+    statusCode: 200,
+    contentLength: '27'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/teams HTTP/1.1" 200 27 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 7.258889,
+  details: {
+    requestId: '1586af3f-3d73-47ae-9449-12ef112b4472',
+    method: 'POST',
+    path: '/api/v1/clients',
+    statusCode: 201,
+    contentLength: '1442'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "POST /api/v1/clients HTTP/1.1" 201 1442 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.944845,
+  details: {
+    requestId: 'aff6337f-3143-4354-89c4-884ff105f271',
+    method: 'GET',
+    path: '/api/v1/clients/3',
+    statusCode: 200,
+    contentLength: '1113'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/clients/3 HTTP/1.1" 200 1113 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.001618,
+  details: {
+    requestId: '6a495f21-88d6-4cba-9bda-20a376933b08',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 200,
+    contentLength: '3209'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/clients HTTP/1.1" 200 3209 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.231598,
+  details: {
+    requestId: '02ce3c27-f49b-4d14-872e-6531a18999b3',
+    method: 'POST',
+    path: '/api/v1/analyze',
+    statusCode: 400,
+    contentLength: '91'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "POST /api/v1/analyze HTTP/1.1" 400 91 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 31.015105,
+  details: {
+    requestId: '89473cdb-7738-43fc-a7ac-9b87fb127d40',
+    method: 'GET',
+    path: '/api/v1/clients/3',
+    statusCode: 200,
+    contentLength: '1114'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/clients/3 HTTP/1.1" 200 1114 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  event: '404 - Resource not found',
+  details: {
+    ip: '127.0.0.1',
+    method: 'GET',
+    url: '/api/v1/nonexistent',
+    userAgent: undefined,
+    referer: undefined
+  },
+  timestamp: '2025-10-29 00:59:16',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'GET',
+  url: '/api/v1/nonexistent',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 0,
+  statusCode: 404,
+  contentLength: undefined,
+  requestId: '29aeb012-7fb6-4ea8-9094-071bb9ceb54a',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.405715,
+  details: {
+    requestId: '29aeb012-7fb6-4ea8-9094-071bb9ceb54a',
+    method: 'GET',
+    path: '/api/v1/nonexistent',
+    statusCode: 404,
+    contentLength: '69'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/nonexistent HTTP/1.1" 404 69 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-28T23:59:16.894Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-29 00:59:16',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/errors',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 1,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: '6b08c63a-30b7-48df-94e2-04415460e5bb',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.386094,
+  details: {
+    requestId: '6b08c63a-30b7-48df-94e2-04415460e5bb',
+    method: 'POST',
+    path: '/api/v1/errors',
+    statusCode: 200,
+    contentLength: '15'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "POST /api/v1/errors HTTP/1.1" 200 15 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Attempt to access non-existent client',
+  details: { clientId: 999999999, ip: '127.0.0.1', userAgent: undefined },
+  timestamp: '2025-10-29 00:59:16',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.225992,
+  details: {
+    requestId: '02c5120c-9750-4230-ac83-54ea6512322f',
+    method: 'GET',
+    path: '/api/v1/clients/999999999',
+    statusCode: 404,
+    contentLength: '44'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/clients/999999999 HTTP/1.1" 404 44 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'User logout',
+  details: { ip: '127.0.0.1', sessionToken: 'fmkj0jrf5wgc8np7t7xi5m' },
+  timestamp: '2025-10-29 00:59:16',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  method: 'POST',
+  url: '/api/v1/auth/logout',
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  responseTime: 0,
+  statusCode: 200,
+  contentLength: undefined,
+  requestId: 'b1111f9f-0040-4858-b498-8ddf0eb31c77',
+  level: 'info',
+  message: 'API Request',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1.331594,
+  details: {
+    requestId: 'b1111f9f-0040-4858-b498-8ddf0eb31c77',
+    method: 'POST',
+    path: '/api/v1/auth/logout',
+    statusCode: 200,
+    contentLength: '52'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "POST /api/v1/auth/logout HTTP/1.1" 200 52 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  event: 'Unauthorized access attempt',
+  details: { ip: '127.0.0.1', userAgent: undefined, path: '/', method: 'GET' },
+  timestamp: '2025-10-29 00:59:16',
+  level: 'warn',
+  message: 'Security Event'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 0.861075,
+  details: {
+    requestId: 'c06500bc-9bb5-4302-a5e3-ea6db1d02244',
+    method: 'GET',
+    path: '/api/v1/clients',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-10-29 00:59:16'
+}
+{
+  message: '127.0.0.1 - - [28/Oct/2025:23:59:16 +0000] "GET /api/v1/clients HTTP/1.1" 302 28 "-" "-"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-10-29 00:59:16'
+}
