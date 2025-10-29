@@ -30,6 +30,14 @@
 
     async loadProspects() {
       try {
+        console.log('📥 Loading prospects...');
+
+        // Check if apiCall is available
+        if (typeof window.apiCall !== 'function') {
+          console.error('❌ apiCall not available');
+          throw new Error('API client not initialized');
+        }
+
         const params = new URLSearchParams({
           search: this.filters.search,
           status: this.filters.status,
@@ -38,23 +46,32 @@
           limit: 100
         });
 
-        const response = await apiCall(`/prospects?${params}`);
+        const response = await window.apiCall(`/prospects?${params}`);
+        console.log('📥 Prospects response:', response);
 
-        if (response.success) {
+        if (response && response.success) {
           this.prospects = response.prospects || [];
           this.updateStats(response.stats);
           this.renderProspectsList();
           console.log(`✅ Loaded ${this.prospects.length} prospects`);
+        } else {
+          console.warn('⚠️ No prospects data received');
+          this.prospects = [];
+          this.renderProspectsList();
         }
       } catch (error) {
         console.error('❌ Error loading prospects:', error);
-        showToast('Помилка завантаження потенційних клієнтів', 'error');
+        if (window.showToast) {
+          window.showToast('Помилка завантаження потенційних клієнтів', 'error');
+        }
+        this.prospects = [];
+        this.renderProspectsList();
       }
     },
 
     async loadProspectDetails(prospectId) {
       try {
-        const response = await apiCall(`/prospects/${prospectId}`);
+        const response = await window.apiCall(`/prospects/${prospectId}`);
 
         if (response.success) {
           this.selectedProspect = response.prospect;
@@ -62,7 +79,7 @@
         }
       } catch (error) {
         console.error('❌ Error loading prospect details:', error);
-        showToast('Помилка завантаження деталей', 'error');
+        window.showToast('Помилка завантаження деталей', 'error');
       }
     },
 
@@ -449,13 +466,13 @@
 
       const validStatuses = ['active', 'promising', 'risky', 'rejected'];
       if (!validStatuses.includes(newStatus)) {
-        showToast('Невірний статус', 'error');
+        window.showToast('Невірний статус', 'error');
         return;
       }
 
       try {
         const promises = Array.from(this.selectedProspects).map(id =>
-          apiCall(`/prospects/${id}`, {
+          window.apiCall(`/prospects/${id}`, {
             method: 'PUT',
             body: JSON.stringify({
               notes: { status: newStatus }
@@ -464,12 +481,12 @@
         );
 
         await Promise.all(promises);
-        showToast(`Оновлено ${this.selectedProspects.size} клієнтів`, 'success');
+        window.showToast(`Оновлено ${this.selectedProspects.size} клієнтів`, 'success');
         this.clearSelection();
         this.loadProspects();
       } catch (error) {
         console.error('Error bulk updating:', error);
-        showToast('Помилка оновлення', 'error');
+        window.showToast('Помилка оновлення', 'error');
       }
     },
 
@@ -480,19 +497,19 @@
 
       try {
         const promises = Array.from(this.selectedProspects).map(id =>
-          apiCall(`/prospects/${id}/convert`, {
+          window.apiCall(`/prospects/${id}/convert`, {
             method: 'POST',
             body: JSON.stringify({ type: 'teamhub' })
           })
         );
 
         await Promise.all(promises);
-        showToast(`Конвертовано ${this.selectedProspects.size} клієнтів`, 'success');
+        window.showToast(`Конвертовано ${this.selectedProspects.size} клієнтів`, 'success');
         this.clearSelection();
         this.loadProspects();
       } catch (error) {
         console.error('Error bulk converting:', error);
-        showToast('Помилка конвертації', 'error');
+        window.showToast('Помилка конвертації', 'error');
       }
     },
 
@@ -503,16 +520,16 @@
 
       try {
         const promises = Array.from(this.selectedProspects).map(id =>
-          apiCall(`/prospects/${id}`, { method: 'DELETE' })
+          window.apiCall(`/prospects/${id}`, { method: 'DELETE' })
         );
 
         await Promise.all(promises);
-        showToast(`Видалено ${this.selectedProspects.size} клієнтів`, 'success');
+        window.showToast(`Видалено ${this.selectedProspects.size} клієнтів`, 'success');
         this.clearSelection();
         this.loadProspects();
       } catch (error) {
         console.error('Error bulk deleting:', error);
-        showToast('Помилка видалення', 'error');
+        window.showToast('Помилка видалення', 'error');
       }
     },
 
@@ -547,10 +564,10 @@
     async viewAnalysis(analysisId) {
       try {
         // Load full analysis with transcript and highlights
-        const analysis = await apiCall(`/negotiations/analysis/${analysisId}`);
+        const analysis = await window.apiCall(`/negotiations/analysis/${analysisId}`);
 
         if (!analysis || !analysis.success) {
-          showToast('Не вдалося завантажити аналіз', 'error');
+          window.showToast('Не вдалося завантажити аналіз', 'error');
           return;
         }
 
@@ -558,7 +575,7 @@
         this.renderAnalysisModal(analysis.data);
       } catch (error) {
         console.error('Error loading analysis:', error);
-        showToast('Помилка завантаження аналізу', 'error');
+        window.showToast('Помилка завантаження аналізу', 'error');
       }
     },
 
@@ -874,31 +891,31 @@
       if (content) {
         const text = content.innerText;
         navigator.clipboard.writeText(text).then(() => {
-          showToast('Транскрипт скопійовано', 'success');
+          window.showToast('Транскрипт скопійовано', 'success');
         }).catch(() => {
-          showToast('Помилка копіювання', 'error');
+          window.showToast('Помилка копіювання', 'error');
         });
       }
     },
 
     async downloadTranscript(analysisId) {
       try {
-        const response = await apiCall(`/negotiations/analysis/${analysisId}/export`);
+        const response = await window.apiCall(`/negotiations/analysis/${analysisId}/export`);
         // Handle download
-        showToast('Завантаження розпочато', 'success');
+        window.showToast('Завантаження розпочато', 'success');
       } catch (error) {
-        showToast('Помилка завантаження', 'error');
+        window.showToast('Помилка завантаження', 'error');
       }
     },
 
     async exportAnalysis(analysisId) {
       try {
-        const response = await apiCall(`/negotiations/analysis/${analysisId}/export-pdf`, {
+        const response = await window.apiCall(`/negotiations/analysis/${analysisId}/export-pdf`, {
           method: 'POST'
         });
-        showToast('PDF експортовано', 'success');
+        window.showToast('PDF експортовано', 'success');
       } catch (error) {
-        showToast('Помилка експорту', 'error');
+        window.showToast('Помилка експорту', 'error');
       }
     },
 
@@ -921,11 +938,11 @@
 
       try {
         // Get analysis data
-        const analysis = await apiCall(`/negotiations/analysis/${analysisId}`);
+        const analysis = await window.apiCall(`/negotiations/analysis/${analysisId}`);
         const transcript = (analysis.data || analysis).transcript || '';
 
         // Call AI to analyze cognitive biases
-        const biasesResponse = await apiCall('/ai/analyze-biases', {
+        const biasesResponse = await window.apiCall('/ai/analyze-biases', {
           method: 'POST',
           body: JSON.stringify({
             transcript,
@@ -1149,7 +1166,7 @@
 
       const question = input.value.trim();
       if (!question) {
-        showToast('Введіть питання', 'warning');
+        window.showToast('Введіть питання', 'warning');
         return;
       }
 
@@ -1188,10 +1205,10 @@
 
       try {
         // Get analysis context
-        const analysis = await apiCall(`/negotiations/analysis/${analysisId}`);
+        const analysis = await window.apiCall(`/negotiations/analysis/${analysisId}`);
 
         // Send to AI
-        const response = await apiCall('/ai/ask-advice', {
+        const response = await window.apiCall('/ai/ask-advice', {
           method: 'POST',
           body: JSON.stringify({
             question,

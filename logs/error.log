@@ -822,3 +822,19 @@
   level: 'error',
   message: 'Client-Side Error'
 }
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-10-29T00:48:30.159Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-10-29 01:48:30',
+  level: 'error',
+  message: 'Client-Side Error'
+}

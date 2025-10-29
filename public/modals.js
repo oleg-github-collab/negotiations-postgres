@@ -1122,6 +1122,11 @@
   window.NotesManager = NotesManager;
   window.FileUploadHandler = FileUploadHandler;
 
+  // Export modal helper functions for backward compatibility
+  window.showModal = (modalId) => ModalManager.open(modalId);
+  window.hideModal = (modalId) => ModalManager.close(modalId);
+  window.closeModal = (modalId) => ModalManager.close(modalId);
+
   // Helper functions
   window.apiCall = async function(endpoint, options = {}) {
     const defaultOptions = {
