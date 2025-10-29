@@ -559,22 +559,32 @@ const AppInit = {
 };
 
 // Auto-initialize when ready
+console.log('📱 App-init.js loaded, readyState:', document.readyState);
+
+// Always listen for auth-success event
+window.addEventListener('auth-success', () => {
+    console.log('🎉 Received auth-success event, initializing app...');
+    AppInit.init();
+});
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        // Wait for auth to complete
-        window.addEventListener('auth-success', () => {
+        console.log('📱 DOM loaded, checking auth...');
+        const isAuth = sessionStorage.getItem('teampulse-auth');
+        console.log('📱 Auth status from sessionStorage:', isAuth);
+        if (isAuth === 'true') {
+            console.log('📱 Already authenticated, initializing immediately');
             AppInit.init();
-        });
+        }
     });
 } else {
-    // If DOM already loaded, check if we're authenticated
+    console.log('📱 DOM already loaded, checking auth...');
     const isAuth = sessionStorage.getItem('teampulse-auth');
-    if (isAuth) {
-        AppInit.init();
-    } else {
-        window.addEventListener('auth-success', () => {
-            AppInit.init();
-        });
+    console.log('📱 Auth status from sessionStorage:', isAuth);
+    if (isAuth === 'true') {
+        console.log('📱 Already authenticated, initializing immediately');
+        // Small delay to ensure other modules are loaded
+        setTimeout(() => AppInit.init(), 100);
     }
 }
 
