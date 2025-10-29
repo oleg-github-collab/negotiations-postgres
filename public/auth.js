@@ -26,12 +26,17 @@
                     console.log('🔐 Server authentication successful');
                     // Server auth is good, update sessionStorage to match
                     sessionStorage.setItem('teampulse-auth', 'true');
-                    
+
                     const loginScreen = $('#login-screen');
                     const appContainer = $('#app-container');
-                    
+
                     if (loginScreen) loginScreen.style.display = 'none';
                     if (appContainer) appContainer.style.display = 'block';
+
+                    // Fire auth-success event so AppInit can initialize
+                    console.log('🔐 Firing auth-success event');
+                    window.dispatchEvent(new CustomEvent('auth-success'));
+
                     return true;
                 } else {
                     console.log('🔐 Server returned unsuccessful response');
