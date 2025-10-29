@@ -51,7 +51,7 @@
 .command-palette-backdrop,
 .modal-overlay,
 .loading-overlay {
-  z-index: 900 !important;
+  z-index: 10000 !important;
 }
 
 /* Шар 1000-1999: Модальні вікна та діалоги */
