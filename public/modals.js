@@ -17,19 +17,36 @@
     activeModal: null,
 
     open(modalId, data = null) {
+      console.log(`🚀 ModalManager.open called with modalId: ${modalId}`);
+
       const modal = $(`#${modalId}`);
       const backdrop = $('#modal-backdrop');
 
       if (!modal) {
-        console.error(`Modal ${modalId} not found`);
+        console.error(`❌ Modal ${modalId} not found in DOM`);
         return;
+      }
+
+      console.log(`✅ Modal ${modalId} found in DOM`);
+
+      // Close any existing modal first
+      if (this.activeModal && this.activeModal !== modalId) {
+        console.log(`⚠️ Closing existing modal: ${this.activeModal}`);
+        this.close(this.activeModal);
       }
 
       this.activeModal = modalId;
 
       // Show backdrop and modal
-      if (backdrop) backdrop.style.display = 'block';
+      if (backdrop) {
+        backdrop.style.display = 'block';
+        console.log('✅ Backdrop shown');
+      }
+
       modal.style.display = 'flex';
+      modal.style.visibility = 'visible';
+      modal.style.opacity = '1';
+      console.log(`✅ Modal ${modalId} display set to flex`);
 
       // Prevent body scroll
       document.body.style.overflow = 'hidden';
@@ -42,18 +59,32 @@
       // Add escape key listener
       document.addEventListener('keydown', this.handleEscape);
 
-      console.log(`Modal opened: ${modalId}`);
+      console.log(`✅ Modal opened successfully: ${modalId}`);
     },
 
     close(modalId = null) {
       const id = modalId || this.activeModal;
-      if (!id) return;
+      if (!id) {
+        console.log('⚠️ ModalManager.close called but no modal is active');
+        return;
+      }
+
+      console.log(`🚪 ModalManager.close called for: ${id}`);
 
       const modal = $(`#${id}`);
       const backdrop = $('#modal-backdrop');
 
-      if (modal) modal.style.display = 'none';
-      if (backdrop) backdrop.style.display = 'none';
+      if (modal) {
+        modal.style.display = 'none';
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
+        console.log(`✅ Modal ${id} hidden`);
+      }
+
+      if (backdrop) {
+        backdrop.style.display = 'none';
+        console.log('✅ Backdrop hidden');
+      }
 
       // Restore body scroll
       document.body.style.overflow = '';
@@ -66,7 +97,7 @@
       // Reset modal forms
       this.resetModal(id);
 
-      console.log(`Modal closed: ${id}`);
+      console.log(`✅ Modal closed successfully: ${id}`);
     },
 
     handleEscape: (e) => {
@@ -1071,29 +1102,44 @@
   // INITIALIZATION
   // ============================================
 
+  let modalsInitialized = false;
+
   function initModals() {
-    // Close buttons
+    if (modalsInitialized) {
+      console.log('⚠️ Modals already initialized, skipping');
+      return;
+    }
+
+    console.log('🔧 Initializing modals...');
+
+    // Close buttons - use once:true to prevent duplicates
     $$('[id^="close-"][id$="-modal"]').forEach(btn => {
       btn.addEventListener('click', () => {
+        console.log('❌ Close button clicked');
         ModalManager.close();
-      });
+      }, { once: false }); // Changed to false but we track with flag
     });
 
     $$('[id^="cancel-"][id$="-btn"]').forEach(btn => {
       btn.addEventListener('click', () => {
+        console.log('❌ Cancel button clicked');
         ModalManager.close();
-      });
+      }, { once: false });
     });
 
-    // Backdrop click
+    // Backdrop click - DISABLED to prevent accidental closes
     const backdrop = $('#modal-backdrop');
     if (backdrop) {
       backdrop.addEventListener('click', (e) => {
+        // ONLY close if clicking directly on backdrop, not on modal content
         if (e.target === backdrop) {
+          console.log('❌ Backdrop clicked, closing modal');
           ModalManager.close();
         }
-      });
+      }, { once: false });
     }
+
+    modalsInitialized = true;
 
     // Notes add button
     const addNoteBtn = $('#add-note-btn');
