@@ -913,28 +913,80 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        console.log('📝 Створення клієнта...');
+
+        // Map old form fields to new API format
+        const companyName = $('#client-name')?.value?.trim();
+        const clientType = $('#client-type')?.value;
+        const contact = $('#client-contact')?.value?.trim();
+        const teamSize = $('#client-team-size')?.value;
+
+        if (!companyName) {
+          showToast('Введіть назву компанії', 'error');
+          return;
+        }
+
+        // Map team size to company_size enum
+        let companySize = 'medium';
+        if (teamSize) {
+          const size = parseInt(teamSize);
+          if (size < 10) companySize = 'startup';
+          else if (size < 50) companySize = 'small';
+          else if (size < 200) companySize = 'medium';
+          else companySize = 'large';
+        }
+
+        // Prepare data in new API format
         const data = {
-          name: $('#client-name').value,
-          type: $('#client-type').value,
-          contact: $('#client-contact').value,
-          team_size: parseInt($('#client-team-size').value),
-          team_data: $('#client-team-data-manual').value
+          company: companyName,
+          negotiator: contact || '',
+          sector: 'Technology',
+          company_size: companySize,
+          negotiation_type: 'sales',
+          deal_value: '$100K-$500K',
+          timeline: '3-6 months',
+          goal: 'New client acquisition',
+          decision_criteria: 'Budget, Timeline, Team fit'
         };
 
+        console.log('📤 Sending data:', data);
+
         try {
-          const client = await apiCall('/clients', {
+          const response = await fetch('/api/v1/clients', {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(data)
           });
 
-          showToast('Клієнта створено', 'success');
+          const result = await response.json();
+          console.log('📥 Response:', response.status, result);
+
+          if (!response.ok) {
+            const errorMsg = result.details
+              ? result.details.map(d => d.message).join(', ')
+              : result.error || 'Помилка створення клієнта';
+            throw new Error(errorMsg);
+          }
+
+          showToast('Клієнта створено успішно!', 'success');
           ModalManager.close('create-client-modal');
 
-          if (window.TeamHubModule) {
-            window.TeamHubModule.loadClients();
+          // Reload clients list
+          if (window.TeamHubModule && window.TeamHubModule.loadClients) {
+            setTimeout(() => window.TeamHubModule.loadClients(), 300);
           }
+          if (window.AppInit && window.AppInit.loadInitialData) {
+            setTimeout(() => window.AppInit.loadInitialData(), 300);
+          }
+
+          // Reset form
+          form.reset();
+
         } catch (error) {
-          showToast('Помилка створення клієнта', 'error');
+          console.error('❌ Помилка створення клієнта:', error);
+          showToast(error.message || 'Помилка створення клієнта', 'error');
         }
       });
     },
