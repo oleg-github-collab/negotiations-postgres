@@ -558,6 +558,34 @@ const AppInit = {
     }
 };
 
+// Global error handler to catch all unhandled errors
+window.addEventListener('error', (event) => {
+  console.error('🚨 Global error caught:', event.error);
+  console.error('  Message:', event.message);
+  console.error('  Filename:', event.filename);
+  console.error('  Line:', event.lineno, 'Column:', event.colno);
+
+  // Prevent full page crash - show user-friendly message
+  if (window.showToast) {
+    window.showToast('Виникла помилка. Будь ласка, оновіть сторінку.', 'error');
+  }
+
+  // Don't prevent default - let browser handle it too
+  return false;
+});
+
+// Global promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('🚨 Unhandled promise rejection:', event.reason);
+
+  // Prevent full page crash
+  if (window.showToast) {
+    window.showToast('Виникла помилка при обробці запиту', 'error');
+  }
+
+  event.preventDefault();
+});
+
 // Auto-initialize when ready
 console.log('📱 App-init.js loaded, readyState:', document.readyState);
 

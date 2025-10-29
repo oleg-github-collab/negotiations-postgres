@@ -26,10 +26,31 @@ const Onboarding = {
   },
 
   hide() {
-    if (typeof window.closeModal === 'function') {
-      window.closeModal('onboarding-modal');
-    } else {
-      document.getElementById('onboarding-modal').style.display = 'none';
+    try {
+      console.log('🚪 Hiding onboarding modal');
+
+      if (typeof window.closeModal === 'function') {
+        window.closeModal('onboarding-modal');
+      } else if (typeof window.hideModal === 'function') {
+        window.hideModal('onboarding-modal');
+      } else if (typeof window.ModalManager !== 'undefined') {
+        window.ModalManager.close('onboarding-modal');
+      } else {
+        const modal = document.getElementById('onboarding-modal');
+        if (modal) {
+          modal.style.display = 'none';
+          modal.classList.remove('active');
+        }
+      }
+
+      // Reset onboarding state
+      this.currentStep = 1;
+      this.clientData = null;
+      this.teamMembers = [];
+
+      console.log('✅ Onboarding modal hidden');
+    } catch (error) {
+      console.error('❌ Error hiding onboarding:', error);
     }
   },
 
@@ -235,7 +256,7 @@ const Onboarding = {
         notes.onboarding_completed = true;
         notes.onboarding_date = new Date().toISOString();
 
-        await apiCall(`/clients/${this.clientData.id}`, {
+        await window.apiCall(`/clients/${this.clientData.id}`, {
           method: 'PUT',
           body: JSON.stringify({ notes })
         });
@@ -244,7 +265,7 @@ const Onboarding = {
         if (this.teamMembers.length > 0) {
           const validMembers = this.teamMembers.filter(m => m.name.trim());
           if (validMembers.length > 0) {
-            await apiCall('/teams', {
+            await window.apiCall('/teams', {
               method: 'POST',
               body: JSON.stringify({
                 client_id: this.clientData.id,
@@ -259,7 +280,7 @@ const Onboarding = {
         }
       }
 
-      showNotification('Налаштування завершено успішно!', 'success');
+      window.showToast('Налаштування завершено успішно!', 'success');
       this.hide();
 
       // Reload active clients
@@ -276,7 +297,7 @@ const Onboarding = {
 
     } catch (error) {
       console.error('Onboarding error:', error);
-      showNotification('Помилка при завершенні налаштування', 'error');
+      window.showToast('Помилка при завершенні налаштування', 'error');
     }
   },
 

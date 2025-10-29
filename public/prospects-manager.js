@@ -538,17 +538,44 @@
     // ============================================
 
     openConvertModal(prospectId) {
-      this.selectedProspect = this.prospects.find(p => p.id === prospectId);
-      if (!this.selectedProspect) return;
+      try {
+        console.log('🔄 Opening convert modal for prospect:', prospectId);
 
-      // Set prospect data in convert modal
-      const modal = document.getElementById('convert-modal');
-      if (modal) {
+        this.selectedProspect = this.prospects.find(p => p.id === prospectId);
+        if (!this.selectedProspect) {
+          console.warn('⚠️ Prospect not found:', prospectId);
+          return;
+        }
+
+        // Check if ModalManager is available
+        if (typeof window.ModalManager === 'undefined') {
+          console.error('❌ ModalManager not available');
+          alert('Помилка: модулі не завантажені. Перезавантажте сторінку.');
+          return;
+        }
+
+        // Set prospect data in convert modal
+        const modal = document.getElementById('convert-modal');
+        if (!modal) {
+          console.error('❌ Convert modal not found in DOM');
+          alert('Помилка: модальне вікно не знайдено');
+          return;
+        }
+
         const prospectName = modal.querySelector('#convert-prospect-name');
         if (prospectName) {
           prospectName.textContent = this.selectedProspect.company;
         }
-        ModalManager.open('convert-modal');
+
+        console.log('✅ Opening convert modal');
+        window.ModalManager.open('convert-modal');
+      } catch (error) {
+        console.error('❌ Error opening convert modal:', error);
+        if (window.showToast) {
+          window.showToast('Помилка відкриття форми конвертації', 'error');
+        } else {
+          alert('Помилка відкриття форми конвертації: ' + error.message);
+        }
       }
     },
 
