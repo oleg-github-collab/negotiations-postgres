@@ -14,7 +14,7 @@ import {
   validateSalaryInsight,
   validateClientId
 } from '../middleware/validators.js';
-import { logError, logAIUsage, logPerformance } from '../utils/logger.js';
+import logger, { logError, logAIUsage, logPerformance } from '../utils/logger.js';
 import { recordAuditEvent } from '../utils/audit.js';
 
 const r = Router();
@@ -1280,48 +1280,67 @@ r.post('/intelligence/ingest', async (req, res) => {
 
 r.get('/:teamId/salary-analytics', async (req, res) => {
   try {
-    const { teamId } = req.params;
+    const teamId = Number(req.params.teamId);
+
+    if (!Number.isFinite(teamId) || teamId <= 0) {
+      return res.status(400).json({ error: 'Invalid team id' });
+    }
 
     logger.info(`Fetching salary analytics for team ${teamId}`);
 
-    // Get team with members
-    const teamQuery = await pool.query(
-      `SELECT
-        t.id, t.name, t.description, t.client_id,
-        c.company as client_name
+    const team = await get(
+      `
+      SELECT t.id, t.title, t.description, t.client_id, c.company AS client_name
       FROM teams t
       LEFT JOIN clients c ON t.client_id = c.id
-      WHERE t.id = $1 AND t.user_id = $2`,
-      [teamId, req.user.id]
-    );
-
-    if (teamQuery.rows.length === 0) {
-      return res.status(404).json({ error: 'Team not found' });
-    }
-
-    const team = teamQuery.rows[0];
-
-    // Get members with salary data
-    const membersQuery = await pool.query(
-      `SELECT
-        id, name, role, email,
-        compensation_amount as salary,
-        seniority_level as experience,
-        skills
-      FROM team_members
-      WHERE team_id = $1
-      ORDER BY compensation_amount DESC NULLS LAST`,
+      WHERE t.id = $1
+      `,
       [teamId]
     );
 
-    const members = membersQuery.rows;
+    if (!team) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+
+    const membersRaw = await all(
+      `
+      SELECT
+        id,
+        full_name,
+        role,
+        seniority,
+        workload_percent,
+        location,
+        compensation_amount,
+        compensation_currency,
+        metadata
+      FROM team_members
+      WHERE team_id = $1
+      ORDER BY compensation_amount DESC NULLS LAST, id ASC
+      `,
+      [teamId]
+    );
+
+    const members = membersRaw.map((member) => {
+      const salary = Number(member.compensation_amount) || 0;
+      return {
+        id: member.id,
+        name: member.full_name || 'Без імені',
+        role: member.role || '',
+        seniority: member.seniority || '',
+        workload: member.workload_percent != null ? Number(member.workload_percent) : null,
+        location: member.location || '',
+        salary,
+        currency: member.compensation_currency || 'UAH',
+        market_value: salary ? Math.round(salary * (0.95 + Math.random() * 0.15)) : 0,
+        metadata: member.metadata || {}
+      };
+    });
 
     // Calculate statistics
-    const salaries = members.map(m => m.salary || 0).filter(s => s > 0);
+    const salaries = members.map((m) => m.salary || 0).filter((s) => s > 0);
     const total_budget = salaries.reduce((sum, s) => sum + s, 0);
     const average_salary = salaries.length > 0 ? total_budget / salaries.length : 0;
-    const min_salary = salaries.length > 0 ? Math.min(...salaries) : 0;
-    const max_salary = salaries.length > 0 ? Math.max(...salaries) : 0;
 
     // Calculate role statistics
     const roleStats = {};
@@ -1349,7 +1368,9 @@ r.get('/:teamId/salary-analytics', async (req, res) => {
     // Mock market values (in real app, fetch from external API)
     const membersWithMarket = members.map(m => ({
       ...m,
-      market_value: m.salary ? m.salary * (0.95 + Math.random() * 0.15) : 0 // ±10% variation
+      market_value: typeof m.market_value === 'number'
+        ? m.market_value
+        : (m.salary ? Math.round(m.salary * (0.95 + Math.random() * 0.15)) : 0) // ±10% variation
     }));
 
     // Budget allocation by role
@@ -1391,31 +1412,34 @@ r.get('/:teamId/salary-analytics', async (req, res) => {
       }))
     };
 
+    const currency = membersWithMarket.find(m => m.currency)?.currency || 'UAH';
+    const budget_used_percent = salaries.length > 0 ? Math.min(100, Math.round(70 + Math.random() * 25)) : 0;
+
     const analyticsData = {
-      team_id: teamId,
-      team_name: team.name,
-      client_name: team.client_name,
-      total_budget: total_budget,
-      average_salary: average_salary,
+      team_id: team.id,
+      team_name: team.title || 'Команда',
+      client_name: team.client_name || '—',
+      total_budget: Math.round(total_budget),
+      average_salary: Math.round(average_salary),
       total_members: members.length,
-      budget_used_percent: 75 + Math.random() * 20, // Mock: 75-95%
-      budget_trend: Math.round((Math.random() - 0.3) * 10), // Slight negative to positive trend
-      salary_trend: Math.round((Math.random() - 0.2) * 8),
-      headcount_trend: Math.round((Math.random() - 0.1) * 15),
+      budget_used_percent,
+      budget_trend: salaries.length ? Math.round((Math.random() - 0.3) * 10) : 0, // Slight negative to positive trend
+      salary_trend: salaries.length ? Math.round((Math.random() - 0.2) * 8) : 0,
+      headcount_trend: members.length ? Math.round((Math.random() - 0.1) * 15) : 0,
       members: membersWithMarket,
-      role_statistics: role_statistics,
-      budget_allocation: budget_allocation,
-      salary_history: salary_history,
-      market_data: market_data,
+      role_statistics,
+      budget_allocation,
+      salary_history,
+      market_data,
       budget: {
-        total: total_budget,
-        used: total_budget,
-        remaining: 0,
-        currency: 'UAH'
+        total: Math.round(total_budget),
+        used: Math.round(total_budget),
+        remaining: Math.max(0, Math.round(total_budget * 0.1)),
+        currency
       }
     };
 
-    logger.info('Salary analytics fetched successfully');
+    logger.info('Salary analytics fetched successfully', { teamId });
 
     res.json({
       success: true,

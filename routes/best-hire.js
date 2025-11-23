@@ -11,6 +11,32 @@ import { recordAuditEvent } from '../utils/audit.js';
 const r = Router();
 const MODEL = process.env.OPENAI_MODEL || 'gpt-4o';
 
+const normalizeArrayField = (value, fallback = []) => {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+  return fallback;
+};
+
+const normalizeObjectField = (value, fallback = {}) => {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+  return fallback;
+};
+
 const ensureOpenAI = (res) => {
   if (!openaiClient) {
     res.status(503).json({
@@ -32,18 +58,18 @@ r.get('/positions/client/:id', validateClientId, async (req, res) => {
     const clientId = Number(req.params.id);
     const { status, priority } = req.query;
 
-    let whereClause = 'client_id = $1';
+    let whereClause = 'p.client_id = $1';
     let params = [clientId];
     let paramIndex = 2;
 
     if (status) {
-      whereClause += ` AND status = $${paramIndex}`;
+      whereClause += ` AND p.status = $${paramIndex}`;
       params.push(status);
       paramIndex++;
     }
 
     if (priority) {
-      whereClause += ` AND priority = $${paramIndex}`;
+      whereClause += ` AND p.priority = $${paramIndex}`;
       params.push(priority);
       paramIndex++;
     }
@@ -94,6 +120,13 @@ r.post('/positions', async (req, res) => {
       });
     }
 
+    const requiredSkills = normalizeArrayField(payload.required_skills);
+    const preferredSkills = normalizeArrayField(payload.preferred_skills);
+    const responsibilities = normalizeArrayField(payload.responsibilities);
+    const requirements = normalizeArrayField(payload.requirements);
+    const benefits = normalizeArrayField(payload.benefits);
+    const metadata = normalizeObjectField(payload.metadata);
+
     const position = await run(
       `INSERT INTO positions (
         client_id, title, department, seniority_level, employment_type,
@@ -115,17 +148,17 @@ r.post('/positions', async (req, res) => {
         payload.salary_currency || 'UAH',
         payload.status || 'open',
         payload.priority || 'medium',
-        payload.required_skills || [],
-        payload.preferred_skills || [],
-        payload.responsibilities || [],
-        payload.requirements || [],
-        payload.benefits || [],
+        JSON.stringify(requiredSkills),
+        JSON.stringify(preferredSkills),
+        JSON.stringify(responsibilities),
+        JSON.stringify(requirements),
+        JSON.stringify(benefits),
         payload.description,
         payload.headcount || 1,
         payload.deadline,
         payload.hiring_manager,
         payload.recruiter_assigned,
-        payload.metadata || {}
+        JSON.stringify(metadata)
       ]
     );
 
@@ -267,6 +300,13 @@ r.post('/resumes', async (req, res) => {
       });
     }
 
+    const skills = normalizeArrayField(payload.skills);
+    const education = normalizeArrayField(payload.education);
+    const workHistory = normalizeArrayField(payload.work_history);
+    const certifications = normalizeArrayField(payload.certifications);
+    const languages = normalizeArrayField(payload.languages);
+    const metadata = normalizeObjectField(payload.metadata);
+
     const resume = await run(
       `INSERT INTO resumes (
         position_id, client_id, candidate_name, email, phone, linkedin_url,
@@ -292,17 +332,17 @@ r.post('/resumes', async (req, res) => {
         payload.salary_currency || 'UAH',
         payload.notice_period_days,
         payload.years_of_experience,
-        payload.skills || [],
-        payload.education || [],
-        payload.work_history || [],
-        payload.certifications || [],
-        payload.languages || [],
+        JSON.stringify(skills),
+        JSON.stringify(education),
+        JSON.stringify(workHistory),
+        JSON.stringify(certifications),
+        JSON.stringify(languages),
         payload.resume_text,
         payload.resume_file_url,
         payload.source_channel,
         payload.stage || 'new',
         payload.rating || 0,
-        payload.metadata || {}
+        JSON.stringify(metadata)
       ]
     );
 
@@ -485,11 +525,15 @@ r.patch('/resumes/:id/stage', async (req, res) => {
 
     // Add interviewer note if provided
     if (notes) {
-      const currentNotes = updated.rows[0].interviewer_notes || [];
+      const currentNotes = Array.isArray(updated.rows[0].interviewer_notes)
+        ? updated.rows[0].interviewer_notes
+        : [];
+      const newNotes = [...currentNotes, { note: notes, timestamp: new Date().toISOString(), author: req.user?.username || 'system' }];
       await run(
         `UPDATE resumes SET interviewer_notes = $1 WHERE id = $2`,
-        [[...currentNotes, { note: notes, timestamp: new Date().toISOString(), author: req.user?.username }], resumeId]
+        [JSON.stringify(newNotes), resumeId]
       );
+      updated.rows[0].interviewer_notes = newNotes;
     }
 
     const duration = performance.now() - start;
