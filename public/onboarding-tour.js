@@ -583,9 +583,13 @@ const OnboardingTour = {
   },
 
   hideContextTooltip(element) {
-    if (element._tooltip) {
+    if (element && element._tooltip) {
       element._tooltip.classList.remove('show');
-      setTimeout(() => element._tooltip.remove(), 200);
+      setTimeout(() => {
+        if (element._tooltip && element._tooltip.parentNode) {
+          element._tooltip.remove();
+        }
+      }, 200);
       delete element._tooltip;
       delete element.dataset.tooltipShown;
     }

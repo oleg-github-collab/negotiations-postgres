@@ -1,6 +1,6 @@
 /* ============================================
-   MODAL CRITICAL FIXES - TeamPulse Turbo
-   Виправлення всіх проблем з модалками
+   MODAL CRITICAL FIXES - TeamPulse Turbo v2
+   ПОВНИЙ ПЕРЕПИС - Проста і робоча логіка
    ============================================ */
 
 /* CSS Variables */
@@ -13,114 +13,81 @@
 }
 
 /* ============================================
-   MODAL BACKDROP
+   MODAL BACKDROP - Затемнення фону
    ============================================ */
 #modal-backdrop,
 .modal-backdrop {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background: rgba(0, 0, 0, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  z-index: var(--z-modal-backdrop) !important;
-  display: none !important;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-#modal-backdrop[style*="display: block"],
-.modal-backdrop[style*="display: block"] {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  opacity: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: var(--z-modal-backdrop);
+  /* display керується через inline style від JS */
 }
 
 /* ============================================
-   MODAL CONTAINER
+   MODAL CONTAINER - Обгортка модального вікна
    ============================================ */
 .modal {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: var(--z-modal) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 20px !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  pointer-events: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* Modal when display is set to flex via inline style */
-.modal[style*="display: flex"] {
-  display: flex !important;
-  pointer-events: auto !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Modal active state (fallback) */
-.modal.active {
-  display: flex !important;
-  pointer-events: auto !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Modal default hidden state */
-.modal[style*="display: none"],
-.modal:not([style*="display: flex"]):not(.active) {
-  display: none !important;
-  pointer-events: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: var(--z-modal);
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Центрування контенту - ВАЖЛИВО: не використовуємо !important */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* display керується через inline style від JS */
 }
 
 /* ============================================
-   MODAL CONTENT
+   MODAL CONTENT - Вміст модального вікна
    ============================================ */
 .modal-content {
-  position: relative !important;
-  background: var(--bg-dark-secondary) !important;
-  border: 1px solid var(--glass-border) !important;
-  border-radius: 20px !important;
-  width: 100% !important;
-  max-width: 600px !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-  box-shadow: var(--shadow-xl) !important;
-  transform: scale(0.95);
-  opacity: 0;
-  animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  margin: auto !important;
+  position: relative;
+  background: var(--bg-dark-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  margin: auto;
+  /* Анімація появи */
+  animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Larger modal variant */
+/* Більші варіанти модалок */
 .modal-content.modal-xl,
 .modal-xl .modal-content {
-  max-width: 1200px !important;
+  max-width: 1200px;
 }
 
 .modal-content.modal-lg,
 .modal-lg .modal-content {
-  max-width: 900px !important;
+  max-width: 900px;
 }
 
-/* Modal animation */
+.modal-content.modal-md,
+.modal-md .modal-content {
+  max-width: 800px;
+}
+
+/* Анімація появи модалки */
 @keyframes modalSlideIn {
   from {
     transform: scale(0.95) translateY(-20px);
@@ -133,70 +100,70 @@
 }
 
 /* ============================================
-   MODAL HEADER
+   MODAL HEADER - Заголовок
    ============================================ */
 .modal-header {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 30px 40px !important;
-  border-bottom: 1px solid var(--glass-border) !important;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 40px;
+  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
 }
 
 .modal-header h2,
 .modal-header h3 {
-  margin: 0 !important;
-  font-size: 24px !important;
-  font-weight: 600 !important;
-  color: #ffffff !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .modal-header h2 i,
 .modal-header h3 i {
-  color: #667eea !important;
-  font-size: 22px !important;
+  color: #667eea;
+  font-size: 22px;
 }
 
 /* Close button */
 .modal-close,
 button.modal-close {
-  background: transparent !important;
-  border: none !important;
-  color: rgba(255, 255, 255, 0.6) !important;
-  font-size: 24px !important;
-  cursor: pointer !important;
-  padding: 8px !important;
-  width: 40px !important;
-  height: 40px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 10px !important;
-  transition: all 0.3s ease !important;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
 .modal-close:hover,
 button.modal-close:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #ffffff !important;
-  transform: rotate(90deg) !important;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: rotate(90deg);
 }
 
 /* ============================================
-   MODAL BODY
+   MODAL BODY - Тіло модалки
    ============================================ */
 .modal-body {
-  padding: 40px !important;
-  max-height: calc(90vh - 200px) !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  padding: 40px;
+  max-height: calc(90vh - 200px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* Custom scrollbar for modal body */
+/* Custom scrollbar */
 .modal-body::-webkit-scrollbar {
   width: 8px;
 }
@@ -216,112 +183,208 @@ button.modal-close:hover {
 }
 
 /* ============================================
-   MODAL FOOTER
+   MODAL FOOTER - Футер з кнопками
    ============================================ */
 .modal-footer {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 12px !important;
-  padding: 20px 40px !important;
-  border-top: 1px solid var(--glass-border) !important;
-  background: rgba(255, 255, 255, 0.02) !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 40px;
+  border-top: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 /* ============================================
-   FORM ELEMENTS IN MODALS
+   FORM ELEMENTS - Елементи форм в модалках
    ============================================ */
 .modal-body .form-group {
-  margin-bottom: 24px !important;
+  margin-bottom: 24px;
 }
 
 .modal-body .form-row {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-  gap: 20px !important;
-  margin-bottom: 24px !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
 }
 
 .modal-body label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin-bottom: 8px !important;
-  font-weight: 500 !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  font-size: 14px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
 }
 
 .modal-body label i {
-  color: #667eea !important;
-  font-size: 14px !important;
+  color: #667eea;
+  font-size: 14px;
 }
 
 .modal-body input[type="text"],
 .modal-body input[type="number"],
 .modal-body input[type="email"],
 .modal-body input[type="tel"],
+.modal-body input[type="password"],
+.modal-body input[type="date"],
 .modal-body select,
 .modal-body textarea {
-  width: 100% !important;
-  padding: 12px 16px !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 10px !important;
-  color: #ffffff !important;
-  font-size: 14px !important;
-  transition: all 0.3s ease !important;
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
 .modal-body input:focus,
 .modal-body select:focus,
 .modal-body textarea:focus {
-  outline: none !important;
-  border-color: #667eea !important;
-  background: rgba(102, 126, 234, 0.1) !important;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+  outline: none;
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
 }
 
 .modal-body textarea {
-  min-height: 120px !important;
-  resize: vertical !important;
-  font-family: 'Courier New', monospace !important;
+  min-height: 120px;
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+}
+
+.modal-body select {
+  cursor: pointer;
+}
+
+.modal-body input::placeholder,
+.modal-body textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* ============================================
-   BUTTONS IN MODALS
+   BUTTONS - Кнопки в модалках
    ============================================ */
 .modal-footer .btn,
 .modal-body .btn {
-  padding: 12px 24px !important;
-  border-radius: 10px !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  border: none !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: #ffffff !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4) !important;
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   UPLOAD TABS & FILE UPLOAD
+   ============================================ */
+.upload-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.upload-tab {
+  flex: 1;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.upload-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.upload-content {
+  display: none;
+}
+
+.upload-content.active {
+  display: block;
+}
+
+.file-upload-area {
+  border: 2px dashed rgba(102, 126, 234, 0.5);
+  border-radius: 15px;
+  padding: 40px;
+  text-align: center;
+  background: rgba(102, 126, 234, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-upload-area:hover {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.file-upload-area.drag-over {
+  border-color: #764ba2;
+  background: rgba(118, 75, 162, 0.15);
+  transform: scale(1.02);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.modal-body .text-muted {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
+
+.modal-body .text-center {
+  text-align: center;
+}
+
+.modal-body .text-small {
+  font-size: 12px;
+}
+
+/* Блокування скролу body коли модалка відкрита */
+body.modal-open {
+  overflow: hidden;
 }
 
 /* ============================================
@@ -329,122 +392,93 @@ button.modal-close:hover {
    ============================================ */
 @media (max-width: 768px) {
   .modal {
-    padding: 10px !important;
+    padding: 10px;
   }
 
   .modal-content {
-    max-height: 95vh !important;
-    border-radius: 15px !important;
+    max-height: 95vh;
+    border-radius: 15px;
   }
 
   .modal-content.modal-xl,
   .modal-xl .modal-content,
   .modal-content.modal-lg,
-  .modal-lg .modal-content {
-    max-width: 100% !important;
+  .modal-lg .modal-content,
+  .modal-content.modal-md,
+  .modal-md .modal-content {
+    max-width: 100%;
   }
 
   .modal-header {
-    padding: 20px !important;
+    padding: 20px;
   }
 
   .modal-header h2,
   .modal-header h3 {
-    font-size: 20px !important;
+    font-size: 20px;
   }
 
   .modal-body {
-    padding: 20px !important;
-    max-height: calc(95vh - 150px) !important;
+    padding: 20px;
+    max-height: calc(95vh - 150px);
   }
 
   .modal-body .form-row {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
 
   .modal-footer {
-    padding: 15px 20px !important;
-    flex-direction: column !important;
+    padding: 15px 20px;
+    flex-direction: column;
   }
 
   .modal-footer .btn {
-    width: 100% !important;
+    width: 100%;
   }
 }
 
 /* ============================================
-   UPLOAD TABS & CONTENT IN MODALS
+   ДОДАТКОВІ СТИЛІ ДЛЯ СПЕЦИФІЧНИХ ЕЛЕМЕНТІВ
    ============================================ */
-.upload-tabs {
-  display: flex !important;
-  gap: 8px !important;
-  margin-bottom: 20px !important;
+
+/* Checkbox та radio в модалках */
+.modal-body input[type="checkbox"],
+.modal-body input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
 }
 
-.upload-tab {
-  flex: 1 !important;
-  padding: 12px 20px !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 10px !important;
-  color: rgba(255, 255, 255, 0.7) !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
+/* Групи чекбоксів */
+.modal-body .checkbox-group,
+.modal-body .radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.upload-tab.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
+.modal-body .checkbox-group label,
+.modal-body .radio-group label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
-.upload-content {
-  display: none !important;
+/* Help text */
+.modal-body .help-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 4px;
 }
 
-.upload-content.active {
-  display: block !important;
+/* Error states */
+.modal-body input.error,
+.modal-body select.error,
+.modal-body textarea.error {
+  border-color: #ff6b6b;
 }
 
-/* File upload area */
-.file-upload-area {
-  border: 2px dashed rgba(102, 126, 234, 0.5) !important;
-  border-radius: 15px !important;
-  padding: 40px !important;
-  text-align: center !important;
-  background: rgba(102, 126, 234, 0.05) !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-}
-
-.file-upload-area:hover {
-  border-color: #667eea !important;
-  background: rgba(102, 126, 234, 0.1) !important;
-}
-
-.file-upload-area.drag-over {
-  border-color: #764ba2 !important;
-  background: rgba(118, 75, 162, 0.15) !important;
-  transform: scale(1.02) !important;
-}
-
-/* ============================================
-   UTILITY CLASSES
-   ============================================ */
-.modal-body .text-muted {
-  color: rgba(255, 255, 255, 0.5) !important;
-  font-size: 13px !important;
-}
-
-.modal-body .text-center {
-  text-align: center !important;
-}
-
-/* Prevent body scroll when modal is open */
-body.modal-open {
-  overflow: hidden !important;
+.modal-body .error-message {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 4px;
 }
