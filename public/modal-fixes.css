@@ -53,23 +53,41 @@
   width: 100vw !important;
   height: 100vh !important;
   z-index: var(--z-modal) !important;
-  display: none !important;
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 20px !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
-  opacity: 0;
-  visibility: hidden;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* Modal active state */
-.modal[style*="display: flex"],
-.modal.active {
+/* Modal when display is set to flex via inline style */
+.modal[style*="display: flex"] {
   display: flex !important;
+  pointer-events: auto !important;
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+/* Modal active state (fallback) */
+.modal.active {
+  display: flex !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Modal default hidden state */
+.modal[style*="display: none"],
+.modal:not([style*="display: flex"]):not(.active) {
+  display: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 /* ============================================
