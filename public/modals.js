@@ -46,10 +46,12 @@
       modal.style.display = 'flex';
       modal.style.visibility = 'visible';
       modal.style.opacity = '1';
+      modal.classList.add('active');
       console.log(`✅ Modal ${modalId} display set to flex`);
 
       // Prevent body scroll
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
 
       // Initialize modal-specific data
       if (data) {
@@ -78,6 +80,7 @@
         modal.style.display = 'none';
         modal.style.visibility = 'hidden';
         modal.style.opacity = '0';
+        modal.classList.remove('active');
         console.log(`✅ Modal ${id} hidden`);
       }
 
@@ -88,6 +91,7 @@
 
       // Restore body scroll
       document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
 
       this.activeModal = null;
 
