@@ -6,7 +6,8 @@
 
 const http = require('http');
 
-const BASE_URL = 'http://localhost:3000';
+const DEFAULT_PORT = process.env.TEST_PORT || process.env.PORT || 3000;
+const BASE_URL = process.env.TEST_BASE_URL || process.env.BASE_URL || `http://localhost:${DEFAULT_PORT}`;
 let cookieJar = '';
 
 function request(path, options = {}) {
@@ -45,7 +46,7 @@ function request(path, options = {}) {
       });
     });
 
-    req.on('error', reject);
+    req.on('error', (err) => reject(new Error(`Request to ${url.href} failed: ${err.message}`)));
 
     if (options.body) {
       req.write(typeof options.body === 'string' ? options.body : JSON.stringify(options.body));
@@ -68,6 +69,7 @@ async function test(name, fn) {
 
 async function runTests() {
   console.log('\n🔍 COMPREHENSIVE INITIALIZATION TEST\n');
+  console.log('Target:', BASE_URL, '\n');
 
   const results = [];
 

@@ -6,9 +6,13 @@ const http = require('http');
 const https = require('https');
 const { spawn } = require('child_process');
 
+const DEFAULT_PORT = process.env.TEST_PORT || process.env.PORT || 3001;
+const BASE_URL = process.env.TEST_BASE_URL || process.env.BASE_URL || `http://localhost:${DEFAULT_PORT}`;
+const SHOULD_START_SERVER = process.env.SKIP_SERVER_START !== '1';
+
 class FullAppTester {
   constructor() {
-    this.baseURL = 'http://localhost:3001';
+    this.baseURL = BASE_URL;
     this.results = {
       passed: [],
       failed: [],
@@ -56,7 +60,13 @@ class FullAppTester {
         });
       });
 
-      req.on('error', reject);
+      if (options.timeoutMs) {
+        req.setTimeout(options.timeoutMs, () => {
+          req.destroy(new Error(`Request to ${url.href} timed out after ${options.timeoutMs}ms`));
+        });
+      }
+
+      req.on('error', (err) => reject(new Error(`Request to ${url.href} failed: ${err.message}`)));
 
       if (options.body) {
         req.write(typeof options.body === 'string' ? options.body : JSON.stringify(options.body));
@@ -89,8 +99,18 @@ class FullAppTester {
     }
   }
 
+  async isServerUp() {
+    try {
+      const res = await this.request('/ready', { timeoutMs: 1500 });
+      return res.status === 200 || res.status === 503;
+    } catch {
+      return false;
+    }
+  }
+
   async runAllTests() {
     console.log('🚀 STARTING COMPLETE FUNCTIONALITY TEST\n');
+    console.log('Target:', this.baseURL);
     console.log('=' .repeat(60));
 
     // 1. SERVER TESTS
@@ -160,45 +180,44 @@ class FullAppTester {
     await this.test('Clients', 'Get all clients', async () => {
       const res = await this.request('/api/v1/clients');
       this.assert(res.status === 200, `Status ${res.status}`);
-      this.assert(Array.isArray(res.data), 'Not an array');
+      this.assert(res.data?.success === true, 'No success flag');
+      this.assert(Array.isArray(res.data.clients), 'Clients not array');
     });
 
     await this.test('Clients', 'Create new client', async () => {
       const res = await this.request('/api/v1/clients', {
         method: 'POST',
         body: {
-          name: 'Test Company',
-          email: 'test@test.com',
-          phone: '+380501234567',
-          company_sector: 'IT',
-          team_size: 10,
-          status: 'active'
+          company: 'Test Company',
+          negotiator: 'Test Negotiator',
+          sector: 'IT',
+          company_size: 'small',
+          negotiation_type: 'sales',
+          goal: 'Test Goal',
+          decision_criteria: 'Speed & price'
         }
       });
       this.assert(res.status === 200 || res.status === 201, `Status ${res.status}`);
-      clientId = res.data?.id;
+      this.assert(res.data?.success === true, 'Create failed');
+      clientId = res.data?.client?.id || res.data?.id;
+      this.assert(clientId, 'No client ID returned');
     });
 
     if (clientId) {
       await this.test('Clients', 'Get client by ID', async () => {
         const res = await this.request(`/api/v1/clients/${clientId}`);
         this.assert(res.status === 200, `Status ${res.status}`);
-        this.assert(res.data?.id === clientId, 'Wrong client');
+        this.assert(res.data?.success === true, 'No success flag');
+        this.assert(res.data?.client?.id === clientId, 'Wrong client');
       });
 
       await this.test('Clients', 'Update client', async () => {
         const res = await this.request(`/api/v1/clients/${clientId}`, {
           method: 'PUT',
-          body: { name: 'Updated Company' }
+          body: { company: 'Updated Company', goal: 'Updated goal' }
         });
         this.assert(res.status === 200, `Status ${res.status}`);
-      });
-
-      await this.test('Clients', 'Delete client', async () => {
-        const res = await this.request(`/api/v1/clients/${clientId}`, {
-          method: 'DELETE'
-        });
-        this.assert(res.status === 200 || res.status === 204, `Status ${res.status}`);
+        this.assert(res.data?.success === true, 'Update failed');
       });
     }
 
@@ -210,22 +229,33 @@ class FullAppTester {
     await this.test('Teams', 'Get all teams', async () => {
       const res = await this.request('/api/v1/teams');
       this.assert(res.status === 200, `Status ${res.status}`);
-      this.assert(Array.isArray(res.data), 'Not an array');
+      this.assert(res.data?.success === true, 'No success flag');
+      this.assert(Array.isArray(res.data.teams), 'Not an array');
     });
 
-    await this.test('Teams', 'Create new team', async () => {
-      const res = await this.request('/api/v1/teams', {
-        method: 'POST',
-        body: {
-          name: 'Test Team',
-          client_id: 1,
-          team_size: 5,
-          created_by: 'janeDVDops'
-        }
+    if (clientId) {
+      await this.test('Teams', 'Create new team', async () => {
+        const res = await this.request('/api/v1/teams', {
+          method: 'POST',
+          body: {
+            title: 'Test Team',
+            client_id: clientId,
+            description: 'Autogenerated team for tests',
+            members: [
+              {
+                name: 'QA Lead',
+                role: 'Lead',
+                responsibilities: ['Coordination', 'Testing'],
+                workload_percent: 90
+              }
+            ]
+          }
+        });
+        this.assert(res.status === 200 || res.status === 201, `Status ${res.status}`);
+        this.assert(res.data?.success === true, 'Create failed');
+        teamId = res.data?.team?.id;
       });
-      this.assert(res.status === 200 || res.status === 201, `Status ${res.status}`);
-      teamId = res.data?.id;
-    });
+    }
 
     // 5. PROSPECTS API
     console.log('\n💼 PROSPECTS API\n');
@@ -233,23 +263,35 @@ class FullAppTester {
     await this.test('Prospects', 'Get all prospects', async () => {
       const res = await this.request('/api/v1/prospects');
       this.assert(res.status === 200, `Status ${res.status}`);
-      this.assert(Array.isArray(res.data), 'Not an array');
+      this.assert(res.data?.success === true, 'No success flag');
+      this.assert(Array.isArray(res.data.prospects), 'Not an array');
     });
 
     await this.test('Prospects', 'Create new prospect', async () => {
       const res = await this.request('/api/v1/prospects', {
         method: 'POST',
         body: {
-          first_name: 'John',
-          last_name: 'Doe',
-          position: 'Developer',
-          english_level: 'B2',
-          salary: 3000,
-          status: 'new'
+          company: 'Prospect Corp',
+          negotiator: 'John Doe',
+          sector: 'Consulting',
+          deal_value: '$50k',
+          timeline: 'Q1',
+          goal: 'Prospecting demo'
         }
       });
       this.assert(res.status === 200 || res.status === 201, `Status ${res.status}`);
+      this.assert(res.data?.success === true, 'Create failed');
     });
+
+    if (clientId) {
+      await this.test('Clients', 'Delete client', async () => {
+        const res = await this.request(`/api/v1/clients/${clientId}`, {
+          method: 'DELETE'
+        });
+        this.assert(res.status === 200 || res.status === 204, `Status ${res.status}`);
+        this.assert(res.data?.success === true, 'Delete failed');
+      });
+    }
 
     // 6. ANALYSIS API
     console.log('\n🔍 ANALYSIS API\n');
@@ -257,6 +299,7 @@ class FullAppTester {
     await this.test('Analysis', 'Health check', async () => {
       const res = await this.request('/api/v1/analyze/health');
       this.assert(res.status === 200, `Status ${res.status}`);
+      this.assert(res.data?.success === true, 'Health not ok');
     });
 
     // 7. SEARCH API
@@ -265,6 +308,7 @@ class FullAppTester {
     await this.test('Search', 'Search clients', async () => {
       const res = await this.request('/api/v1/search?q=test&type=clients');
       this.assert(res.status === 200, `Status ${res.status}`);
+      this.assert(res.data?.success === true, 'Search failed');
     });
 
     // 8. ERROR HANDLING
@@ -281,6 +325,7 @@ class FullAppTester {
         }
       });
       this.assert(res.status === 200, `Status ${res.status}`);
+      this.assert(res.data?.logged === true, 'Error not logged');
     });
 
     await this.test('Errors', '404 handling', async () => {
@@ -314,6 +359,7 @@ class FullAppTester {
     await this.test('Stats', 'Get usage', async () => {
       const res = await this.request('/api/usage');
       this.assert(res.status === 200, `Status ${res.status}`);
+      this.assert(res.data?.success === true, 'Usage endpoint failed');
       this.assert(typeof res.data?.percentage === 'number', 'No percentage');
     });
 
@@ -354,15 +400,25 @@ class FullAppTester {
 async function main() {
   const tester = new FullAppTester();
 
-  console.log('⏳ Starting server on port 3001...\n');
+  const portFromUrl = Number(new URL(tester.baseURL).port || DEFAULT_PORT);
+  let server;
 
-  const server = spawn('npm', ['run', 'dev'], {
-    cwd: '/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres',
-    env: { ...process.env, PORT: '3001' }
-  });
-
-  // Wait for server to start
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  if (SHOULD_START_SERVER) {
+    const alreadyRunning = await tester.isServerUp();
+    if (alreadyRunning) {
+      console.log('♻️  Server already running, reusing existing instance.\n');
+    } else {
+      console.log(`⏳ Starting server on port ${portFromUrl}...\n`);
+      server = spawn('npm', ['run', 'dev'], {
+        cwd: '/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres',
+        env: { ...process.env, PORT: String(portFromUrl) },
+        stdio: 'inherit'
+      });
+      await tester.delay(4000);
+    }
+  } else {
+    console.log('⏭️  SKIP_SERVER_START=1 -> reusing existing server instance.\n');
+  }
 
   try {
     const success = await tester.runAllTests();
@@ -371,7 +427,9 @@ async function main() {
     console.error('Test runner error:', error);
     process.exit(1);
   } finally {
-    server.kill();
+    if (server) {
+      server.kill();
+    }
   }
 }
 

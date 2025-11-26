@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import { run as dbRun, get as dbGet } from '../utils/db.js';
 import { addTokensAndCheck } from '../utils/tokenUsage.js';
-import { client as openaiClient, estimateTokens } from '../utils/openAIClient.js';
+import { client as openaiClient, estimateTokens, getCircuitBreakerStatus } from '../utils/openAIClient.js';
 import { validateFileUpload } from '../middleware/validators.js';
 import { logError, logAIUsage, logPerformance } from '../utils/logger.js';
 import Busboy from 'busboy';
@@ -706,6 +706,28 @@ function buildUserPayload(paragraphs, clientCtx, limiter) {
 function supportsTemperature(model) {
   return !/^gpt-5($|[-:])/i.test(model);
 }
+
+// ===== Health Check =====
+r.get('/health', (_req, res) => {
+  const cbStatus = getCircuitBreakerStatus ? getCircuitBreakerStatus() : null;
+
+  res.json({
+    success: true,
+    model: MODEL,
+    openai: {
+      available: Boolean(openaiClient),
+      circuit_breaker: cbStatus?.state || 'UNKNOWN',
+      failures: cbStatus?.failures ?? 0,
+      retry_in_seconds: cbStatus ? Math.ceil(cbStatus.timeUntilRetry / 1000) : 0
+    },
+    limits: {
+      min_text_length: MIN_TEXT_LENGTH,
+      max_text_length: MAX_TEXT_LENGTH,
+      max_highlights_per_1000_words: MAX_HIGHLIGHTS_PER_1000_WORDS
+    },
+    timestamp: new Date().toISOString()
+  });
+});
 
 // ===== Main Analysis Route =====
 r.post('/', validateFileUpload, async (req, res) => {

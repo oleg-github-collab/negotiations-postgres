@@ -1,6 +1,7 @@
 const http = require('http');
 
-const baseURL = 'http://localhost:3001';
+const DEFAULT_PORT = process.env.TEST_PORT || process.env.PORT || 3001;
+const baseURL = process.env.TEST_BASE_URL || process.env.BASE_URL || `http://localhost:${DEFAULT_PORT}`;
 const results = { passed: 0, failed: 0, errors: [] };
 
 async function request(path, options = {}) {
@@ -28,7 +29,7 @@ async function request(path, options = {}) {
         }
       });
     });
-    req.on('error', reject);
+    req.on('error', (err) => reject(new Error(`Request to ${url.href} failed: ${err.message}`)));
     if (options.body) {
       req.write(typeof options.body === 'string' ? options.body : JSON.stringify(options.body));
     }
@@ -50,6 +51,7 @@ async function test(name, fn) {
 
 (async () => {
   console.log('🧪 QUICK TESTS\n');
+  console.log('Base URL:', baseURL, '\n');
 
   // Basic
   await test('Health check', async () => {
