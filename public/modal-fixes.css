@@ -28,7 +28,15 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: var(--z-modal-backdrop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
   /* display керується через inline style від JS */
+}
+
+#modal-backdrop:not(.active),
+.modal-backdrop:not(.active) {
+  display: none !important;
 }
 
 /* ============================================
@@ -50,7 +58,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
   /* display керується через inline style від JS */
+}
+
+.modal:not(.active) {
+  display: none !important;
+}
+
+/* Активний стан */
+.modal.active {
+  display: flex !important;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#modal-backdrop.active,
+.modal-backdrop.active {
+  display: flex !important;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* ============================================

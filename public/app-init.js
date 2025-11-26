@@ -234,22 +234,6 @@ const AppInit = {
             });
         }
 
-        // Settings button
-        const settingsBtn = document.getElementById('settings-btn');
-        if (settingsBtn) {
-            settingsBtn.addEventListener('click', () => {
-                this.showSettings();
-            });
-        }
-
-        // Notifications button
-        const notificationsBtn = document.getElementById('notifications-btn');
-        if (notificationsBtn) {
-            notificationsBtn.addEventListener('click', () => {
-                this.showNotifications();
-            });
-        }
-
         // Add Active Client button
         const addClientBtn = document.getElementById('add-active-client-btn');
         if (addClientBtn) {

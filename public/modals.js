@@ -39,7 +39,9 @@
 
       // Show backdrop and modal
       if (backdrop) {
-        backdrop.style.display = 'block';
+        backdrop.classList.add('active');
+        backdrop.style.display = 'flex';
+        backdrop.style.opacity = '1';
         console.log('✅ Backdrop shown');
       }
 
@@ -47,6 +49,7 @@
       modal.style.visibility = 'visible';
       modal.style.opacity = '1';
       modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
       console.log(`✅ Modal ${modalId} display set to flex`);
 
       // Prevent body scroll
@@ -56,6 +59,17 @@
       // Initialize modal-specific data
       if (data) {
         this.initializeModalData(modalId, data);
+      }
+
+      // Ensure modal can receive focus for accessibility
+      if (!modal.hasAttribute('tabindex')) {
+        modal.setAttribute('tabindex', '-1');
+      }
+
+      // Focus first interactive element for accessibility
+      const focusable = modal.querySelector('input, select, textarea, button');
+      if (focusable) {
+        setTimeout(() => focusable.focus(), 10);
       }
 
       // Add escape key listener
@@ -81,11 +95,14 @@
         modal.style.visibility = 'hidden';
         modal.style.opacity = '0';
         modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
         console.log(`✅ Modal ${id} hidden`);
       }
 
       if (backdrop) {
+        backdrop.classList.remove('active');
         backdrop.style.display = 'none';
+        backdrop.style.opacity = '0';
         console.log('✅ Backdrop hidden');
       }
 
