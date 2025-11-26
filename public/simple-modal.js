@@ -170,7 +170,7 @@
       btn.replaceWith(btn.cloneNode(true));
 
       // Знайти кнопку знову після заміни
-      const newBtn = document.querySelector(`#${btn.id}`) || btn;
+      const newBtn = btn.id ? document.querySelector(`#${btn.id}`) : btn;
 
       newBtn.addEventListener('click', function(e) {
         e.preventDefault();
