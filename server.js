@@ -148,10 +148,30 @@ const __dirname = dirname(__filename);
 
 // Enhanced auth middleware with security logging (moved before static files)
 const authMiddleware = (req, res, next) => {
+  // Public paths that don't require authentication
+  const publicPaths = [
+    '/login',
+    '/health',
+    '/manifest.json',
+    '/sw.js',
+    '/api/v1/info',
+    '/api/v1/auth/login',
+    '/api/v1/auth/logout'
+  ];
+
+  // Check if current path is public or a static file
+  const isPublicPath = publicPaths.some(path => req.path === path || req.path.startsWith(path));
+  const isStaticFile = /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i.test(req.path);
+
+  // Skip auth for public paths and static files
+  if (isPublicPath || isStaticFile) {
+    return next();
+  }
+
   const isAuthenticated = req.cookies?.auth === 'authorized';
   const username = req.cookies?.auth_user || 'operator';
   req.user = { username };
-  
+
   if (!isAuthenticated) {
     logSecurity('Unauthorized access attempt', {
       ip: req.ip,
@@ -159,23 +179,18 @@ const authMiddleware = (req, res, next) => {
       path: req.path,
       method: req.method
     });
-  }
-  
-  // For API requests, return JSON error instead of redirect
-  if (req.path.startsWith('/api/')) {
-    if (isAuthenticated) {
-      next();
-    } else {
+
+    // For API requests, return JSON error instead of redirect
+    if (req.path.startsWith('/api/')) {
       return res.status(401).json({ error: 'Unauthorized', redirect: '/login' });
-    }
-  } else {
-    // For page requests, redirect to login
-    if (isAuthenticated) {
-      next();
     } else {
+      // For page requests, redirect to login
       return res.redirect('/login');
     }
   }
+
+  // User is authenticated, continue
+  next();
 };
 
 // Apply rate limiting to all API routes
