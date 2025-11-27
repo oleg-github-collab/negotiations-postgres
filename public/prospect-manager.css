@@ -8,6 +8,8 @@
   padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
+  background: #0a0a0f;
+  min-height: 100vh;
 }
 
 /* Заголовок */
@@ -17,13 +19,13 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid var(--primary-gradient);
+  border-bottom: 2px solid rgba(102, 126, 234, 0.3);
 }
 
 .prospects-header h2 {
   font-size: 28px;
   font-weight: 600;
-  background: var(--primary-gradient);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -59,26 +61,39 @@
 #prospect-search {
   flex: 1;
   padding: 12px 20px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   font-size: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
   transition: all 0.3s;
+}
+
+#prospect-search::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 #prospect-search:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 #prospect-status-filter {
   padding: 12px 20px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   font-size: 14px;
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
   cursor: pointer;
   min-width: 200px;
+}
+
+#prospect-status-filter option {
+  background: #1a1a2e;
+  color: white;
 }
 
 /* Список проспектів */
@@ -91,18 +106,20 @@
 
 /* Картка проспекта */
 .prospect-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   transition: all 0.3s;
-  border: 1px solid #f0f0f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .prospect-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary-color);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  border-color: #667eea;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .prospect-header {
@@ -115,7 +132,7 @@
 .prospect-header h4 {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: white;
   margin: 0;
 }
 
@@ -166,25 +183,26 @@
 }
 
 .info-row .label {
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
   font-weight: 500;
 }
 
 .info-row span:last-child {
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Барометр адекватності */
 .prospect-adequacy {
   margin: 20px 0;
   padding: 15px;
-  background: #f8f9fa;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .adequacy-label {
   font-size: 12px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 8px;
@@ -192,7 +210,7 @@
 
 .adequacy-bar {
   height: 8px;
-  background: #e0e0e0;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 5px;
@@ -207,7 +225,7 @@
 .adequacy-score {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: white;
 }
 
 /* Дії з проспектом */
@@ -222,9 +240,9 @@
   padding: 8px 12px;
   font-size: 12px;
   border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  background: white;
-  color: #666;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
@@ -234,9 +252,9 @@
 }
 
 .prospect-actions .btn:hover {
-  background: #f5f5f5;
-  border-color: #999;
-  color: #333;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #667eea;
+  color: white;
 }
 
 .prospect-actions .btn-success {
@@ -252,8 +270,8 @@
 
 /* Зона розширеного аналізу */
 .analysis-zone {
-  background: white;
-  border: 2px dashed #e0e0e0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px dashed rgba(102, 126, 234, 0.3);
   border-radius: 12px;
   padding: 30px;
   min-height: 200px;
@@ -262,8 +280,8 @@
 }
 
 .analysis-zone.drag-over {
-  border-color: var(--primary-color);
-  background: #f0f8f0;
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
   transform: scale(1.02);
 }
 
@@ -274,12 +292,12 @@
 
 .zone-header h3 {
   font-size: 20px;
-  color: #333;
+  color: white;
   margin-bottom: 10px;
 }
 
 .zone-header .hint {
-  color: #999;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 14px;
 }
 
@@ -703,7 +721,7 @@
 .empty-state {
   text-align: center;
   padding: 40px;
-  color: #999;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 16px;
 }
 

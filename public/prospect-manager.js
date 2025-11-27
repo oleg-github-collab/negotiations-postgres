@@ -113,7 +113,79 @@ const ProspectManager = {
 
   // Додавання нового проспекта
   addProspect() {
-    ModalsManager.open('add-prospect-modal');
+    // Створюємо просту форму для додавання проспекта
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    modal.innerHTML = `
+      <div class="modal-content" style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
+        <h3 style="margin-bottom: 20px; color: #333;">Додати нового проспекта</h3>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Ім'я</label>
+          <input type="text" id="prospect-name" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px;" required>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Компанія</label>
+          <input type="text" id="prospect-company" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Email</label>
+          <input type="email" id="prospect-email" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px;">
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button id="cancel-prospect-btn" style="padding: 10px 20px; border: 1px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer;">
+            Скасувати
+          </button>
+          <button id="save-prospect-btn" style="padding: 10px 20px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px; cursor: pointer;">
+            Зберегти
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Обробники
+    modal.querySelector('#cancel-prospect-btn').addEventListener('click', () => {
+      modal.remove();
+    });
+
+    modal.querySelector('#save-prospect-btn').addEventListener('click', () => {
+      const name = modal.querySelector('#prospect-name').value.trim();
+      const company = modal.querySelector('#prospect-company').value.trim();
+      const email = modal.querySelector('#prospect-email').value.trim();
+
+      if (!name) {
+        alert('Введіть ім\'я проспекта');
+        return;
+      }
+
+      this.saveProspect({ name, company, email });
+      modal.remove();
+    });
+
+    // Закриття по кліку на backdrop
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
   },
 
   // Збереження проспекта
@@ -130,17 +202,75 @@ const ProspectManager = {
     this.negotiations[prospect.id] = [];
     this.saveToStorage();
     this.renderProspects();
-    ModalsManager.close('add-prospect-modal');
   },
 
   // Завантаження переговорів
   uploadNegotiation(prospectId) {
     this.currentProspect = this.prospects.find(p => p.id === prospectId);
 
-    // Відкриваємо модалку для завантаження тексту
-    ModalsManager.open('upload-negotiation-modal', {
-      prospectId,
-      prospectName: this.currentProspect.name
+    // Створюємо модалку для завантаження тексту
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    modal.innerHTML = `
+      <div class="modal-content" style="background: white; padding: 30px; border-radius: 12px; max-width: 700px; width: 90%;">
+        <h3 style="margin-bottom: 10px; color: #333;">Завантажити переговори</h3>
+        <p style="margin-bottom: 20px; color: #666;">Проспект: <strong>${this.currentProspect.name}</strong></p>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Текст переговорів</label>
+          <textarea id="negotiation-text"
+                    style="width: 100%; height: 300px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-family: monospace; resize: vertical;"
+                    placeholder="Вставте текст переговорів...&#10;&#10;Формат:&#10;Ім'я Спікера: текст&#10;або&#10;[Ім'я]: текст"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button id="cancel-upload-btn" style="padding: 10px 20px; border: 1px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer;">
+            Скасувати
+          </button>
+          <button id="analyze-btn" style="padding: 10px 20px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px; cursor: pointer;">
+            Проаналізувати
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Обробники
+    modal.querySelector('#cancel-upload-btn').addEventListener('click', () => {
+      modal.remove();
+    });
+
+    modal.querySelector('#analyze-btn').addEventListener('click', () => {
+      const text = modal.querySelector('#negotiation-text').value.trim();
+
+      if (!text) {
+        alert('Введіть текст переговорів');
+        return;
+      }
+
+      modal.remove();
+      this.processNegotiationText(prospectId, text);
+    });
+
+    // Закриття по кліку на backdrop
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
     });
   },
 
