@@ -1178,16 +1178,18 @@
       }, { once: false });
     });
 
-    // Backdrop click - DISABLED to prevent accidental closes
-    if (backdrop) {
-      backdrop.addEventListener('click', (e) => {
-        // ONLY close if clicking directly on backdrop, not on modal content
-        if (e.target === backdrop) {
-          console.log('❌ Backdrop clicked, closing modal');
+    // Modal click outside content - close on click outside modal-content
+    $$('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        // ONLY close if clicking directly on modal background, NOT on modal-content or its children
+        if (e.target === modal) {
+          console.log('❌ Clicked outside modal content, closing modal');
           ModalManager.close();
         }
       }, { once: false });
-    }
+    });
+
+    // Backdrop has pointer-events: none, so no handler needed
 
     modalsInitialized = true;
 
