@@ -24,6 +24,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/ultra-optimized.css">
     <link rel="stylesheet" href="/prospects-manager.css">
+    <link rel="stylesheet" href="/prospect-manager.css">
     <link rel="stylesheet" href="/kanban-board.css">
     <link rel="stylesheet" href="/teamhub.css">
     <link rel="stylesheet" href="/advanced-components.css">
@@ -326,46 +327,8 @@
 
             <!-- Prospects Tab -->
             <div class="tab-panel active" id="prospects-panel">
-                <!-- Prospects Header -->
-                <div class="prospects-header">
-                    <div class="prospects-title">
-                        <i class="fas fa-briefcase"></i>
-                        Потенційні клієнти
-                    </div>
-                    <div class="prospects-actions">
-                        <button class="btn btn-primary" onclick="ModalManager.open('create-prospect-modal')">
-                            <i class="fas fa-plus"></i>
-                            Додати проспекта
-                        </button>
-                    </div>
-                </div>
-
-                <!-- View Toggle -->
-                <div class="view-toggle">
-                    <button class="view-toggle-btn active" data-view="grid">
-                        <i class="fas fa-th"></i>
-                        Grid
-                    </button>
-                    <button class="view-toggle-btn" data-view="kanban">
-                        <i class="fas fa-columns"></i>
-                        Kanban
-                    </button>
-                </div>
-
-                <!-- Grid View -->
-                <div id="prospects-list" style="display: block;"></div>
-
-                <!-- Kanban View -->
-                <div id="kanban-board" style="display: none;"></div>
-
-                <!-- Prospect Details -->
-                <div id="prospect-details" style="display: none;"></div>
-
-                <!-- Timeline -->
-                <div id="timeline-view" style="display: none;"></div>
-
-                <!-- Custom Fields -->
-                <div id="custom-fields-container" style="display: none;"></div>
+                <!-- Prospects Container for new manager -->
+                <div id="prospects-container"></div>
             </div>
 
             <!-- Active Clients Tab - TeamHub -->
@@ -456,6 +419,12 @@
     <script src="/analysis-visualizer.js"></script>
     <script src="/recommendation-engine.js"></script>
     <script src="/predictive-analytics.js"></script>
+    <!-- ADVANCED FLOW MODULES -->
+    <script src="/conversation-flow-analyzer.js"></script>
+    <script src="/negotiation-coach.js"></script>
+    <!-- NEW PROSPECT SYSTEM -->
+    <script src="/prospect-manager.js"></script>
+    <script src="/negotiation-analyzer.js"></script>
     <!-- SIMPLE MODAL SYSTEM - завантажується ПЕРШИМ -->
     <script src="/simple-modal.js"></script>
     <script src="/rich-text-editor.js"></script>
@@ -494,30 +463,13 @@
             .catch(err => console.error('Failed to load modals:', err));
     </script>
 
-    <!-- View Toggle (Prospects panel specific) -->
+    <!-- Initialize Prospect Manager -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.view-toggle-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const view = btn.dataset.view;
-
-                    // Update active button
-                    document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-
-                    // Toggle views
-                    if (view === 'grid') {
-                        document.getElementById('prospects-list').style.display = 'block';
-                        document.getElementById('kanban-board').style.display = 'none';
-                    } else if (view === 'kanban') {
-                        document.getElementById('prospects-list').style.display = 'none';
-                        document.getElementById('kanban-board').style.display = 'block';
-                        if (window.KanbanBoard) {
-                            window.KanbanBoard.refresh();
-                        }
-                    }
-                });
-            });
+            // Initialize new prospect manager
+            if (window.ProspectManager) {
+                window.ProspectManager.init();
+            }
         });
     </script>
 

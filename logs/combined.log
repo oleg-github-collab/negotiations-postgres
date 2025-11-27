@@ -22053,3 +22053,24 @@
   service: 'teampulse-turbo',
   timestamp: '2025-11-27 13:10:29'
 }
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 10.247623,
+  details: {
+    requestId: '41986525-8d48-4cd8-a384-f6b044b68adc',
+    method: 'GET',
+    path: '/',
+    statusCode: 302,
+    contentLength: '28'
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 18:11:15'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:17:11:15 +0000] "GET / HTTP/1.1" 302 28 "-" "curl/8.7.1"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 18:11:15'
+}
