@@ -6,9 +6,11 @@
 
 #kanban-board {
   display: none;
-  height: 100%;
+  height: calc(100vh - 140px); /* Віднімаємо header і top nav */
+  max-height: calc(100vh - 140px);
   overflow: hidden;
   background: rgba(10, 10, 15, 0.95);
+  position: relative;
 }
 
 #kanban-board.active {
@@ -64,7 +66,8 @@
   overflow-x: auto;
   overflow-y: hidden;
   flex: 1;
-  align-items: flex-start;
+  align-items: stretch; /* Колонки на всю висоту */
+  max-height: calc(100vh - 240px); /* Обмеження висоти */
 }
 
 .kanban-columns::-webkit-scrollbar {
