@@ -43,10 +43,10 @@
       }
 
       // Show modal
-      modal.style.display = 'flex';
+      modal.style.display = 'block';
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
-      console.log(`✅ Modal ${modalId} display set to flex`);
+      console.log(`✅ Modal ${modalId} display set to block`);
 
       // Prevent body scroll
       document.body.classList.add('modal-open');
