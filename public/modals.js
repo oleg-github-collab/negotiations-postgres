@@ -1178,18 +1178,16 @@
       }, { once: false });
     });
 
-    // Modal click outside content - close on click outside modal-content
-    $$('.modal').forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        // ONLY close if clicking directly on modal background, NOT on modal-content or its children
-        if (e.target === modal) {
-          console.log('❌ Clicked outside modal content, closing modal');
-          ModalManager.close();
-        }
-      }, { once: false });
-    });
+    // ВІДКЛЮЧЕНО: Закриття при кліку поза модалкою
+    // Користувач може закрити тільки через кнопку Close
+    // Це запобігає випадковому закриттю при роботі з формою
 
-    // Backdrop has pointer-events: none, so no handler needed
+    // Зупиняємо спливання подій від modal-content
+    $$('.modal-content').forEach(content => {
+      content.addEventListener('click', (e) => {
+        e.stopPropagation(); // НЕ дозволяємо спливати до .modal
+      }, { capture: false });
+    });
 
     modalsInitialized = true;
 

@@ -14,7 +14,6 @@
   background: rgba(0, 0, 0, 0.85) !important;
   backdrop-filter: blur(8px) !important;
   z-index: 9999 !important;
-  pointer-events: none !important; /* НЕ блокує кліки, пропускає їх до modal */
 }
 
 /* Modal container */
