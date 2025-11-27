@@ -23544,3 +23544,45 @@
   service: 'teampulse-turbo',
   timestamp: '2025-11-27 18:12:51'
 }
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 8.814888,
+  details: {
+    requestId: 'f57cd5b6-0c12-4b78-aba2-6ce9b56b32a2',
+    method: 'GET',
+    path: '/prospect-manager.js',
+    statusCode: 200,
+    contentLength: 28966
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 21:28:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:20:28:29 +0000] "GET /prospect-manager.js HTTP/1.1" 200 28966 "-" "curl/8.7.1"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 21:28:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 3.49715,
+  details: {
+    requestId: '55bf412e-61da-469e-8e60-9ea70876bda9',
+    method: 'GET',
+    path: '/negotiation-analyzer.js',
+    statusCode: 200,
+    contentLength: 19580
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 21:28:40'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:20:28:40 +0000] "GET /negotiation-analyzer.js HTTP/1.1" 200 19580 "-" "curl/8.7.1"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 21:28:40'
+}

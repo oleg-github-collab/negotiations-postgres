@@ -129,6 +129,12 @@ const ProspectManager = {
               <i class="fas fa-star"></i> В актуальні клієнти
             </button>
           ` : ''}
+          <button class="btn-secondary" onclick="ProspectManager.editProspect('${prospect.id}')">
+            <i class="fas fa-edit"></i> Редагувати
+          </button>
+          <button class="btn-danger" onclick="ProspectManager.deleteProspect('${prospect.id}')">
+            <i class="fas fa-trash"></i> Видалити
+          </button>
         </div>
       </div>
     `).join('');
@@ -671,6 +677,112 @@ const ProspectManager = {
       this.render();
       alert(`✅ ${prospect.name} переведено в актуальні клієнти!`);
     }
+  },
+
+  // Редагувати проспекта
+  editProspect(prospectId) {
+    const prospect = this.prospects.find(p => p.id === prospectId);
+    if (!prospect) return;
+
+    const modal = document.createElement('div');
+    modal.className = 'custom-modal';
+    modal.innerHTML = `
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2>Редагувати проспекта</h2>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Ім'я проспекта *</label>
+            <input type="text" id="edit-prospect-name" class="form-input" value="${prospect.name}" autofocus>
+          </div>
+          <div class="form-group">
+            <label>Компанія</label>
+            <input type="text" id="edit-prospect-company" class="form-input" value="${prospect.company || ''}">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="edit-prospect-email" class="form-input" value="${prospect.email || ''}">
+          </div>
+          <div class="form-group">
+            <label>Статус</label>
+            <select id="edit-prospect-status" class="form-input">
+              <option value="new" ${prospect.status === 'new' ? 'selected' : ''}>Новий</option>
+              <option value="active" ${prospect.status === 'active' ? 'selected' : ''}>Активний</option>
+              <option value="qualified" ${prospect.status === 'qualified' ? 'selected' : ''}>Кваліфікований</option>
+              <option value="rejected" ${prospect.status === 'rejected' ? 'selected' : ''}>Відхилений</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel">Скасувати</button>
+          <button class="btn-primary" id="btn-update-prospect">Оновити</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
+
+    modal.querySelector('.modal-close').onclick = () => this.closeModal(modal);
+    modal.querySelector('.btn-cancel').onclick = () => this.closeModal(modal);
+    modal.querySelector('.modal-backdrop').onclick = () => this.closeModal(modal);
+
+    modal.querySelector('#btn-update-prospect').onclick = () => {
+      const name = modal.querySelector('#edit-prospect-name').value.trim();
+      const company = modal.querySelector('#edit-prospect-company').value.trim();
+      const email = modal.querySelector('#edit-prospect-email').value.trim();
+      const status = modal.querySelector('#edit-prospect-status').value;
+
+      if (!name) {
+        alert('Будь ласка, введіть ім\'я проспекта');
+        return;
+      }
+
+      prospect.name = name;
+      prospect.company = company;
+      prospect.email = email;
+      prospect.status = status;
+
+      this.saveToStorage();
+      this.closeModal(modal);
+      this.render();
+
+      console.log('✅ Prospect updated:', prospect.name);
+    };
+
+    modal.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        modal.querySelector('#btn-update-prospect').click();
+      }
+    });
+  },
+
+  // Видалити проспекта
+  deleteProspect(prospectId) {
+    const prospect = this.prospects.find(p => p.id === prospectId);
+    if (!prospect) return;
+
+    const negotiationsCount = this.negotiations[prospectId]?.length || 0;
+    const confirmMessage = negotiationsCount > 0
+      ? `Видалити ${prospect.name}?\n\nУВАГА: Буде видалено ${negotiationsCount} збережених аналізів переговорів!`
+      : `Видалити ${prospect.name}?`;
+
+    if (!confirm(confirmMessage)) return;
+
+    // Видаляємо проспекта
+    this.prospects = this.prospects.filter(p => p.id !== prospectId);
+
+    // Видаляємо всі переговори
+    delete this.negotiations[prospectId];
+
+    this.saveToStorage();
+    this.render();
+
+    console.log('🗑️ Prospect deleted:', prospect.name);
+    alert(`✅ ${prospect.name} видалено`);
   },
 
   getTotalFindings(analysis) {
