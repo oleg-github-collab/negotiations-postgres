@@ -838,3 +838,303 @@
   level: 'error',
   message: 'Client-Side Error'
 }
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'test',
+    url: '/test',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-11-22T23:51:36.301Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-23 00:51:36',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-11-22T23:52:56.613Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-23 00:52:56',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'Unhandled rejection: ReferenceError: logger is not defined',
+    stack: 'Error: Unhandled rejection: ReferenceError: logger is not defined\n' +
+      '    at process.<anonymous> (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/server.js:705:12)\n' +
+      '    at process.emit (node:events:507:28)\n' +
+      '    at emitUnhandledRejection (node:internal/process/promises:252:13)\n' +
+      '    at throwUnhandledRejectionsMode (node:internal/process/promises:388:19)\n' +
+      '    at processPromiseRejections (node:internal/process/promises:475:17)\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:106:32)',
+    name: 'Error'
+  },
+  context: {
+    type: 'unhandledRejection',
+    errorId: 'floqf7o1f6s',
+    promise: '[object Promise]',
+    stack: 'ReferenceError: logger is not defined\n' +
+      '    at file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/routes/teams.js:1426:5\n' +
+      '    at Layer.handle [as handle_request] (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/layer.js:95:5)\n' +
+      '    at next (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/route.js:149:13)\n' +
+      '    at Route.dispatch (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/route.js:119:3)\n' +
+      '    at Layer.handle [as handle_request] (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/layer.js:95:5)\n' +
+      '    at /Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:284:15\n' +
+      '    at param (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:365:14)\n' +
+      '    at param (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:376:14)\n' +
+      '    at Function.process_params (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:421:3)\n' +
+      '    at next (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:280:10)\n' +
+      '    at Function.handle (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:175:3)\n' +
+      '    at router (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:47:12)\n' +
+      '    at Layer.handle [as handle_request] (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/layer.js:95:5)\n' +
+      '    at trim_prefix (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:328:13)\n' +
+      '    at /Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:286:9\n' +
+      '    at Function.process_params (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/express/lib/router/index.js:346:12)'
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-11-23 00:59:16'
+}
+{
+  message: '💥 Unhandled rejection [floqf7o1f6s] - ReferenceError: logger is not defined',
+  level: 'error',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-23 00:59:16'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-11-23T00:01:23.338Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-23 01:01:23',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'column reference "client_id" is ambiguous',
+    stack: 'error: column reference "client_id" is ambiguous\n' +
+      '    at /Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/pg-pool/index.js:45:11\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n' +
+      '    at async query (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:553:18)\n' +
+      '    at async all (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:572:18)\n' +
+      '    at async file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/routes/best-hire.js:51:23',
+    name: 'error'
+  },
+  context: {
+    endpoint: 'GET /api/best-hire/positions/client/:id',
+    ip: '127.0.0.1'
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-11-23 01:01:39'
+}
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'invalid input syntax for type json',
+    stack: 'error: invalid input syntax for type json\n' +
+      '    at /Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/pg-pool/index.js:45:11\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n' +
+      '    at async query (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:553:18)\n' +
+      '    at async run (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:562:18)\n' +
+      '    at async file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/routes/best-hire.js:97:22',
+    name: 'error'
+  },
+  context: { endpoint: 'POST /api/best-hire/positions', ip: '127.0.0.1' },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-11-23 01:03:19'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-11-23T00:09:40.206Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-23 01:09:40',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'write EPIPE',
+    stack: 'Error: write EPIPE\n' +
+      '    at afterWriteDispatched (node:internal/stream_base_commons:159:15)\n' +
+      '    at writeGeneric (node:internal/stream_base_commons:150:3)\n' +
+      '    at Socket._writeGeneric (node:net:971:11)\n' +
+      '    at Socket._write (node:net:983:8)\n' +
+      '    at writeOrBuffer (node:internal/streams/writable:570:12)\n' +
+      '    at _write (node:internal/streams/writable:499:10)\n' +
+      '    at Writable.write (node:internal/streams/writable:508:10)\n' +
+      '    at Console.log (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/lib/winston/transports/console.js:87:23)\n' +
+      '    at Console._write (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/modern.js:103:17)\n' +
+      '    at doWrite (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:390:139)\n' +
+      '    at writeOrBuffer (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:381:5)\n' +
+      '    at Writable.write (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston-transport/node_modules/readable-stream/lib/_stream_writable.js:302:11)\n' +
+      '    at DerivedLogger.ondata (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/node_modules/readable-stream/lib/_stream_readable.js:629:20)\n' +
+      '    at DerivedLogger.emit (node:events:519:35)\n' +
+      '    at addChunk (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/node_modules/readable-stream/lib/_stream_readable.js:279:12)\n' +
+      '    at readableAddChunk (/Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/winston/node_modules/readable-stream/lib/_stream_readable.js:262:11)',
+    name: 'Error'
+  },
+  context: {
+    type: 'uncaughtException',
+    errorId: 'yyzanc9si4o',
+    pid: 10169,
+    memory: {
+      rss: 94117888,
+      heapTotal: 58376192,
+      heapUsed: 25178008,
+      external: 2768076,
+      arrayBuffers: 61967
+    },
+    uptime: 14.468725108
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-11-26 15:06:52'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'test',
+    url: '/test',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-11-26T14:09:56.918Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-26 15:09:56',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'test',
+    url: '/test',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-11-26T14:20:10.406Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-26 15:20:10',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error from flow test',
+    url: '/test-flow',
+    line: undefined,
+    column: undefined,
+    stack: undefined,
+    timestamp: '2025-11-26T14:20:37.783Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-26 15:20:37',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  error: {
+    message: 'insert or update on table "teams" violates foreign key constraint "teams_client_id_fkey"',
+    stack: 'error: insert or update on table "teams" violates foreign key constraint "teams_client_id_fkey"\n' +
+      '    at /Users/olehkaminskyi/Desktop/Teampulse Negotiations Postgres/node_modules/pg/lib/client.js:545:17\n' +
+      '    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n' +
+      '    at async file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/routes/teams.js:404:26\n' +
+      '    at async transaction (file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/utils/db.js:580:20)\n' +
+      '    at async file:///Users/olehkaminskyi/Desktop/Teampulse%20Negotiations%20Postgres/routes/teams.js:403:21',
+    name: 'error'
+  },
+  context: {
+    endpoint: 'POST /api/teams',
+    body: {
+      title: 'Test Team',
+      client_id: 9,
+      description: 'Autogenerated team for tests',
+      members: [
+        {
+          name: 'QA Lead',
+          role: 'Lead',
+          responsibilities: [ 'Coordination', 'Testing' ],
+          workload_percent: 90
+        }
+      ]
+    },
+    ip: '127.0.0.1',
+    responseTime: 43
+  },
+  level: 'error',
+  message: 'Application Error',
+  timestamp: '2025-11-26 15:20:50'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error',
+    url: '/test',
+    line: 1,
+    column: 1,
+    stack: undefined,
+    timestamp: '2025-11-26T14:20:50.688Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-26 15:20:50',
+  level: 'error',
+  message: 'Client-Side Error'
+}
+{
+  service: 'teampulse-turbo',
+  clientError: {
+    error: 'Test error',
+    url: '/test',
+    line: 1,
+    column: 1,
+    stack: undefined,
+    timestamp: '2025-11-26T14:21:47.238Z'
+  },
+  userAgent: undefined,
+  ip: '127.0.0.1',
+  timestamp: '2025-11-26 15:21:47',
+  level: 'error',
+  message: 'Client-Side Error'
+}

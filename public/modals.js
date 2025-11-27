@@ -20,7 +20,7 @@
       console.log(`🚀 ModalManager.open called with modalId: ${modalId}`);
 
       const modal = $(`#${modalId}`);
-      const backdrop = $('#modal-backdrop');
+      const backdrop = $('.modal-backdrop');
 
       if (!modal) {
         console.error(`❌ Modal ${modalId} not found in DOM`);
@@ -37,17 +37,18 @@
 
       this.activeModal = modalId;
 
-      // Backdrop тепер в CSS modal, не потрібно окремо показувати
-      // Просто показуємо modal
+      // Show backdrop
+      if (backdrop) {
+        backdrop.style.display = 'block';
+      }
+
+      // Show modal
       modal.style.display = 'flex';
-      modal.style.visibility = 'visible';
-      modal.style.opacity = '1';
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
       console.log(`✅ Modal ${modalId} display set to flex`);
 
       // Prevent body scroll
-      document.body.style.overflow = 'hidden';
       document.body.classList.add('modal-open');
 
       // Initialize modal-specific data
@@ -82,21 +83,21 @@
       console.log(`🚪 ModalManager.close called for: ${id}`);
 
       const modal = $(`#${id}`);
-      const backdrop = $('#modal-backdrop');
+      const backdrop = $('.modal-backdrop');
 
       if (modal) {
         modal.style.display = 'none';
-        modal.style.visibility = 'hidden';
-        modal.style.opacity = '0';
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
         console.log(`✅ Modal ${id} hidden`);
       }
 
-      // Backdrop тепер в CSS, не потрібно окремо ховати
+      // Hide backdrop
+      if (backdrop) {
+        backdrop.style.display = 'none';
+      }
 
       // Restore body scroll
-      document.body.style.overflow = '';
       document.body.classList.remove('modal-open');
 
       this.activeModal = null;
@@ -1124,7 +1125,7 @@
     }
 
     const hasModalMarkup = document.querySelector('.modal');
-    const backdrop = $('#modal-backdrop');
+    const backdrop = $('.modal-backdrop');
 
     if (!hasModalMarkup || !backdrop) {
       modalInitAttempts += 1;
@@ -1143,13 +1144,10 @@
     // Ensure initial modal state is consistent before binding events
     backdrop.classList.remove('active');
     backdrop.style.display = 'none';
-    backdrop.style.opacity = '0';
 
     $$('.modal').forEach(modal => {
       modal.classList.remove('active');
       modal.style.display = 'none';
-      modal.style.visibility = 'hidden';
-      modal.style.opacity = '0';
     });
 
     // Close buttons - use once:true to prevent duplicates
