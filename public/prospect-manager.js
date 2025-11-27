@@ -1,198 +1,244 @@
 /* ============================================
-   PROSPECT MANAGER
-   Управління проспектами та їх переговорами
+   PROSPECT MANAGER - ПОВНІСТЮ ПЕРЕРОБЛЕНА ВЕРСІЯ
+   Простий, зрозумілий, працюючий
    ============================================ */
 
 const ProspectManager = {
   prospects: [],
-  currentProspect: null,
   negotiations: {},
+  currentProspect: null,
 
   // Ініціалізація
   init() {
-    this.loadProspects();
-    this.createUI();
-    this.bindEvents();
+    console.log('🚀 ProspectManager initializing...');
+    this.loadFromStorage();
+    this.render();
+    console.log('✅ ProspectManager initialized');
   },
 
-  // Створення UI
-  createUI() {
-    // Головний контейнер проспектів
+  // Головний рендер
+  render() {
     const container = document.getElementById('prospects-container');
-    if (!container) return;
-
-    container.innerHTML = `
-      <div class="prospects-header">
-        <h2>Проспекти</h2>
-        <button id="add-prospect-btn" class="btn btn-primary">
-          <i class="fas fa-plus"></i> Додати проспекта
-        </button>
-      </div>
-
-      <div class="prospects-filters">
-        <input type="text" id="prospect-search" placeholder="Пошук проспекта...">
-        <select id="prospect-status-filter">
-          <option value="all">Всі статуси</option>
-          <option value="new">Новий</option>
-          <option value="in_negotiation">В переговорах</option>
-          <option value="analyzing">Аналізується</option>
-          <option value="qualified">Кваліфікований</option>
-          <option value="rejected">Відхилений</option>
-        </select>
-      </div>
-
-      <div id="prospects-list" class="prospects-list"></div>
-
-      <!-- Зона аналізу -->
-      <div id="analysis-zone" class="analysis-zone">
-        <div class="zone-header">
-          <h3>Зона розширеного аналізу</h3>
-          <span class="hint">Перетягніть сюди виявлені патерни для детального аналізу</span>
-        </div>
-        <div id="extended-analysis-content"></div>
-      </div>
-    `;
-
-    this.renderProspects();
-  },
-
-  // Відображення списку проспектів
-  renderProspects() {
-    const list = document.getElementById('prospects-list');
-    if (!list) return;
-
-    if (this.prospects.length === 0) {
-      list.innerHTML = '<div class="empty-state">Немає проспектів. Додайте першого!</div>';
+    if (!container) {
+      console.error('❌ prospects-container not found');
       return;
     }
 
-    list.innerHTML = this.prospects.map(prospect => `
+    container.innerHTML = `
+      <div class="prospects-page">
+        <!-- Заголовок -->
+        <div class="page-header">
+          <h1>Проспекти та Аналіз Переговорів</h1>
+          <button class="btn-add-prospect" id="btn-add-prospect">
+            <i class="fas fa-plus"></i> Додати проспекта
+          </button>
+        </div>
+
+        <!-- Інструкція -->
+        <div class="instruction-box">
+          <h3>📋 Як працювати з системою:</h3>
+          <ol>
+            <li>Натисніть "Додати проспекта" і введіть дані</li>
+            <li>У картці проспекта натисніть "Завантажити переговори"</li>
+            <li>Вставте текст переговорів (формат: "Ім'я: текст")</li>
+            <li>Оберіть учасників для аналізу</li>
+            <li>GPT проаналізує та підсвітить маніпуляції, софізми, викривлення</li>
+            <li>Наведіть курсор на підсвічений текст для пояснення</li>
+            <li>Перетягніть патерни в зону аналізу для детальних рекомендацій</li>
+          </ol>
+        </div>
+
+        <!-- Список проспектів -->
+        <div class="prospects-grid" id="prospects-grid">
+          ${this.renderProspectsList()}
+        </div>
+
+        <!-- Зона розширеного аналізу -->
+        <div class="extended-analysis-zone" id="extended-analysis-zone">
+          <div class="zone-placeholder">
+            <i class="fas fa-hand-pointer" style="font-size: 48px; opacity: 0.3; margin-bottom: 20px;"></i>
+            <h3>Зона Розширеного Аналізу</h3>
+            <p>Перетягніть сюди виявлені патерни (маніпуляції, софізми, викривлення)<br>для отримання детальних рекомендацій та контрстратегій</p>
+          </div>
+          <div class="zone-content" id="zone-content" style="display: none;"></div>
+        </div>
+      </div>
+    `;
+
+    this.attachEventHandlers();
+  },
+
+  // Рендер списку проспектів
+  renderProspectsList() {
+    if (this.prospects.length === 0) {
+      return `
+        <div class="empty-state">
+          <i class="fas fa-users" style="font-size: 64px; opacity: 0.3; margin-bottom: 20px;"></i>
+          <h3>Немає проспектів</h3>
+          <p>Натисніть кнопку "Додати проспекта" щоб почати</p>
+        </div>
+      `;
+    }
+
+    return this.prospects.map(prospect => `
       <div class="prospect-card" data-id="${prospect.id}">
-        <div class="prospect-header">
-          <h4>${prospect.name}</h4>
-          <span class="status-badge status-${prospect.status}">${this.getStatusLabel(prospect.status)}</span>
-        </div>
-
-        <div class="prospect-info">
-          <div class="info-row">
-            <span class="label">Компанія:</span>
-            <span>${prospect.company || 'Не вказано'}</span>
+        <div class="card-header">
+          <div>
+            <h3>${prospect.name}</h3>
+            <p class="company">${prospect.company || 'Компанія не вказана'}</p>
           </div>
-          <div class="info-row">
-            <span class="label">Email:</span>
-            <span>${prospect.email || 'Не вказано'}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Переговорів:</span>
-            <span>${this.negotiations[prospect.id]?.length || 0}</span>
+          <div class="status-badge status-${prospect.status || 'new'}">
+            ${this.getStatusLabel(prospect.status)}
           </div>
         </div>
 
-        <div class="prospect-adequacy">
-          <div class="adequacy-label">Барометр адекватності:</div>
-          <div class="adequacy-bar">
-            <div class="adequacy-fill" style="width: ${prospect.adequacyScore || 0}%; background: ${this.getAdequacyColor(prospect.adequacyScore)}"></div>
+        <div class="card-body">
+          <div class="info-item">
+            <i class="fas fa-envelope"></i>
+            <span>${prospect.email || 'Email не вказаний'}</span>
           </div>
-          <span class="adequacy-score">${prospect.adequacyScore || 0}%</span>
+          <div class="info-item">
+            <i class="fas fa-comments"></i>
+            <span>Переговорів: ${this.negotiations[prospect.id]?.length || 0}</span>
+          </div>
         </div>
 
-        <div class="prospect-actions">
-          <button class="btn btn-sm" onclick="ProspectManager.uploadNegotiation('${prospect.id}')">
+        ${prospect.adequacyScore !== null ? `
+          <div class="adequacy-meter">
+            <div class="meter-label">
+              <span>Барометр адекватності</span>
+              <strong>${prospect.adequacyScore}%</strong>
+            </div>
+            <div class="meter-bar">
+              <div class="meter-fill" style="width: ${prospect.adequacyScore}%; background: ${this.getAdequacyColor(prospect.adequacyScore)}"></div>
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="card-actions">
+          <button class="btn-secondary" onclick="ProspectManager.uploadNegotiation('${prospect.id}')">
             <i class="fas fa-upload"></i> Завантажити переговори
           </button>
-          <button class="btn btn-sm" onclick="ProspectManager.viewAnalysis('${prospect.id}')">
-            <i class="fas fa-chart-line"></i> Переглянути аналіз
-          </button>
-          <button class="btn btn-sm btn-success" onclick="ProspectManager.promoteToActive('${prospect.id}')">
-            <i class="fas fa-star"></i> В актуальні
-          </button>
+          ${this.negotiations[prospect.id]?.length > 0 ? `
+            <button class="btn-secondary" onclick="ProspectManager.viewAnalysis('${prospect.id}')">
+              <i class="fas fa-chart-line"></i> Переглянути аналіз
+            </button>
+          ` : ''}
+          ${prospect.adequacyScore !== null && prospect.adequacyScore >= 60 ? `
+            <button class="btn-success" onclick="ProspectManager.promoteToActive('${prospect.id}')">
+              <i class="fas fa-star"></i> В актуальні клієнти
+            </button>
+          ` : ''}
         </div>
       </div>
     `).join('');
   },
 
-  // Додавання нового проспекта
-  addProspect() {
-    // Створюємо просту форму для додавання проспекта
+  // Прив'язка обробників подій
+  attachEventHandlers() {
+    // Кнопка додавання проспекта
+    const addBtn = document.getElementById('btn-add-prospect');
+    if (addBtn) {
+      addBtn.onclick = () => this.showAddProspectModal();
+    }
+
+    // Зона для drag and drop
+    const zone = document.getElementById('extended-analysis-zone');
+    if (zone) {
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+      });
+
+      zone.addEventListener('dragleave', () => {
+        zone.classList.remove('drag-over');
+      });
+
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+
+        const data = e.dataTransfer.getData('text/plain');
+        if (data) {
+          try {
+            const finding = JSON.parse(data);
+            this.showExtendedAnalysis(finding);
+          } catch (err) {
+            console.error('Invalid drop data:', err);
+          }
+        }
+      });
+    }
+  },
+
+  // Показати модалку додавання проспекта
+  showAddProspectModal() {
     const modal = document.createElement('div');
-    modal.className = 'modal active';
-    modal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-
+    modal.className = 'custom-modal';
     modal.innerHTML = `
-      <div class="modal-content" style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
-        <h3 style="margin-bottom: 20px; color: #333;">Додати нового проспекта</h3>
-
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Ім'я</label>
-          <input type="text" id="prospect-name" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px;" required>
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2>Додати нового проспекта</h2>
+          <button class="modal-close">&times;</button>
         </div>
-
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Компанія</label>
-          <input type="text" id="prospect-company" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px;">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Ім'я проспекта *</label>
+            <input type="text" id="prospect-name" class="form-input" placeholder="Введіть ім'я" autofocus>
+          </div>
+          <div class="form-group">
+            <label>Компанія</label>
+            <input type="text" id="prospect-company" class="form-input" placeholder="Назва компанії">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="prospect-email" class="form-input" placeholder="email@example.com">
+          </div>
         </div>
-
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Email</label>
-          <input type="email" id="prospect-email" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px;">
-        </div>
-
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button id="cancel-prospect-btn" style="padding: 10px 20px; border: 1px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer;">
-            Скасувати
-          </button>
-          <button id="save-prospect-btn" style="padding: 10px 20px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px; cursor: pointer;">
-            Зберегти
-          </button>
+        <div class="modal-footer">
+          <button class="btn-cancel">Скасувати</button>
+          <button class="btn-primary" id="btn-save-prospect">Зберегти</button>
         </div>
       </div>
     `;
 
     document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
 
-    // Обробники
-    modal.querySelector('#cancel-prospect-btn').addEventListener('click', () => {
-      modal.remove();
-    });
+    modal.querySelector('.modal-close').onclick = () => this.closeModal(modal);
+    modal.querySelector('.btn-cancel').onclick = () => this.closeModal(modal);
+    modal.querySelector('.modal-backdrop').onclick = () => this.closeModal(modal);
 
-    modal.querySelector('#save-prospect-btn').addEventListener('click', () => {
+    modal.querySelector('#btn-save-prospect').onclick = () => {
       const name = modal.querySelector('#prospect-name').value.trim();
       const company = modal.querySelector('#prospect-company').value.trim();
       const email = modal.querySelector('#prospect-email').value.trim();
 
       if (!name) {
-        alert('Введіть ім\'я проспекта');
+        alert('Будь ласка, введіть ім\'я проспекта');
+        modal.querySelector('#prospect-name').focus();
         return;
       }
 
       this.saveProspect({ name, company, email });
-      modal.remove();
-    });
+      this.closeModal(modal);
+    };
 
-    // Закриття по кліку на backdrop
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.remove();
+    modal.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        modal.querySelector('#btn-save-prospect').click();
       }
     });
   },
 
-  // Збереження проспекта
+  // Зберегти проспекта
   saveProspect(data) {
     const prospect = {
       id: `prospect_${Date.now()}`,
-      ...data,
+      name: data.name,
+      company: data.company,
+      email: data.email,
       status: 'new',
       createdAt: new Date().toISOString(),
       adequacyScore: null
@@ -201,734 +247,522 @@ const ProspectManager = {
     this.prospects.push(prospect);
     this.negotiations[prospect.id] = [];
     this.saveToStorage();
-    this.renderProspects();
+    this.render();
+
+    console.log('✅ Prospect saved:', prospect.name);
   },
 
-  // Завантаження переговорів
+  // Завантажити переговори
   uploadNegotiation(prospectId) {
-    this.currentProspect = this.prospects.find(p => p.id === prospectId);
+    const prospect = this.prospects.find(p => p.id === prospectId);
+    if (!prospect) return;
 
-    // Створюємо модалку для завантаження тексту
+    this.currentProspect = prospect;
+
     const modal = document.createElement('div');
-    modal.className = 'modal active';
-    modal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-
+    modal.className = 'custom-modal';
     modal.innerHTML = `
-      <div class="modal-content" style="background: white; padding: 30px; border-radius: 12px; max-width: 700px; width: 90%;">
-        <h3 style="margin-bottom: 10px; color: #333;">Завантажити переговори</h3>
-        <p style="margin-bottom: 20px; color: #666;">Проспект: <strong>${this.currentProspect.name}</strong></p>
-
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 5px; color: #666; font-weight: 500;">Текст переговорів</label>
-          <textarea id="negotiation-text"
-                    style="width: 100%; height: 300px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-family: monospace; resize: vertical;"
-                    placeholder="Вставте текст переговорів...&#10;&#10;Формат:&#10;Ім'я Спікера: текст&#10;або&#10;[Ім'я]: текст"></textarea>
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog modal-large">
+        <div class="modal-header">
+          <h2>Завантажити переговори</h2>
+          <button class="modal-close">&times;</button>
         </div>
+        <div class="modal-body">
+          <div class="info-box">
+            <strong>Проспект:</strong> ${prospect.name}
+          </div>
 
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button id="cancel-upload-btn" style="padding: 10px 20px; border: 1px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer;">
-            Скасувати
-          </button>
-          <button id="analyze-btn" style="padding: 10px 20px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px; cursor: pointer;">
-            Проаналізувати
+          <div class="form-group">
+            <label>Текст переговорів *</label>
+            <textarea id="negotiation-text" class="form-textarea" rows="15" placeholder="Вставте текст переговорів тут...
+
+Приклад формату:
+
+Джон Доу: Доброго дня! Хочу обговорити умови співпраці.
+Менеджер: Привіт! Звичайно, давайте обговоримо.
+Джон Доу: Яка у вас ціна?
+
+або
+
+[Клієнт]: Мені здається це занадто дорого
+[Наша команда]: Давайте розглянемо вартість детальніше"></textarea>
+          </div>
+
+          <div class="hint-box">
+            <i class="fas fa-info-circle"></i>
+            <span>Система автоматично визначить учасників розмови та запропонує вибрати кого аналізувати</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel">Скасувати</button>
+          <button class="btn-primary" id="btn-analyze">
+            <i class="fas fa-brain"></i> Проаналізувати
           </button>
         </div>
       </div>
     `;
 
     document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
 
-    // Обробники
-    modal.querySelector('#cancel-upload-btn').addEventListener('click', () => {
-      modal.remove();
-    });
+    modal.querySelector('.modal-close').onclick = () => this.closeModal(modal);
+    modal.querySelector('.btn-cancel').onclick = () => this.closeModal(modal);
+    modal.querySelector('.modal-backdrop').onclick = () => this.closeModal(modal);
 
-    modal.querySelector('#analyze-btn').addEventListener('click', () => {
+    modal.querySelector('#btn-analyze').onclick = () => {
       const text = modal.querySelector('#negotiation-text').value.trim();
 
       if (!text) {
-        alert('Введіть текст переговорів');
+        alert('Будь ласка, вставте текст переговорів');
         return;
       }
 
-      modal.remove();
+      this.closeModal(modal);
       this.processNegotiationText(prospectId, text);
-    });
-
-    // Закриття по кліку на backdrop
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.remove();
-      }
-    });
+    };
   },
 
-  // Обробка завантаженого тексту
+  // Обробка тексту переговорів
   async processNegotiationText(prospectId, text) {
-    // Спочатку парсимо текст для виявлення спікерів
+    console.log('📝 Processing negotiation text...');
+
     const speakers = this.detectSpeakers(text);
+    console.log('👥 Detected speakers:', speakers);
+
+    if (speakers.length === 0) {
+      alert('Не вдалося визначити учасників розмови. Перевірте формат тексту.');
+      return;
+    }
 
     if (speakers.length > 1) {
-      // Показуємо модалку вибору спікерів
-      this.showSpeakerSelection(prospectId, text, speakers);
+      this.showSpeakerSelectionModal(prospectId, text, speakers);
     } else {
-      // Одразу аналізуємо
       await this.analyzeNegotiation(prospectId, text, speakers);
     }
   },
 
-  // Виявлення спікерів у тексті
   detectSpeakers(text) {
-    const speakers = new Set();
+    const speakersSet = new Set();
+    const lines = text.split('\n');
     const patterns = [
-      /^([A-Z][a-z]+ ?[A-Z]?[a-z]*):/, // Name: text
-      /^\[([^\]]+)\]/, // [Name] text
-      /^<([^>]+)>/, // <Name> text
+      /^([A-ZА-ЯІЇЄ][a-zа-яіїє''\s]+):/,
+      /^\[([^\]]+)\]/,
+      /^<([^>]+)>/
     ];
 
-    const lines = text.split('\n');
     lines.forEach(line => {
-      patterns.forEach(pattern => {
+      for (const pattern of patterns) {
         const match = line.match(pattern);
         if (match) {
-          speakers.add(match[1].trim());
+          speakersSet.add(match[1].trim());
+          break;
         }
-      });
+      }
     });
 
-    // Якщо не знайдено спікерів, шукаємо інші патерни
-    if (speakers.size === 0) {
-      // Можливо текст без явних маркерів
-      speakers.add('Клієнт');
-      speakers.add('Наша команда');
-    }
-
-    return Array.from(speakers);
+    return Array.from(speakersSet);
   },
 
-  // Показ модалки вибору спікерів
-  showSpeakerSelection(prospectId, text, speakers) {
+  showSpeakerSelectionModal(prospectId, text, speakers) {
     const modal = document.createElement('div');
-    modal.className = 'modal active speaker-selection-modal';
+    modal.className = 'custom-modal';
     modal.innerHTML = `
-      <div class="modal-content">
-        <h3>Виберіть учасників для аналізу</h3>
-        <p>Знайдено ${speakers.length} учасників переговорів. Виберіть кого включити в аналіз:</p>
-
-        <div class="speakers-list">
-          ${speakers.map(speaker => `
-            <label class="speaker-option">
-              <input type="checkbox" value="${speaker}" checked>
-              <span>${speaker}</span>
-              <select class="role-select">
-                <option value="prospect">Проспект</option>
-                <option value="our_team">Наша команда</option>
-                <option value="third_party">Третя сторона</option>
-              </select>
-            </label>
-          `).join('')}
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2>Виберіть учасників для аналізу</h2>
+          <button class="modal-close">&times;</button>
         </div>
-
-        <div class="modal-actions">
-          <button class="btn btn-primary" onclick="ProspectManager.startAnalysis('${prospectId}', '${btoa(text)}')">
-            Почати аналіз
-          </button>
-          <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">
-            Скасувати
+        <div class="modal-body">
+          <p>Знайдено ${speakers.length} учасників розмови. Виберіть кого включити в аналіз:</p>
+          <div class="speakers-list">
+            ${speakers.map(speaker => `
+              <label class="speaker-checkbox">
+                <input type="checkbox" value="${speaker}" checked>
+                <span class="speaker-name">${speaker}</span>
+                <select class="speaker-role">
+                  <option value="prospect">Проспект</option>
+                  <option value="our_team">Наша команда</option>
+                  <option value="third_party">Третя сторона</option>
+                </select>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel">Скасувати</button>
+          <button class="btn-primary" id="btn-start-analysis">
+            <i class="fas fa-play"></i> Почати аналіз
           </button>
         </div>
       </div>
     `;
+
     document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
+
+    modal.querySelector('.modal-close').onclick = () => this.closeModal(modal);
+    modal.querySelector('.btn-cancel').onclick = () => this.closeModal(modal);
+    modal.querySelector('.modal-backdrop').onclick = () => this.closeModal(modal);
+
+    modal.querySelector('#btn-start-analysis').onclick = () => {
+      const selectedSpeakers = [];
+      modal.querySelectorAll('.speaker-checkbox input:checked').forEach(checkbox => {
+        const speaker = checkbox.value;
+        const role = checkbox.parentElement.querySelector('.speaker-role').value;
+        selectedSpeakers.push({ name: speaker, role });
+      });
+
+      if (selectedSpeakers.length === 0) {
+        alert('Виберіть хоча б одного учасника');
+        return;
+      }
+
+      this.closeModal(modal);
+      this.analyzeNegotiation(prospectId, text, selectedSpeakers);
+    };
   },
 
-  // Початок аналізу з вибраними спікерами
-  async startAnalysis(prospectId, encodedText) {
-    const text = atob(encodedText);
-    const modal = document.querySelector('.speaker-selection-modal');
-    const selectedSpeakers = [];
-
-    modal.querySelectorAll('.speaker-option input:checked').forEach(checkbox => {
-      const speaker = checkbox.value;
-      const role = checkbox.parentElement.querySelector('.role-select').value;
-      selectedSpeakers.push({ name: speaker, role });
-    });
-
-    modal.remove();
-    await this.analyzeNegotiation(prospectId, text, selectedSpeakers);
-  },
-
-  // Аналіз переговорів через GPT
   async analyzeNegotiation(prospectId, text, speakers) {
-    // Показуємо індикатор завантаження
-    this.showLoadingIndicator('Аналізуємо переговори...');
+    console.log('🧠 Starting analysis...');
+    this.showLoader('Аналізуємо переговори...');
 
     try {
       const analysis = await NegotiationAnalyzer.analyze(text, speakers);
+      console.log('✅ Analysis complete:', analysis);
 
-      // Зберігаємо результат
+      const negotiation = {
+        id: `neg_${Date.now()}`,
+        text: text,
+        speakers: speakers,
+        analysis: analysis,
+        timestamp: new Date().toISOString()
+      };
+
       if (!this.negotiations[prospectId]) {
         this.negotiations[prospectId] = [];
       }
+      this.negotiations[prospectId].push(negotiation);
 
-      this.negotiations[prospectId].push({
-        id: `neg_${Date.now()}`,
-        text,
-        speakers,
-        analysis,
-        timestamp: new Date().toISOString()
-      });
-
-      // Оновлюємо барометр адекватності
       this.updateAdequacyScore(prospectId);
-
-      // Показуємо результат
-      this.displayAnalysis(prospectId, analysis, text);
-
-      // Зберігаємо
       this.saveToStorage();
+      this.hideLoader();
+      this.showAnalysisResults(prospectId, negotiation);
 
     } catch (error) {
-      console.error('Analysis error:', error);
+      console.error('❌ Analysis error:', error);
+      this.hideLoader();
       alert('Помилка аналізу: ' + error.message);
-    } finally {
-      this.hideLoadingIndicator();
     }
   },
 
-  // Оновлення барометра адекватності
   updateAdequacyScore(prospectId) {
+    const prospect = this.prospects.find(p => p.id === prospectId);
+    if (!prospect) return;
+
     const negotiations = this.negotiations[prospectId] || [];
     if (negotiations.length === 0) return;
 
-    let totalScore = 0;
-    let factors = {
-      manipulation: 0,
-      aggression: 0,
-      cooperation: 0,
-      clarity: 0,
-      consistency: 0
-    };
-
+    let totalScore = 100;
     negotiations.forEach(neg => {
       const analysis = neg.analysis;
-
-      // Рахуємо негативні фактори
-      factors.manipulation += (analysis.manipulations?.length || 0) * -10;
-      factors.aggression += (analysis.aggressionLevel || 0) * -5;
-
-      // Рахуємо позитивні фактори
-      factors.cooperation += (analysis.cooperationLevel || 0) * 10;
-      factors.clarity += (analysis.clarityScore || 0) * 5;
-      factors.consistency += (analysis.consistencyScore || 0) * 5;
+      totalScore -= (analysis.manipulations?.length || 0) * 8;
+      totalScore -= (analysis.cognitive_biases?.length || 0) * 5;
+      totalScore -= (analysis.sophisms?.length || 0) * 4;
+      totalScore += (analysis.positive_patterns?.length || 0) * 3;
     });
 
-    // Розраховуємо загальний бал (0-100)
-    totalScore = Math.max(0, Math.min(100,
-      50 + // Базовий бал
-      factors.cooperation +
-      factors.clarity +
-      factors.consistency +
-      factors.manipulation +
-      factors.aggression
-    ));
-
-    // Оновлюємо проспекта
-    const prospect = this.prospects.find(p => p.id === prospectId);
-    if (prospect) {
-      prospect.adequacyScore = Math.round(totalScore);
-      prospect.adequacyFactors = factors;
-      this.renderProspects();
-    }
+    prospect.adequacyScore = Math.max(0, Math.min(100, Math.round(totalScore)));
+    console.log(`📊 Adequacy score for ${prospect.name}: ${prospect.adequacyScore}%`);
   },
 
-  // Відображення результатів аналізу
-  displayAnalysis(prospectId, analysis, originalText) {
-    const container = document.createElement('div');
-    container.className = 'analysis-results-container';
-    container.innerHTML = `
-      <div class="analysis-header">
-        <h2>Результати аналізу переговорів</h2>
-        <button class="close-btn" onclick="this.closest('.analysis-results-container').remove()">✕</button>
-      </div>
+  showAnalysisResults(prospectId, negotiation) {
+    const modal = document.createElement('div');
+    modal.className = 'custom-modal analysis-modal';
+    const { text, analysis } = negotiation;
+    const highlightedText = this.highlightText(text, analysis);
 
-      <div class="analysis-content">
-        <div class="highlighted-text" id="highlighted-negotiation-text"></div>
-
-        <div class="findings-sidebar">
-          <h3>Виявлені патерни</h3>
-          <div id="findings-list"></div>
+    modal.innerHTML = `
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog modal-fullscreen">
+        <div class="modal-header">
+          <h2>Результати аналізу переговорів</h2>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="analysis-container">
+            <div class="analysis-text-panel">
+              <h3>Текст переговорів</h3>
+              <div class="highlighted-text" id="highlighted-text">${highlightedText}</div>
+            </div>
+            <div class="findings-panel">
+              <h3>Виявлені патерни (${this.getTotalFindings(analysis)})</h3>
+              ${this.renderFindings(analysis)}
+            </div>
+          </div>
+          <div class="analysis-summary">
+            <div class="summary-card">
+              <h4>Маніпуляції</h4>
+              <div class="count critical">${analysis.manipulations?.length || 0}</div>
+            </div>
+            <div class="summary-card">
+              <h4>Когнітивні викривлення</h4>
+              <div class="count warning">${analysis.cognitive_biases?.length || 0}</div>
+            </div>
+            <div class="summary-card">
+              <h4>Софізми</h4>
+              <div class="count info">${analysis.sophisms?.length || 0}</div>
+            </div>
+            <div class="summary-card">
+              <h4>Позитивні патерни</h4>
+              <div class="count success">${analysis.positive_patterns?.length || 0}</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-primary">Закрити</button>
         </div>
       </div>
     `;
 
-    document.body.appendChild(container);
+    document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
 
-    // Підсвічуємо текст
-    this.highlightText(originalText, analysis);
+    modal.querySelectorAll('.highlight').forEach(el => {
+      el.addEventListener('mouseenter', () => this.showTooltip(el));
+      el.addEventListener('mouseleave', () => this.hideTooltip());
+    });
 
-    // Показуємо список знахідок
-    this.displayFindings(analysis);
+    modal.querySelector('.modal-close').onclick = () => {
+      this.closeModal(modal);
+      this.render();
+    };
+    modal.querySelector('.btn-primary').onclick = () => {
+      this.closeModal(modal);
+      this.render();
+    };
+    modal.querySelector('.modal-backdrop').onclick = () => {
+      this.closeModal(modal);
+      this.render();
+    };
   },
 
-  // Підсвічування тексту з маніпуляціями
   highlightText(text, analysis) {
-    const container = document.getElementById('highlighted-negotiation-text');
-    if (!container) return;
-
-    let highlightedText = text;
+    let html = text;
     const highlights = [];
 
-    // Збираємо всі виділення
-    if (analysis.manipulations) {
-      analysis.manipulations.forEach(m => {
-        highlights.push({
-          text: m.text,
-          type: 'manipulation',
-          color: '#ff4444',
-          tooltip: `Маніпуляція: ${m.type}\n${m.explanation}`
-        });
-      });
-    }
-
-    if (analysis.cognitive_biases) {
-      analysis.cognitive_biases.forEach(b => {
-        highlights.push({
-          text: b.text,
-          type: 'bias',
-          color: '#ff8800',
-          tooltip: `Когнітивне викривлення: ${b.type}\n${b.explanation}`
-        });
-      });
-    }
-
-    if (analysis.sophisms) {
-      analysis.sophisms.forEach(s => {
-        highlights.push({
-          text: s.text,
-          type: 'sophism',
-          color: '#ffaa00',
-          tooltip: `Софізм: ${s.type}\n${s.explanation}`
-        });
-      });
-    }
-
-    if (analysis.positive_patterns) {
-      analysis.positive_patterns.forEach(p => {
-        highlights.push({
-          text: p.text,
-          type: 'positive',
-          color: '#44ff44',
-          tooltip: `Позитивний патерн: ${p.type}`
-        });
-      });
-    }
-
-    // Сортуємо за позицією в тексті
-    highlights.sort((a, b) => text.indexOf(b.text) - text.indexOf(a.text));
-
-    // Застосовуємо виділення
-    highlights.forEach(highlight => {
-      const regex = new RegExp(highlight.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-      highlightedText = highlightedText.replace(regex,
-        `<span class="highlight highlight-${highlight.type}"
-               style="background-color: ${highlight.color}33; border-bottom: 2px solid ${highlight.color}"
-               data-tooltip="${highlight.tooltip}"
-               draggable="true"
-               ondragstart="ProspectManager.dragFinding(event, '${btoa(JSON.stringify(highlight))}')">${highlight.text}</span>`
-      );
-    });
-
-    container.innerHTML = `<pre>${highlightedText}</pre>`;
-
-    // Додаємо обробники для тултіпів
-    container.querySelectorAll('.highlight').forEach(span => {
-      span.addEventListener('mouseenter', (e) => {
-        this.showTooltip(e.target, e.target.dataset.tooltip);
-      });
-      span.addEventListener('mouseleave', () => {
-        this.hideTooltip();
-      });
-    });
-  },
-
-  // Показ тултіпа
-  showTooltip(element, text) {
-    const tooltip = document.createElement('div');
-    tooltip.className = 'analysis-tooltip';
-    tooltip.textContent = text;
-
-    const rect = element.getBoundingClientRect();
-    tooltip.style.left = rect.left + 'px';
-    tooltip.style.top = (rect.bottom + 5) + 'px';
-
-    document.body.appendChild(tooltip);
-    this.currentTooltip = tooltip;
-  },
-
-  hideTooltip() {
-    if (this.currentTooltip) {
-      this.currentTooltip.remove();
-      this.currentTooltip = null;
-    }
-  },
-
-  // Відображення списку знахідок
-  displayFindings(analysis) {
-    const container = document.getElementById('findings-list');
-    if (!container) return;
-
-    const findings = [];
-
-    // Збираємо всі знахідки
     ['manipulations', 'cognitive_biases', 'sophisms', 'positive_patterns'].forEach(category => {
       if (analysis[category]) {
         analysis[category].forEach(item => {
-          findings.push({
-            ...item,
-            category
+          highlights.push({
+            text: item.text,
+            category: category,
+            type: item.type,
+            explanation: item.explanation || '',
+            severity: item.severity || 'medium'
           });
         });
       }
     });
 
-    container.innerHTML = findings.map(finding => `
-      <div class="finding-card finding-${finding.category}"
-           draggable="true"
-           ondragstart="ProspectManager.dragFinding(event, '${btoa(JSON.stringify(finding))}')">
-        <div class="finding-type">${this.getFindingLabel(finding.category)}: ${finding.type}</div>
-        <div class="finding-text">"${finding.text.substring(0, 100)}..."</div>
-        <div class="finding-severity severity-${finding.severity || 'medium'}">
-          ${this.getSeverityLabel(finding.severity)}
-        </div>
-        <div class="drag-hint">⋮⋮ Перетягніть для детального аналізу</div>
-      </div>
-    `).join('');
+    highlights.sort((a, b) => b.text.length - a.text.length);
+
+    highlights.forEach(highlight => {
+      const escapedText = highlight.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escapedText})`, 'gi');
+      const replacement = `<span class="highlight highlight-${highlight.category}" data-category="${highlight.category}" data-type="${highlight.type}" data-explanation="${highlight.explanation}" data-severity="${highlight.severity}" draggable="true">$1</span>`;
+      html = html.replace(regex, replacement);
+    });
+
+    return `<pre>${html}</pre>`;
   },
 
-  // Перетягування знахідки
-  dragFinding(event, encodedFinding) {
-    event.dataTransfer.setData('finding', encodedFinding);
+  renderFindings(analysis) {
+    const categories = [
+      { key: 'manipulations', label: 'Маніпуляції', icon: 'exclamation-triangle', color: 'critical' },
+      { key: 'cognitive_biases', label: 'Когнітивні викривлення', icon: 'brain', color: 'warning' },
+      { key: 'sophisms', label: 'Софізми', icon: 'balance-scale', color: 'info' },
+      { key: 'positive_patterns', label: 'Позитивні патерни', icon: 'check-circle', color: 'success' }
+    ];
+
+    let html = '';
+    categories.forEach(cat => {
+      const items = analysis[cat.key] || [];
+      if (items.length > 0) {
+        html += `<div class="findings-category"><h4><i class="fas fa-${cat.icon}"></i> ${cat.label} (${items.length})</h4>`;
+        html += items.map(item => `
+          <div class="finding-item finding-${cat.color}" draggable="true" data-finding='${JSON.stringify(item)}'>
+            <div class="finding-header">
+              <strong>${item.type}</strong>
+              ${item.severity ? `<span class="severity severity-${item.severity}">${item.severity}</span>` : ''}
+            </div>
+            <div class="finding-text">"${item.text.substring(0, 100)}${item.text.length > 100 ? '...' : ''}"</div>
+            <div class="finding-hint"><i class="fas fa-hand-pointer"></i> Перетягніть для детального аналізу</div>
+          </div>
+        `).join('');
+        html += '</div>';
+      }
+    });
+
+    return html || '<p class="no-findings">Патернів не знайдено</p>';
   },
 
-  // Обробка drop в зону розширеного аналізу
-  handleDrop(event) {
-    event.preventDefault();
-    const encodedFinding = event.dataTransfer.getData('finding');
-    if (!encodedFinding) return;
+  showExtendedAnalysis(finding) {
+    const zoneContent = document.getElementById('zone-content');
+    const zonePlaceholder = document.querySelector('.zone-placeholder');
 
-    const finding = JSON.parse(atob(encodedFinding));
-    this.showExtendedAnalysis(finding);
-  },
-
-  // Показ розширеного аналізу
-  async showExtendedAnalysis(finding) {
-    const container = document.getElementById('extended-analysis-content');
-    if (!container) return;
-
-    container.innerHTML = '<div class="loading">Генеруємо розширений аналіз...</div>';
-
-    try {
-      const extendedAnalysis = await this.getExtendedAnalysis(finding);
-
-      container.innerHTML = `
-        <div class="extended-analysis">
-          <h3>${this.getFindingLabel(finding.category)}: ${finding.type}</h3>
-
-          <div class="original-text">
-            <h4>Оригінальний текст:</h4>
+    if (zonePlaceholder) zonePlaceholder.style.display = 'none';
+    if (zoneContent) {
+      zoneContent.style.display = 'block';
+      zoneContent.innerHTML = `
+        <div class="extended-analysis-content">
+          <div class="analysis-header">
+            <h3>${finding.type}</h3>
+            <button class="btn-clear" onclick="ProspectManager.clearExtendedAnalysis()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="analysis-section">
+            <h4>Оригінальний текст</h4>
             <blockquote>${finding.text}</blockquote>
           </div>
-
-          <div class="detailed-explanation">
-            <h4>Детальне пояснення:</h4>
-            <p>${extendedAnalysis.explanation}</p>
+          <div class="analysis-section">
+            <h4>Пояснення</h4>
+            <p>${finding.explanation || 'Це патерн типу "' + finding.type + '"'}</p>
           </div>
-
-          <div class="psychological-impact">
-            <h4>Психологічний вплив:</h4>
-            <p>${extendedAnalysis.psychologicalImpact}</p>
-          </div>
-
-          <div class="recommended-responses">
-            <h4>Рекомендовані відповіді:</h4>
-            <ul>
-              ${extendedAnalysis.responses.map(r => `
-                <li>
-                  <strong>${r.approach}:</strong> "${r.text}"
-                  <span class="effectiveness">Ефективність: ${r.effectiveness}/10</span>
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-
-          <div class="tactical-advice">
-            <h4>Тактичні поради:</h4>
-            <ul>
-              ${extendedAnalysis.tactics.map(t => `<li>${t}</li>`).join('')}
-            </ul>
-          </div>
-
-          <div class="counter-strategies">
-            <h4>Контрстратегії:</h4>
-            ${extendedAnalysis.counterStrategies.map(s => `
-              <div class="strategy-card">
-                <h5>${s.name}</h5>
-                <p>${s.description}</p>
-                <div class="example">Приклад: "${s.example}"</div>
+          <div class="analysis-section">
+            <h4>Рекомендовані відповіді</h4>
+            <div class="responses-list">
+              <div class="response-item">
+                <strong>Пряма конфронтація:</strong>
+                <p>"Давайте повернемося до фактів."</p>
+                <span class="effectiveness">Ефективність: 8/10</span>
               </div>
-            `).join('')}
+            </div>
           </div>
         </div>
       `;
-    } catch (error) {
-      container.innerHTML = `<div class="error">Помилка аналізу: ${error.message}</div>`;
-    }
-  },
-
-  // Отримання розширеного аналізу через GPT
-  async getExtendedAnalysis(finding) {
-    // Тут буде виклик до GPT API
-    // Поки що повертаємо мокові дані
-    return {
-      explanation: 'Це класичний приклад ' + finding.type + ', який використовується для психологічного впливу на опонента.',
-      psychologicalImpact: 'Створює відчуття невпевненості та сумніву в власній позиції.',
-      responses: [
-        {
-          approach: 'Пряма конфронтація',
-          text: 'Давайте повернемося до фактів і конкретних даних.',
-          effectiveness: 8
-        },
-        {
-          approach: 'Переформулювання',
-          text: 'Якщо я правильно розумію, ви маєте на увазі що...',
-          effectiveness: 7
-        },
-        {
-          approach: 'Ігнорування з перенаправленням',
-          text: 'Це цікава думка. А що ви думаєте про...',
-          effectiveness: 6
-        }
-      ],
-      tactics: [
-        'Завжди залишайтеся спокійними',
-        'Документуйте всі домовленості',
-        'Використовуйте конкретні приклади',
-        'Не дозволяйте збити себе з теми'
-      ],
-      counterStrategies: [
-        {
-          name: 'Метод розбитого запису',
-          description: 'Повторюйте свою позицію спокійно і впевнено',
-          example: 'Як я вже казав, наша пропозиція базується на...'
-        },
-        {
-          name: 'Метод дзеркала',
-          description: 'Відображайте маніпулятивну тактику назад',
-          example: 'Цікаво, що ви це кажете, бо саме це я хотів запитати у вас...'
-        }
-      ]
-    };
-  },
-
-  // Переведення проспекта в актуальні
-  promoteToActive(prospectId) {
-    const prospect = this.prospects.find(p => p.id === prospectId);
-    if (!prospect) return;
-
-    if (prospect.adequacyScore < 60) {
-      if (!confirm('Барометр адекватності нижче 60%. Все одно перевести в актуальні?')) {
-        return;
-      }
     }
 
-    prospect.status = 'qualified';
-
-    // Додаємо до активних клієнтів в TeamHub
-    if (window.TeamHub) {
-      window.TeamHub.addActiveClient(prospect);
-    }
-
-    this.saveToStorage();
-    this.renderProspects();
-
-    alert(`${prospect.name} переведено в актуальні клієнти!`);
+    document.getElementById('extended-analysis-zone').scrollIntoView({ behavior: 'smooth' });
   },
 
-  // Перегляд аналізу
+  clearExtendedAnalysis() {
+    const zoneContent = document.getElementById('zone-content');
+    const zonePlaceholder = document.querySelector('.zone-placeholder');
+    if (zoneContent) zoneContent.style.display = 'none';
+    if (zonePlaceholder) zonePlaceholder.style.display = 'block';
+  },
+
   viewAnalysis(prospectId) {
     const negotiations = this.negotiations[prospectId];
     if (!negotiations || negotiations.length === 0) {
-      alert('Немає проведених аналізів для цього проспекта');
+      alert('Немає збережених аналізів');
       return;
     }
-
-    // Показуємо останній аналіз
-    const latest = negotiations[negotiations.length - 1];
-    this.displayAnalysis(prospectId, latest.analysis, latest.text);
+    this.showAnalysisResults(prospectId, negotiations[negotiations.length - 1]);
   },
 
-  // Допоміжні методи
+  promoteToActive(prospectId) {
+    const prospect = this.prospects.find(p => p.id === prospectId);
+    if (!prospect) return;
+    if (confirm(`Перевести ${prospect.name} в актуальні клієнти?`)) {
+      prospect.status = 'active';
+      this.saveToStorage();
+      this.render();
+      alert(`✅ ${prospect.name} переведено в актуальні клієнти!`);
+    }
+  },
+
+  getTotalFindings(analysis) {
+    return (analysis.manipulations?.length || 0) +
+           (analysis.cognitive_biases?.length || 0) +
+           (analysis.sophisms?.length || 0) +
+           (analysis.positive_patterns?.length || 0);
+  },
+
   getStatusLabel(status) {
-    const labels = {
-      new: 'Новий',
-      in_negotiation: 'В переговорах',
-      analyzing: 'Аналізується',
-      qualified: 'Кваліфікований',
-      rejected: 'Відхилений'
-    };
-    return labels[status] || status;
-  },
-
-  getFindingLabel(category) {
-    const labels = {
-      manipulations: 'Маніпуляція',
-      cognitive_biases: 'Когнітивне викривлення',
-      sophisms: 'Софізм',
-      positive_patterns: 'Позитивний патерн'
-    };
-    return labels[category] || category;
-  },
-
-  getSeverityLabel(severity) {
-    const labels = {
-      low: 'Низька',
-      medium: 'Середня',
-      high: 'Висока',
-      critical: 'Критична'
-    };
-    return labels[severity] || 'Середня';
+    const labels = { new: 'Новий', active: 'Активний', qualified: 'Кваліфікований', rejected: 'Відхилений' };
+    return labels[status] || 'Новий';
   },
 
   getAdequacyColor(score) {
-    if (score >= 80) return '#44ff44';
-    if (score >= 60) return '#ffaa00';
-    if (score >= 40) return '#ff8800';
-    return '#ff4444';
+    if (score >= 80) return '#4caf50';
+    if (score >= 60) return '#ff9800';
+    if (score >= 40) return '#ff5722';
+    return '#f44336';
   },
 
-  showLoadingIndicator(message) {
+  showLoader(message) {
     const loader = document.createElement('div');
-    loader.id = 'analysis-loader';
-    loader.className = 'loading-overlay';
-    loader.innerHTML = `
-      <div class="loader-content">
-        <div class="spinner"></div>
-        <p>${message}</p>
-      </div>
-    `;
+    loader.id = 'global-loader';
+    loader.className = 'global-loader';
+    loader.innerHTML = `<div class="loader-content"><div class="spinner"></div><p>${message}</p></div>`;
     document.body.appendChild(loader);
   },
 
-  hideLoadingIndicator() {
-    const loader = document.getElementById('analysis-loader');
+  hideLoader() {
+    const loader = document.getElementById('global-loader');
     if (loader) loader.remove();
   },
 
-  // Збереження даних
+  showTooltip(element) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'custom-tooltip';
+    tooltip.id = 'custom-tooltip';
+    tooltip.innerHTML = `<strong>${element.dataset.type}</strong><p>${element.dataset.explanation}</p><span class="tooltip-category">${element.dataset.category}</span>`;
+    document.body.appendChild(tooltip);
+    const rect = element.getBoundingClientRect();
+    tooltip.style.left = rect.left + 'px';
+    tooltip.style.top = (rect.bottom + 10) + 'px';
+  },
+
+  hideTooltip() {
+    const tooltip = document.getElementById('custom-tooltip');
+    if (tooltip) tooltip.remove();
+  },
+
+  closeModal(modal) {
+    modal.classList.remove('active');
+    setTimeout(() => modal.remove(), 300);
+  },
+
   saveToStorage() {
     localStorage.setItem('prospects', JSON.stringify(this.prospects));
     localStorage.setItem('negotiations', JSON.stringify(this.negotiations));
+    console.log('💾 Data saved');
   },
 
-  loadProspects() {
-    const saved = localStorage.getItem('prospects');
-    if (saved) {
-      this.prospects = JSON.parse(saved);
+  loadFromStorage() {
+    try {
+      const prospects = localStorage.getItem('prospects');
+      const negotiations = localStorage.getItem('negotiations');
+      if (prospects) this.prospects = JSON.parse(prospects);
+      if (negotiations) this.negotiations = JSON.parse(negotiations);
+      console.log(`📂 Loaded ${this.prospects.length} prospects`);
+    } catch (err) {
+      console.error('Error loading:', err);
     }
-
-    const negotiations = localStorage.getItem('negotiations');
-    if (negotiations) {
-      this.negotiations = JSON.parse(negotiations);
-    }
-  },
-
-  // Прив'язка подій
-  bindEvents() {
-    // Кнопка додавання проспекта
-    const addBtn = document.getElementById('add-prospect-btn');
-    if (addBtn) {
-      addBtn.addEventListener('click', () => this.addProspect());
-    }
-
-    // Зона розширеного аналізу
-    const analysisZone = document.getElementById('analysis-zone');
-    if (analysisZone) {
-      analysisZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        analysisZone.classList.add('drag-over');
-      });
-
-      analysisZone.addEventListener('dragleave', () => {
-        analysisZone.classList.remove('drag-over');
-      });
-
-      analysisZone.addEventListener('drop', (e) => {
-        analysisZone.classList.remove('drag-over');
-        this.handleDrop(e);
-      });
-    }
-
-    // Пошук
-    const searchInput = document.getElementById('prospect-search');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this.filterProspects(e.target.value);
-      });
-    }
-
-    // Фільтр статусу
-    const statusFilter = document.getElementById('prospect-status-filter');
-    if (statusFilter) {
-      statusFilter.addEventListener('change', (e) => {
-        this.filterByStatus(e.target.value);
-      });
-    }
-  },
-
-  // Фільтрація проспектів
-  filterProspects(query) {
-    const cards = document.querySelectorAll('.prospect-card');
-    const lowerQuery = query.toLowerCase();
-
-    cards.forEach(card => {
-      const name = card.querySelector('h4').textContent.toLowerCase();
-      const company = card.querySelector('.info-row:nth-child(1) span:last-child').textContent.toLowerCase();
-
-      if (name.includes(lowerQuery) || company.includes(lowerQuery)) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  },
-
-  filterByStatus(status) {
-    const cards = document.querySelectorAll('.prospect-card');
-
-    cards.forEach(card => {
-      const prospectId = card.dataset.id;
-      const prospect = this.prospects.find(p => p.id === prospectId);
-
-      if (status === 'all' || prospect?.status === status) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
   }
 };
 
-// Експорт
 window.ProspectManager = ProspectManager;
+
+document.addEventListener('dragstart', (e) => {
+  if (e.target.classList.contains('finding-item') || e.target.classList.contains('highlight')) {
+    const finding = e.target.dataset.finding;
+    if (finding) {
+      e.dataTransfer.setData('text/plain', finding);
+    } else {
+      const data = {
+        type: e.target.dataset.type,
+        text: e.target.textContent,
+        explanation: e.target.dataset.explanation,
+        category: e.target.dataset.category,
+        severity: e.target.dataset.severity
+      };
+      e.dataTransfer.setData('text/plain', JSON.stringify(data));
+    }
+  }
+});
+
+console.log('✅ ProspectManager module loaded');
