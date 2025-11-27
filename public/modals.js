@@ -1124,6 +1124,9 @@
   // ============================================
 
   let modalsInitialized = false;
+  let modalInitAttempts = 0;
+  const MAX_MODAL_INIT_ATTEMPTS = 20;
+  const MODAL_INIT_RETRY_DELAY = 150;
 
   function initModals() {
     if (modalsInitialized) {
@@ -1131,7 +1134,34 @@
       return;
     }
 
+    const hasModalMarkup = document.querySelector('.modal');
+    const backdrop = $('#modal-backdrop');
+
+    if (!hasModalMarkup || !backdrop) {
+      modalInitAttempts += 1;
+      if (modalInitAttempts <= MAX_MODAL_INIT_ATTEMPTS) {
+        console.warn('⏳ Modals HTML not ready, retrying initialization...');
+        setTimeout(initModals, MODAL_INIT_RETRY_DELAY);
+      } else {
+        console.error('❌ Failed to initialize modals: markup not found');
+      }
+      return;
+    }
+
+    modalInitAttempts = 0;
     console.log('🔧 Initializing modals...');
+
+    // Ensure initial modal state is consistent before binding events
+    backdrop.classList.remove('active');
+    backdrop.style.display = 'none';
+    backdrop.style.opacity = '0';
+
+    $$('.modal').forEach(modal => {
+      modal.classList.remove('active');
+      modal.style.display = 'none';
+      modal.style.visibility = 'hidden';
+      modal.style.opacity = '0';
+    });
 
     // Close buttons - use once:true to prevent duplicates
     $$('[id^="close-"][id$="-modal"]').forEach(btn => {
@@ -1149,7 +1179,6 @@
     });
 
     // Backdrop click - DISABLED to prevent accidental closes
-    const backdrop = $('#modal-backdrop');
     if (backdrop) {
       backdrop.addEventListener('click', (e) => {
         // ONLY close if clicking directly on backdrop, not on modal content
@@ -1188,6 +1217,7 @@
   window.ModalManager = ModalManager;
   window.NotesManager = NotesManager;
   window.FileUploadHandler = FileUploadHandler;
+  window.initializeModals = initModals;
 
   // Export modal helper functions for backward compatibility
   window.showModal = (modalId) => ModalManager.open(modalId);
@@ -1238,6 +1268,9 @@
   } else {
     initModals();
   }
+
+  // Re-initialize when modals HTML is injected dynamically
+  document.addEventListener('modals:loaded', () => initModals());
 
   // ============================================
   // INTEGRATION WITH OLD APP-NEON.JS

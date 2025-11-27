@@ -144,6 +144,12 @@
             gap: 12px;
         }
 
+        /* Hide legacy notification/settings buttons (not used in current UX) */
+        #notifications-btn,
+        #settings-btn {
+            display: none !important;
+        }
+
         .icon-btn {
             width: 40px;
             height: 40px;
@@ -436,7 +442,14 @@
         fetch('/modals.html')
             .then(res => res.text())
             .then(html => {
-                document.getElementById('modals-container').innerHTML = html;
+                const container = document.getElementById('modals-container');
+                container.innerHTML = html;
+
+                // Notify modal system that markup is ready
+                document.dispatchEvent(new Event('modals:loaded'));
+                if (window.initializeModals) {
+                    window.initializeModals();
+                }
             })
             .catch(err => console.error('Failed to load modals:', err));
     </script>
