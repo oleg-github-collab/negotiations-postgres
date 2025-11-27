@@ -1,51 +1,81 @@
 /* =================================================================
-   MODALS - ОСТАТОЧНА ВЕРСІЯ БЕЗ КОНФЛІКТІВ
-   Просто і надійно - МОДАЛКА СТРОГО ПО ЦЕНТРУ
+   MODALS - FINAL ULTRA-RELIABLE VERSION
+   Простий і надійний підхід без зайвих елементів
    ================================================================= */
 
-/* Backdrop - окремий елемент для затемнення */
+/* BACKDROP - завжди поверх всього */
 .modal-backdrop {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background: rgba(0, 0, 0, 0.8) !important;
-  z-index: 999 !important;
-  display: none !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 99998;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-/* Modal wrapper - СТРОГО ПО ЦЕНТРУ */
+.modal-backdrop.active {
+  display: block;
+  opacity: 1;
+}
+
+/* MODAL WRAPPER - НЕ ПОКАЗУЄМО за замовчуванням */
 .modal {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 1000 !important;
-  display: none !important;
-  max-width: 90vw !important;
-  max-height: 90vh !important;
-  overflow: visible !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .modal.active {
-  display: block !important;
+  display: flex;
 }
 
-/* Modal content box */
+/* Modal content box - ЗАВЖДИ СВІТЛИЙ І ВИДИМИЙ */
 .modal-content {
+  position: relative;
   background: #1a1a2e !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 16px !important;
-  width: 600px !important;
-  max-width: 90vw !important;
-  max-height: 90vh !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 90vh;
   display: flex !important;
-  flex-direction: column !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
-  overflow: hidden !important;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 2;
+  margin: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: all !important;
+  filter: none !important;
+  isolation: isolate;
+}
+
+/* ВСІ ДОЧІРНІ ЕЛЕМЕНТИ modal-content ЗАВЖДИ ВИДИМІ */
+.modal-content *,
+.modal-content *::before,
+.modal-content *::after {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  filter: none !important;
 }
 
 .modal-content.modal-xl {

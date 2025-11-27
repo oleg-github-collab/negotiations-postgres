@@ -15,104 +15,93 @@
 
   const ModalManager = {
     activeModal: null,
+    backdrop: null,
 
     open(modalId, data = null) {
-      console.log(`🚀 ModalManager.open called with modalId: ${modalId}`);
+      console.log(`🚀 ModalManager.open: ${modalId}`);
 
       const modal = $(`#${modalId}`);
       const backdrop = $('.modal-backdrop');
 
       if (!modal) {
-        console.error(`❌ Modal ${modalId} not found in DOM`);
+        console.error(`❌ Modal not found: ${modalId}`);
         return;
       }
 
-      console.log(`✅ Modal ${modalId} found in DOM`);
+      if (!backdrop) {
+        console.error(`❌ Backdrop not found`);
+        return;
+      }
 
-      // Close any existing modal first
+      // Close any existing modal
       if (this.activeModal && this.activeModal !== modalId) {
-        console.log(`⚠️ Closing existing modal: ${this.activeModal}`);
         this.close(this.activeModal);
       }
 
       this.activeModal = modalId;
+      this.backdrop = backdrop;
 
       // Show backdrop
-      if (backdrop) {
-        backdrop.style.display = 'block';
-      }
+      backdrop.classList.add('active');
+      console.log('✅ Backdrop shown');
 
       // Show modal
-      modal.style.display = 'block';
       modal.classList.add('active');
-      modal.setAttribute('aria-hidden', 'false');
-      console.log(`✅ Modal ${modalId} display set to block`);
+      console.log('✅ Modal shown');
 
       // Prevent body scroll
-      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
 
-      // Initialize modal-specific data
+      // Initialize modal data
       if (data) {
         this.initializeModalData(modalId, data);
       }
 
-      // Ensure modal can receive focus for accessibility
-      if (!modal.hasAttribute('tabindex')) {
-        modal.setAttribute('tabindex', '-1');
-      }
+      // Focus first input
+      setTimeout(() => {
+        const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
+        if (firstInput) {
+          firstInput.focus();
+        }
+      }, 100);
 
-      // Focus first interactive element for accessibility
-      const focusable = modal.querySelector('input, select, textarea, button');
-      if (focusable) {
-        setTimeout(() => focusable.focus(), 10);
-      }
-
-      // Add escape key listener
-      document.addEventListener('keydown', this.handleEscape);
-
-      console.log(`✅ Modal opened successfully: ${modalId}`);
+      console.log(`✅ Modal opened: ${modalId}`);
     },
 
     close(modalId = null) {
       const id = modalId || this.activeModal;
-      if (!id) {
-        console.log('⚠️ ModalManager.close called but no modal is active');
-        return;
-      }
+      if (!id) return;
 
-      console.log(`🚪 ModalManager.close called for: ${id}`);
+      console.log(`🚪 Closing modal: ${id}`);
 
       const modal = $(`#${id}`);
       const backdrop = $('.modal-backdrop');
 
+      // Hide modal
       if (modal) {
-        modal.style.display = 'none';
         modal.classList.remove('active');
-        modal.setAttribute('aria-hidden', 'true');
-        console.log(`✅ Modal ${id} hidden`);
       }
 
       // Hide backdrop
       if (backdrop) {
-        backdrop.style.display = 'none';
+        backdrop.classList.remove('active');
       }
 
       // Restore body scroll
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
 
       this.activeModal = null;
+      this.backdrop = null;
 
-      // Remove escape listener
-      document.removeEventListener('keydown', this.handleEscape);
-
-      // Reset modal forms
+      // Reset modal
       this.resetModal(id);
 
-      console.log(`✅ Modal closed successfully: ${id}`);
+      console.log(`✅ Modal closed: ${id}`);
     },
 
     handleEscape: (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && ModalManager.activeModal) {
+        e.preventDefault();
         ModalManager.close();
       }
     },
@@ -1141,40 +1130,38 @@
     modalInitAttempts = 0;
     console.log('🔧 Initializing modals...');
 
-    // Ensure initial modal state is consistent before binding events
-    backdrop.classList.remove('active');
-    backdrop.style.display = 'none';
-
-    $$('.modal').forEach(modal => {
-      modal.classList.remove('active');
-      modal.style.display = 'none';
-    });
-
-    // Close buttons - use once:true to prevent duplicates
+    // Прив'язуємо обробники до кнопок закриття
     $$('[id^="close-"][id$="-modal"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         console.log('❌ Close button clicked');
         ModalManager.close();
-      }, { once: false }); // Changed to false but we track with flag
+      });
     });
 
     $$('[id^="cancel-"][id$="-btn"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         console.log('❌ Cancel button clicked');
         ModalManager.close();
-      }, { once: false });
+      });
     });
 
     // ВІДКЛЮЧЕНО: Закриття при кліку поза модалкою
-    // Користувач може закрити тільки через кнопку Close
-    // Це запобігає випадковому закриттю при роботі з формою
+    // Користувач ПОВИНЕН використовувати кнопку Close або Cancel
+    // Це запобігає випадковому закриттю
 
-    // Зупиняємо спливання подій від modal-content
+    // Запобігаємо поширенню подій від modal-content
     $$('.modal-content').forEach(content => {
       content.addEventListener('click', (e) => {
-        e.stopPropagation(); // НЕ дозволяємо спливати до .modal
-      }, { capture: false });
+        e.stopPropagation();
+      });
     });
+
+    // Обробка Escape
+    document.addEventListener('keydown', ModalManager.handleEscape);
 
     modalsInitialized = true;
 

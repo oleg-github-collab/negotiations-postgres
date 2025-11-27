@@ -188,10 +188,34 @@
             display: block;
         }
 
+        /* Prospects Header */
+        .prospects-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 32px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .prospects-title {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .prospects-actions {
+            display: flex;
+            gap: 12px;
+        }
+
         /* View Toggle */
         .view-toggle {
             position: absolute;
-            top: 20px;
+            top: 100px;
             right: 20px;
             z-index: 10;
             display: flex;
@@ -302,6 +326,20 @@
 
             <!-- Prospects Tab -->
             <div class="tab-panel active" id="prospects-panel">
+                <!-- Prospects Header -->
+                <div class="prospects-header">
+                    <div class="prospects-title">
+                        <i class="fas fa-briefcase"></i>
+                        Потенційні клієнти
+                    </div>
+                    <div class="prospects-actions">
+                        <button class="btn btn-primary" onclick="ModalManager.open('create-prospect-modal')">
+                            <i class="fas fa-plus"></i>
+                            Додати проспекта
+                        </button>
+                    </div>
+                </div>
+
                 <!-- View Toggle -->
                 <div class="view-toggle">
                     <button class="view-toggle-btn active" data-view="grid">
