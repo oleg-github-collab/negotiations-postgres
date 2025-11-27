@@ -37,14 +37,8 @@
 
       this.activeModal = modalId;
 
-      // Show backdrop and modal
-      if (backdrop) {
-        backdrop.classList.add('active');
-        backdrop.style.display = 'flex';
-        backdrop.style.opacity = '1';
-        console.log('✅ Backdrop shown');
-      }
-
+      // Backdrop тепер в CSS modal, не потрібно окремо показувати
+      // Просто показуємо modal
       modal.style.display = 'flex';
       modal.style.visibility = 'visible';
       modal.style.opacity = '1';
@@ -99,12 +93,7 @@
         console.log(`✅ Modal ${id} hidden`);
       }
 
-      if (backdrop) {
-        backdrop.classList.remove('active');
-        backdrop.style.display = 'none';
-        backdrop.style.opacity = '0';
-        console.log('✅ Backdrop hidden');
-      }
+      // Backdrop тепер в CSS, не потрібно окремо ховати
 
       // Restore body scroll
       document.body.style.overflow = '';
