@@ -20526,3 +20526,1530 @@
   service: 'teampulse-turbo',
   timestamp: '2025-11-27 13:04:50'
 }
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 8.962718,
+  details: {
+    requestId: '4603c2a9-80e5-464f-9206-94bad547f83e',
+    method: 'GET',
+    path: '/',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:25'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:25 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:25'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 40.487596,
+  details: {
+    requestId: '5b3bf4eb-03f3-42ce-b8ec-c450931bc636',
+    method: 'GET',
+    path: '/ultra-optimized.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /ultra-optimized.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 28.806752,
+  details: {
+    requestId: '86ab2c13-1a17-4c51-9f85-0cedc16ce6c5',
+    method: 'GET',
+    path: '/kanban-board.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /kanban-board.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 31.923117,
+  details: {
+    requestId: '97e5afe4-6b30-46d6-ab2e-9176fec6dca1',
+    method: 'GET',
+    path: '/advanced-components.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /advanced-components.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 30.453225,
+  details: {
+    requestId: '5a76465e-d136-40aa-b14e-cb9484b29c96',
+    method: 'GET',
+    path: '/ultra-ux.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /ultra-ux.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 199.229735,
+  details: {
+    requestId: '45b3be28-ea98-4ae1-b88c-ba5d5e1a8367',
+    method: 'GET',
+    path: '/prospects-manager.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /prospects-manager.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 193.476538,
+  details: {
+    requestId: '9862a24e-4a9e-447c-b2ee-afbbb196dcc1',
+    method: 'GET',
+    path: '/teamhub.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /teamhub.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 218.020738,
+  details: {
+    requestId: '66e60488-4423-46f1-acd7-a1e0f653e4b8',
+    method: 'GET',
+    path: '/advanced-search.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /advanced-search.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 220.687338,
+  details: {
+    requestId: '8a9feaa4-1a39-4c44-81b4-34deab271267',
+    method: 'GET',
+    path: '/bulk-operations.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /bulk-operations.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 37.264984,
+  details: {
+    requestId: 'a34759d9-e127-4295-a00e-0c3a73dbf729',
+    method: 'GET',
+    path: '/keyboard-shortcuts.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /keyboard-shortcuts.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 71.325883,
+  details: {
+    requestId: '4747cf74-ce28-439d-958d-ee71701aa517',
+    method: 'GET',
+    path: '/analysis-barometer.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /analysis-barometer.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 51.335256,
+  details: {
+    requestId: '561ef356-2cb7-491f-8267-9d13fa0b2dc7',
+    method: 'GET',
+    path: '/salary-analytics.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /salary-analytics.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 49.781321,
+  details: {
+    requestId: 'ba8ef1bd-d0b5-49fe-afc7-b517150ed692',
+    method: 'GET',
+    path: '/best-hire-kanban.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /best-hire-kanban.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 51.504419,
+  details: {
+    requestId: '9b7e2929-6c5d-47c9-ab9c-d0163506b055',
+    method: 'GET',
+    path: '/skeleton-loaders.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /skeleton-loaders.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 12.607086,
+  details: {
+    requestId: '547cbcc9-5f89-46b1-9e4b-dc196ac67389',
+    method: 'GET',
+    path: '/modals-final.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /modals-final.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 16.072834,
+  details: {
+    requestId: '90ddc101-de6f-47ef-b28a-cb595680aa3d',
+    method: 'GET',
+    path: '/ui-improvements.css',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /ui-improvements.css HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 15.524245,
+  details: {
+    requestId: '6531ed6e-0562-48f8-a3d8-e8d3c5deda6a',
+    method: 'GET',
+    path: '/ui-helpers.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /ui-helpers.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 17.312937,
+  details: {
+    requestId: '099b3214-3d0a-42d5-b8b0-0b5d2cb2fa38',
+    method: 'GET',
+    path: '/error-handler.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /error-handler.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 16.780546,
+  details: {
+    requestId: '4279bf7b-4aa3-4468-874f-271a85b40a76',
+    method: 'GET',
+    path: '/ultra-smooth.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /ultra-smooth.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 301.912386,
+  details: {
+    requestId: '53c49fd6-636a-403c-a7f6-49e7745f4d3b',
+    method: 'GET',
+    path: '/auto-save.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /auto-save.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 349.103366,
+  details: {
+    requestId: 'ee92afd0-3649-42c3-be8c-ee3f5ae4ea00',
+    method: 'GET',
+    path: '/data-validator.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /data-validator.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 376.842399,
+  details: {
+    requestId: 'fdd275e4-733c-4b73-864b-33d37cc9ecae',
+    method: 'GET',
+    path: '/api-client.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /api-client.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 395.226538,
+  details: {
+    requestId: '69533994-b8c6-4fab-ae09-7ad82bd8c8e0',
+    method: 'GET',
+    path: '/transcript-parser.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /transcript-parser.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 407.211678,
+  details: {
+    requestId: 'b1e71385-8659-47d6-8d5c-77c5b275fac1',
+    method: 'GET',
+    path: '/auth.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /auth.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 146.608319,
+  details: {
+    requestId: 'e9f1474d-ddfc-4746-bcd3-721c82d9b634',
+    method: 'GET',
+    path: '/team-management.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /team-management.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 244.106382,
+  details: {
+    requestId: '8f17d97d-27f7-4cbc-b75c-a2e8b30bdcf3',
+    method: 'GET',
+    path: '/rich-text-editor.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /rich-text-editor.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 181.077164,
+  details: {
+    requestId: 'dbd5eae5-9bbb-411c-b5c0-107c37fca537',
+    method: 'GET',
+    path: '/simple-modal.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /simple-modal.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 153.61003,
+  details: {
+    requestId: '26c165e8-c56b-481a-ab1d-7b3646f8cfcd',
+    method: 'GET',
+    path: '/team-management-ext.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /team-management-ext.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 32.860996,
+  details: {
+    requestId: '6a82aa31-d3a5-4acc-8b8c-ba08645ea196',
+    method: 'GET',
+    path: '/kanban-board.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /kanban-board.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 137.383617,
+  details: {
+    requestId: 'c1411a6b-79dc-4dde-892d-2d633ed73fa8',
+    method: 'GET',
+    path: '/modals.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /modals.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 26.300478,
+  details: {
+    requestId: '68bd5d99-e467-4eda-bc65-aa12cb9e5b79',
+    method: 'GET',
+    path: '/prospects-manager.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:26'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:26 +0000] "GET /prospects-manager.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 242.849386,
+  details: {
+    requestId: 'd6de3fd1-3327-41ee-87f2-e3c5432602a5',
+    method: 'GET',
+    path: '/timeline-view.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /timeline-view.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 256.924016,
+  details: {
+    requestId: '3e2cebb6-9e58-496a-a832-43d5949974d7',
+    method: 'GET',
+    path: '/custom-fields.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /custom-fields.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 259.661339,
+  details: {
+    requestId: '62267026-9ae5-40eb-857c-b18f13d26c26',
+    method: 'GET',
+    path: '/teamhub.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /teamhub.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 412.372971,
+  details: {
+    requestId: 'fc7d1b27-fc5a-4b85-9eb0-79005cd32df8',
+    method: 'GET',
+    path: '/command-palette.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /command-palette.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 415.965789,
+  details: {
+    requestId: 'b02af0a4-f316-48b2-9100-4a7dc86bfe76',
+    method: 'GET',
+    path: '/onboarding-tour.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /onboarding-tour.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 190.695196,
+  details: {
+    requestId: '88eb85a7-4c0d-4f04-b9d8-5eb59fe51d89',
+    method: 'GET',
+    path: '/onboarding.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /onboarding.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 185.028233,
+  details: {
+    requestId: 'a7cbb39e-8551-42c9-b263-dd88ca53d77f',
+    method: 'GET',
+    path: '/salary-analytics.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /salary-analytics.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 22.642032,
+  details: {
+    requestId: '7aaa678c-1677-4d3f-9326-1da4bb9790e7',
+    method: 'GET',
+    path: '/best-hire-kanban.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /best-hire-kanban.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 25.843792,
+  details: {
+    requestId: '161eba49-27eb-4280-bdfd-5a4568afc53f',
+    method: 'GET',
+    path: '/advanced-search.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /advanced-search.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 27.871351,
+  details: {
+    requestId: '4df8ff1b-ad4a-4fb8-82a0-265ac2d7ed78',
+    method: 'GET',
+    path: '/bulk-operations.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /bulk-operations.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 25.057606,
+  details: {
+    requestId: 'd40f4db4-a513-43fb-a699-b5a75ac6d79e',
+    method: 'GET',
+    path: '/keyboard-shortcuts.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /keyboard-shortcuts.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 19.641594,
+  details: {
+    requestId: 'a85d40fe-0141-4ac6-873f-c3a463be023f',
+    method: 'GET',
+    path: '/app-init.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /app-init.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 23.03315,
+  details: {
+    requestId: 'f7e8f5b1-a3cf-40bf-9e72-ec7cf6111f53',
+    method: 'GET',
+    path: '/js/offline-sync.js',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /js/offline-sync.js HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 9.70463,
+  details: {
+    requestId: '4fa0f067-a926-4197-9cca-5fa102b9351d',
+    method: 'GET',
+    path: '/modals.html',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:27 +0000] "GET /modals.html HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:27'
+}
+{
+  service: 'teampulse-turbo',
+  duration: 1049,
+  sql: '\n' +
+    '  SELECT\n' +
+    '    c.*,\n' +
+    '    COUNT(a.id) AS analyses_count,\n' +
+    '    MAX(a.created_at) AS last_analysis_at,\n' +
+    "    AVG((a.barometer ->> 'score')::numeric) AS avg_complexity_score\n" +
+    '  FROM clients c\n' +
+    '  LEFT JOIN analyses a ON c.id = a.client_id\n' +
+    '\n' +
+    '     \n' +
+    '     GROUP BY c.id\n' +
+    '     ORDER BY c.updated_at DESC, c.id DESC\n' +
+    '     LIMIT $1',
+  level: 'warn',
+  message: 'Slow database query detected',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  duration: 1065,
+  sql: '\n' +
+    '      SELECT\n' +
+    '        c.*,\n' +
+    '        COUNT(DISTINCT a.id) as analysis_count,\n' +
+    '        MAX(a.created_at) as last_analysis_date,\n' +
+    '        COALESCE(\n' +
+    '          jsonb_agg(\n' +
+    '            DISTINCT jsonb_build_object(\n' +
+    "              'id', a.id,\n" +
+    "              'title', a.title,\n" +
+    "              'created_at', a.created_at,\n" +
+    "              'risk_level', a.barometer->>'risk_level'\n" +
+    '            )\n' +
+    '          ) FILTER (WHERE a.id IS NOT NULL),\n' +
+    "          '[]'::jsonb\n" +
+    '        ) as recent_analyses\n' +
+    '      FROM clients c\n' +
+    '      LEFT JOIN analyses a ON c.id = a.client_id\n' +
+    "      WHERE client_type = 'prospect'\n" +
+    '      GROUP BY c.id\n' +
+    '      ORDER BY created_at DESC\n' +
+    '      LIMIT $1 OFFSET $2\n' +
+    '    ',
+  level: 'warn',
+  message: 'Slow database query detected',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  duration: 1080,
+  sql: '\n' +
+    '  SELECT\n' +
+    '    c.*,\n' +
+    '    COUNT(a.id) AS analyses_count,\n' +
+    '    MAX(a.created_at) AS last_analysis_at,\n' +
+    "    AVG((a.barometer ->> 'score')::numeric) AS avg_complexity_score\n" +
+    '  FROM clients c\n' +
+    '  LEFT JOIN analyses a ON c.id = a.client_id\n' +
+    '\n' +
+    '     \n' +
+    '     GROUP BY c.id\n' +
+    '     ORDER BY c.updated_at DESC, c.id DESC\n' +
+    '     LIMIT $1',
+  level: 'warn',
+  message: 'Slow database query detected',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1060.107421,
+  details: {
+    requestId: '689a45dd-1c98-4d4c-a0a9-9cf37fb1d532',
+    method: 'GET',
+    path: '/api/v1/clients?client_type=active',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /api/v1/clients?client_type=active HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1090.922771,
+  details: {
+    requestId: '327cdec3-18a9-4488-a4be-a94bc5f480a8',
+    method: 'GET',
+    path: '/api/clients',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /api/clients HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  duration: 1081,
+  sql: '\n' +
+    '      SELECT\n' +
+    '        c.*,\n' +
+    '        COUNT(DISTINCT a.id) as analysis_count,\n' +
+    '        MAX(a.created_at) as last_analysis_date,\n' +
+    '        COALESCE(\n' +
+    '          jsonb_agg(\n' +
+    '            DISTINCT jsonb_build_object(\n' +
+    "              'id', a.id,\n" +
+    "              'title', a.title,\n" +
+    "              'created_at', a.created_at,\n" +
+    "              'risk_level', a.barometer->>'risk_level'\n" +
+    '            )\n' +
+    '          ) FILTER (WHERE a.id IS NOT NULL),\n' +
+    "          '[]'::jsonb\n" +
+    '        ) as recent_analyses\n' +
+    '      FROM clients c\n' +
+    '      LEFT JOIN analyses a ON c.id = a.client_id\n' +
+    "      WHERE client_type = 'prospect'\n" +
+    '      GROUP BY c.id\n' +
+    '      ORDER BY created_at DESC\n' +
+    '      LIMIT $1 OFFSET $2\n' +
+    '    ',
+  level: 'warn',
+  message: 'Slow database query detected',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1078.824392,
+  details: {
+    requestId: '07541799-c46f-44a5-9090-9e2272f51492',
+    method: 'GET',
+    path: '/api/v1/prospects?limit=200',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /api/v1/prospects?limit=200 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  duration: 1066,
+  sql: '\n' +
+    '  SELECT\n' +
+    '    c.*,\n' +
+    '    COUNT(a.id) AS analyses_count,\n' +
+    '    MAX(a.created_at) AS last_analysis_at,\n' +
+    "    AVG((a.barometer ->> 'score')::numeric) AS avg_complexity_score\n" +
+    '  FROM clients c\n' +
+    '  LEFT JOIN analyses a ON c.id = a.client_id\n' +
+    '\n' +
+    '     \n' +
+    '     GROUP BY c.id\n' +
+    '     ORDER BY c.updated_at DESC, c.id DESC\n' +
+    '     LIMIT $1',
+  level: 'warn',
+  message: 'Slow database query detected',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1086.368813,
+  details: {
+    requestId: '9a5f1b1a-307b-4733-b5da-03ac2a526c6d',
+    method: 'GET',
+    path: '/api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 1072.33136,
+  details: {
+    requestId: 'c31489e0-7778-4b5a-aae6-fe265df6c3b9',
+    method: 'GET',
+    path: '/api/clients',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /api/clients HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.671377,
+  details: {
+    requestId: '4ffcd8f7-77f9-4916-b728-9579515f0b03',
+    method: 'GET',
+    path: '/favicon.svg',
+    statusCode: 200,
+    contentLength: 555
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /favicon.svg HTTP/1.1" 200 555 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 130.51884,
+  details: {
+    requestId: '74187d56-57c1-46b8-b731-118b14c185d3',
+    method: 'GET',
+    path: '/api/clients',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /api/clients HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 4.217353,
+  details: {
+    requestId: '70b8680b-5a15-41d9-9a61-4a7d8b56cda0',
+    method: 'GET',
+    path: '/api/clients',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:28 +0000] "GET /api/clients HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:28'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 10.226245,
+  details: {
+    requestId: '05b43078-3236-4ea7-9236-6d22dc4276ca',
+    method: 'GET',
+    path: '/api/v1/clients?client_type=active',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/clients?client_type=active HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 14.817952,
+  details: {
+    requestId: '84bfee96-d69b-465d-af75-2ee34401a1a3',
+    method: 'GET',
+    path: '/api/v1/prospects?limit=200',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?limit=200 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 2.025063,
+  details: {
+    requestId: '5f85c5e3-eea3-4aee-ba53-adbc21d114dc',
+    method: 'GET',
+    path: '/manifest.json',
+    statusCode: 304,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /manifest.json HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 19.464419,
+  details: {
+    requestId: 'c64836eb-7b91-4019-a5d2-11293a72fa37',
+    method: 'GET',
+    path: '/api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 6.203714,
+  details: {
+    requestId: '19e8f047-09d1-4502-a515-a052bebe28fb',
+    method: 'GET',
+    path: '/api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 13.769509,
+  details: {
+    requestId: '05f0b59d-6db0-4df0-b678-f385e883adb7',
+    method: 'GET',
+    path: '/favicon.svg',
+    statusCode: 304,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /favicon.svg HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 90.924707,
+  details: {
+    requestId: 'b803a108-e514-40f2-9b6f-ec336f3c3100',
+    method: 'GET',
+    path: '/api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 143.099524,
+  details: {
+    requestId: '4d12de37-08e8-48d2-915b-a1bdb15bea5a',
+    method: 'GET',
+    path: '/api/v1/clients?client_type=active',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/clients?client_type=active HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 26.581949,
+  details: {
+    requestId: 'eaf1079e-be17-478a-9999-ec8922764f6f',
+    method: 'GET',
+    path: '/api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 420.732615,
+  details: {
+    requestId: '702f91d3-b524-4954-87b1-d8f242f51d20',
+    method: 'GET',
+    path: '/api/v1/prospects?limit=200',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?limit=200 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 261.947432,
+  details: {
+    requestId: 'e77f116a-dc38-479b-9b63-1537a0c47040',
+    method: 'GET',
+    path: '/api/v1/clients?client_type=active',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/clients?client_type=active HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 273.677107,
+  details: {
+    requestId: '26ac3bdd-a082-4fba-864a-6d7ee2fb3f92',
+    method: 'GET',
+    path: '/api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 38.762305,
+  details: {
+    requestId: 'd0d3e981-3eff-408a-9b5c-408ff1a4caff',
+    method: 'GET',
+    path: '/api/v1/prospects?limit=200',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?limit=200 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  service: 'teampulse-turbo',
+  operation: 'http_request',
+  duration: 20.924411,
+  details: {
+    requestId: 'b78a4cf4-1f64-48ce-8d7b-de73ba35c863',
+    method: 'GET',
+    path: '/api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100',
+    statusCode: 200,
+    contentLength: undefined
+  },
+  level: 'info',
+  message: 'Performance Metric',
+  timestamp: '2025-11-27 13:10:29'
+}
+{
+  message: '127.0.0.1 - - [27/Nov/2025:12:10:29 +0000] "GET /api/v1/prospects?search=&status=&risk_level=&sort=recent&limit=100 HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"',
+  level: 'info',
+  service: 'teampulse-turbo',
+  timestamp: '2025-11-27 13:10:29'
+}
